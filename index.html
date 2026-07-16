@@ -310,6 +310,10 @@ button.avatar{cursor:pointer}
   font-variant-numeric:tabular-nums; color:var(--a-t3)}
 .ctile .cload small{font-size:9.5px}
 .ctile.on .cload{color:var(--a-on)}
+.ctile.fault{border-color:var(--a-amber)}
+.ctile.fault .bar{background:var(--a-amber)}
+.ctile.fault .cload{color:var(--a-amber)}
+.ctile .chead .fi{color:var(--a-amber); display:flex}
 .ctile.dim{opacity:.5}
 .ctile.sel{border-color:var(--a-cyan); opacity:1}
 .syncall{position:absolute; right:14px; bottom:76px; z-index:24; display:flex; flex-direction:column;
@@ -391,6 +395,16 @@ button.avatar{cursor:pointer}
 .addrcard b{font-size:15.5px; font-weight:500; display:block; margin-bottom:2px}
 .addrcard span{font-size:12.5px; color:var(--a-t2)}
 .addrcard .edit{color:var(--a-amber); font-size:13.5px; border-bottom:2px dotted var(--a-amber); padding-bottom:2px}
+
+/* active-load live view */
+.loadov{position:absolute; inset:0; background:var(--a-panel); z-index:34; display:flex; flex-direction:column}
+.loadov .big{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px}
+.loadov .amps{font-size:74px; font-weight:600; letter-spacing:-.02em; color:var(--a-on);
+  font-variant-numeric:tabular-nums; line-height:1}
+.loadov .amps small{font-size:30px; font-weight:500}
+.loadov .amps.off{color:var(--a-t3)}
+.loadov .volts{font-size:38px; font-weight:500; color:#fff; font-variant-numeric:tabular-nums}
+.loadov .volts small{font-size:18px; color:var(--a-t2)}
 
 /* sync flow */
 .stephead{margin:2px 0 16px}
@@ -608,10 +622,6 @@ button.avatar{cursor:pointer}
       <img class="logo-dark" alt="Basis" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI3LjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxMzY2IDc2OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTM2NiA3Njg7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojRkZGRkZGO30KCS5zdDF7ZmlsbDojRkZGRkZGO30KPC9zdHlsZT4KPGc+Cgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTcxLjgyLDM2NS40MWgyMDMuNDZjMTQuNDIsMCwyNi4xLTExLjY2LDI2LjEtMjYuMDNjMC0xNC4zNy0xMS42OS0yNi4wMy0yNi4xLTI2LjAzSDE3MS44MgoJCWMtMi44NywwLTUuMjIsMi4zNC01LjIyLDUuMnY0MS42N2MwLDIuODYsMi4zNSw1LjIxLDUuMjIsNS4yMVYzNjUuNDF6Ii8+Cgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTcxLjgxLDQ1OC4xNWgyMDMuMDdjMTQuMzksMCwyNi4wNS0xMS43MSwyNi4wNS0yNi4xNGMwLTE0LjQzLTExLjY3LTI2LjE0LTI2LjA1LTI2LjE0SDE3MS44MQoJCWMtMi44NiwwLTUuMjEsMi4zNS01LjIxLDUuMjJ2NDEuODVjMCwyLjg3LDIuMzQsNS4yMyw1LjIxLDUuMjNWNDU4LjE1eiIvPgoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTgzNC42NiwzMzguODVsLTI1LjM4LDAuMDNjLTEuNDMsMC0yLjY2LDEuMDMtMi45MSwyLjQ1TDgwNCwzNTUuMDVjLTQuMjYtNC43My05LjM3LTguNjMtMTUuMjUtMTEuNjQKCQljLTcuOTUtNC4wNi0xNy40Mi02LjEtMjguMDktNi4xYy0xMi45LDAtMjQuNjgsMy4xMi0zNC45Nyw5LjIzYy0xMC4zMyw2LjEyLTE4LjU0LDE0Ljg4LTI0LjQ0LDI2LjAzCgkJYy01Ljg1LDExLjEtOC44MiwyNC4wNi04LjgxLDM4LjU0YzAuMDIsMTQuODIsMi45NywyNy45NSw4Ljc1LDM5LjA0YzUuODQsMTEuMTcsMTQuMDUsMTkuODMsMjQuNDEsMjUuNzUKCQljMTAuMjgsNS44OCwyMi4xLDguODUsMzUuMTQsOC44NWgwLjFjMTAuNTMsMCwxOS45Mi0yLjIzLDI3Ljg4LTYuNmM1Ljg1LTMuMjEsMTAuOTYtNy4yNCwxNS4yOS0xMi4wMWwyLjI1LDE0LjQ0CgkJYzAuMjIsMS40MywxLjQ2LDIuNSwyLjkzLDIuNWwyNS42Ni0wLjAzYzAuNzgsMCwxLjU0LTAuMzEsMi4wOC0wLjg3YzAuNTYtMC41NiwwLjg2LTEuMywwLjg2LTIuMDhsLTAuMTYtMTM4LjI4CgkJYzAtMS42My0xLjMzLTIuOTYtMi45Ni0yLjk2SDgzNC42NnogTTgwMi44OSw0MTEuNTFjMCwxMi43MS0zLjQ2LDIzLjE0LTEwLjMxLDMxLjAxYy02Ljg0LDcuODgtMTUuNjUsMTEuNy0yNi45MiwxMS43MmgtMC4wNgoJCWMtMTEuMjQsMC0yMC4wNC0zLjg2LTI2Ljg5LTExLjc4Yy02Ljg5LTcuOTUtMTAuMzctMTguNTEtMTAuMzktMzEuNDFjMC0xMi43MSwzLjQ2LTIzLjIsMTAuMzEtMzEuMTYKCQljNi44NC03Ljk1LDE1LjY1LTExLjgyLDI2LjkyLTExLjg0aDAuMDZjMTEuMjMsMCwyMC4wMiwzLjg5LDI2Ljg4LDExLjg5Qzc5OS4zOCwzODcuOTksODAyLjg4LDM5OC42MSw4MDIuODksNDExLjUxeiIvPgoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTk2MC4yOCw0MDAuMDJjLTguMjYtMi42NS0xOC41NC00LjY0LTMwLjU0LTUuOWMtOC43LTEuMDUtMTUuMDctMS45OC0xOC45NC0yLjc4CgkJYy0zLjQ5LTAuNzEtNi4zOC0xLjk2LTguNjEtMy43NGMtMS44OS0xLjQ5LTIuODEtMy43OC0yLjgxLTdjMC00LjUyLDIuMS04LjA0LDYuNDMtMTAuNzNjNC43MS0yLjk0LDExLjEtNC40MywxOC45Ni00LjQzaDAuMDYKCQljNy43NiwwLDE0LjI0LDEuODUsMTkuMjgsNS41YzQuOTMsMy41OCw3LjY0LDcuOTgsOC4yNywxMy40NmMwLjE4LDEuNDksMS40MywyLjYyLDIuOTQsMi42MmwyOC4zNS0wLjAzYzAuODEsMCwxLjYtMC4zNCwyLjE2LTAuOTMKCQljMC41Ni0wLjU5LDAuODQtMS40LDAuOC0yLjIyYy0wLjk4LTE0LjkxLTcuMzYtMjYuNjQtMTguOTctMzQuODdjLTExLjMzLTguMDQtMjYuMTgtMTIuMS00NC4xMi0xMi4xaC0wLjE1CgkJYy0xMC45OCwwLTIwLjk1LDEuOTItMjkuNjUsNS42N2MtOC44MiwzLjgxLTE1Ljg1LDkuMjgtMjAuOTIsMTYuMjdjLTUuMTEsNy4wNi03LjcsMTUuMjMtNy43LDI0LjI5CgkJYzAsOS43MSwyLjY5LDE3LjYsNy45NSwyMy40M2M1LjExLDUuNjksMTEuOTIsOS44NywyMC4yNCwxMi40NGM3Ljk2LDIuNDcsMTguMTksNC40NSwzMC4zNiw1Ljg4CgkJYzguNjksMS4wNSwxNS4xNiwyLjA3LDE5LjI3LDMuMDNjMy43MSwwLjg2LDYuNjYsMi4zLDguNzksNC4yN2MxLjkxLDEuNzcsMi44NCw0LjUxLDIuODUsOC4zNmMwLDQuNTEtMi4yMiw4LjA3LTYuOCwxMC44NQoJCWMtNC45OSwzLjA0LTExLjcsNC41OC0xOS45Myw0LjZoLTAuMDdjLTkuMTgsMC0xNi43LTIuMTEtMjIuMzYtNi4yOGMtNS41NC00LjA4LTguNDctOS4xNi04Ljk1LTE1LjUzCgkJYy0wLjEyLTEuNTQtMS40LTIuNzMtMi45NC0yLjczbC0yOC4wOSwwLjAzYy0wLjgsMC0xLjU1LDAuMzMtMi4xMSwwLjg5Yy0wLjU2LDAuNTgtMC44NiwxLjM0LTAuODQsMi4xNAoJCWMwLjQsMTUuNjYsNi43NywyOC4xLDE4Ljk0LDM3YzExLjg4LDguNjcsMjcuNTQsMTMuMDgsNDYuNTksMTMuMDhoMC4xNWMxMS4zLDAsMjEuNjctMS44NiwzMC43OS01LjUxCgkJYzkuMjgtMy43MSwxNi43LTkuMTIsMjIuMDMtMTYuMDljNS40Mi03LjA4LDguMTYtMTUuMzcsOC4xNC0yNC42M2MwLTEwLjQtMi43Mi0xOC44Mi04LjA0LTI1CgkJYy01LjItNi4wNi0xMi4yLTEwLjUzLTIwLjgtMTMuMjhWNDAwLjAyeiIvPgoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTEwMzEuMjIsMjgzLjI1aC0wLjAzYy01LjgxLDAtMTAuNzcsMS45OC0xNC43NCw1Ljg1Yy0zLjk5LDMuOS02LjAxLDguODQtNi4wMSwxNC42OXMyLjA0LDEwLjc5LDYuMDQsMTQuNjcKCQljMy45NywzLjg2LDguOTIsNS44MiwxNC43Myw1LjgyaDAuMDNjNS44MSwwLDEwLjc3LTEuOTgsMTQuNzQtNS44NWMzLjk5LTMuOSw2LjAxLTguODQsNi4wMS0xNC42OXMtMi4wNC0xMC43Ny02LjA1LTE0LjY3CgkJQzEwNDEuOTcsMjg1LjIxLDEwMzcuMDIsMjgzLjI1LDEwMzEuMjIsMjgzLjI1eiIvPgoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTEwNDUuODUsMzM4LjU5bC0yOS4xNywwLjAzYy0wLjc4LDAtMS41NCwwLjMxLTIuMDgsMC44N2MtMC41NSwwLjU2LTAuODYsMS4zLTAuODYsMi4wOGwwLjE2LDEzOC4yOAoJCWMwLDEuNjMsMS4zMywyLjk1LDIuOTUsMi45NWwyOS4xNi0wLjAzYzAuNzksMCwxLjU0LTAuMzEsMi4wOC0wLjg3YzAuNTUtMC41NiwwLjg2LTEuMywwLjg2LTIuMDhsLTAuMTYtMTM4LjI4CgkJQzEwNDguOCwzMzkuOTIsMTA0Ny40NywzMzguNTksMTA0NS44NSwzMzguNTl6Ii8+Cgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTE5MS4zNSw0MTMuMDVjLTUuMi02LjA2LTEyLjItMTAuNTItMjAuOC0xMy4yOGMtOC4yNi0yLjY1LTE4LjU0LTQuNjQtMzAuNTQtNS45CgkJYy04LjY5LTEuMDUtMTUuMDYtMS45OC0xOC45NS0yLjc4Yy0zLjQ4LTAuNzEtNi4zOC0xLjk2LTguNjEtMy43NGMtMS45LTEuNDktMi44LTMuNzgtMi44LTdjMC00LjUyLDIuMDktOC4wNCw2LjQyLTEwLjczCgkJYzQuNzEtMi45NCwxMS4xLTQuNDMsMTguOTUtNC40M2gwLjA2YzcuNzYsMCwxNC4yNSwxLjg1LDE5LjI4LDUuNWM0Ljk0LDMuNTgsNy42NCw3Ljk4LDguMjgsMTMuNDZjMC4xOCwxLjQ5LDEuNDMsMi42MiwyLjk0LDIuNjIKCQlsMjguMzUtMC4wM2MwLjgxLDAsMS42LTAuMzQsMi4xNS0wLjkzYzAuNTctMC41OSwwLjg1LTEuNCwwLjgtMi4yMmMtMC45Ny0xNC45MS03LjM2LTI2LjY0LTE4Ljk3LTM0Ljg3CgkJYy0xMS4zMy04LjA0LTI2LjE4LTEyLjEtNDQuMTItMTIuMWgtMC4xM2MtMTAuOTgsMC0yMC45NSwxLjkyLTI5LjY2LDUuNjdjLTguODIsMy44MS0xNS44NSw5LjI4LTIwLjkyLDE2LjI3CgkJYy01LjExLDcuMDYtNy43LDE1LjIzLTcuNywyNC4yOWMwLDkuNzEsMi42OSwxNy42LDcuOTUsMjMuNDNjNS4xMSw1LjY5LDExLjkyLDkuODcsMjAuMjQsMTIuNDRjNy45OCwyLjQ3LDE4LjE5LDQuNDUsMzAuMzYsNS44OAoJCWM4LjY4LDEuMDUsMTUuMTYsMi4wNywxOS4yNywzLjAzYzMuNzEsMC44Niw2LjY2LDIuMyw4Ljc5LDQuMjdjMS45LDEuNzcsMi44NCw0LjUxLDIuODUsOC4zNmMwLDQuNTEtMi4yMSw4LjA3LTYuNzksMTAuODUKCQljLTQuOTksMy4wNC0xMS43LDQuNTgtMTkuOTMsNC42aC0wLjA4Yy05LjE3LDAtMTYuNjktMi4xMS0yMi4zNS02LjI4Yy01LjU0LTQuMDktOC40Ny05LjE2LTguOTUtMTUuNTMKCQljLTAuMTItMS41NC0xLjQxLTIuNzMtMi45NC0yLjczbC0yOC4wOSwwLjAzYy0wLjgsMC0xLjU1LDAuMzMtMi4xMSwwLjg5Yy0wLjU3LDAuNTgtMC44NiwxLjM0LTAuODQsMi4xNAoJCWMwLjM5LDE1LjY2LDYuNzcsMjguMSwxOC45NCwzN2MxMS44OCw4LjY3LDI3LjU0LDEzLjA4LDQ2LjU3LDEzLjA4aDAuMTVjMTEuMywwLDIxLjY4LTEuODYsMzAuOC01LjUxCgkJYzkuMjgtMy43MSwxNi42OS05LjEyLDIyLjAyLTE2LjA5YzUuNDMtNy4wOCw4LjE2LTE1LjM3LDguMTUtMjQuNjNjMC0xMC40LTIuNzItMTguODItOC4wNC0yNVY0MTMuMDV6Ii8+Cgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNjM2LjA5LDM4Mi42N2gwLjAzYzctMi45NiwxMi43NS03LjExLDE3LjE0LTEyLjQ0YzYuNDQtNy44Miw5LjcxLTE3Ljg1LDkuNjktMjkuODUKCQljLTAuMDItMTYuMzktNi4yMS0yOS4zNi0xOC4zNy0zOC41MmMtMTEuODgtOC45NS0yOC42NS0xMy41LTQ5Ljg0LTEzLjVoLTAuMThsLTY5LjQyLDAuMDljLTAuNzgsMC0xLjU0LDAuMzEtMi4wOCwwLjg3CgkJYy0wLjU2LDAuNTYtMC44NiwxLjMtMC44NiwyLjA4bDAuMjIsMTg5LjA1YzAsMS42MywxLjMzLDIuOTUsMi45NiwyLjk1bDcxLjg0LTAuMDljMjMuMDctMC4wMyw0MS4xNi00Ljk4LDUzLjc3LTE0LjcyCgkJYzEyLjg1LTkuOTMsMTkuMzYtMjMuNzEsMTkuMzMtNDAuOTlDNjcwLjMsNDA0LjYsNjU4LjgsMzg5LjUzLDYzNi4wOSwzODIuNjd6IE01NTkuMjQsMzIwLjI0bDQzLjAxLDAKCQljMTMuMjksMCwyNC4wNywxMC44MiwyNC4wNywyNC4xNWMwLDEzLjMzLTEwLjc3LDI0LjE1LTI0LjA3LDI0LjE1aC00My4wMVYzMjAuMjR6IE02MDcuMzIsNDUxLjM1bC00OC4wNywwdi01MS4wN2g0OC4wNwoJCWMxNC4wNSwwLDI1LjQ1LDExLjQ0LDI1LjQ1LDI1LjUzQzYzMi43Niw0MzkuOTEsNjIxLjM4LDQ1MS4zNSw2MDcuMzIsNDUxLjM1eiIvPgo8L2c+Cjwvc3ZnPg==">
       <span class="pill">Interactive demo</span>
     </div>
-    <h1>Commission a Basis Smart Panel, end to end.</h1>
-    <p class="lede">A fresh panel, straight out of the box. Work through each part by tapping in the app —
-    pop-ups explain what each step does and why it matters, and lime highlights show where to tap.
-    When something happens at the switchboard, it happens on the panel to the right.</p>
   </header>
 
   <div class="steps-hdr">
@@ -787,7 +797,7 @@ function tiles(){
   const arr=[];
   for(let n=1;n<=20;n++){
     if(n===1&&c1.label){
-      arr.push({n:1,label:c1.label,st:on?'on':'off',a:on?'0.1':'0',
+      arr.push({n:1,label:c1.label,st:fx.scFault?'fault':(on?'on':'off'),a:on?'0.1':'0',
         tags:(c1.locs&&c1.locs.length&&fx.synced)?[c1.locs[0].toUpperCase()].concat(c1.locs.length>1?['+'+(c1.locs.length-1)]:[]):null,
         pending:!fx.synced});
     } else {
@@ -898,14 +908,15 @@ SCREENS.dashboard=()=>{
 function tile(c,opts){
   opts=opts||{};
   const col=c.n%2===1?'colL':'colR';
-  const stCls=c.st==='on'?'on':'off';
+  const stCls=c.st==='on'?'on':c.st==='fault'?'fault':'off';
   const dim=opts.selMode&&c.n!==1?' dim':'';
   const sel=opts.selMode&&c.n===1?' sel':'';
-  const loadTxt=c.st==='on'?`ON&nbsp; ${c.a}<small>A</small>`:`OFF&nbsp; ${c.a}<small>A</small>`;
+  const loadTxt=c.st==='fault'?`FAULT&nbsp; ${c.a}<small>A</small>`
+    :c.st==='on'?`ON&nbsp; ${c.a}<small>A</small>`:`OFF&nbsp; ${c.a}<small>A</small>`;
   return `<button class="ctile ${col} ${stCls}${dim}${sel}${c.pending?' pending':''}${c.n===1?hot(opts.hotKey||''):''}"
     data-act="${c.n===1?(opts.selMode?'selct':'opencirc'):'none'}">
     <span class="bar"></span>
-    <span class="chead"><span>${String(c.n).padStart(2,'0')}</span>${c.pending?`<span class="sy">${I.sync}</span>`:''}</span>
+    <span class="chead"><span>${String(c.n).padStart(2,'0')}</span>${c.st==='fault'?`<span class="fi">${I.alerto}</span>`:c.pending?`<span class="sy">${I.sync}</span>`:''}</span>
     <span class="clab">${c.label}</span>
     ${c.tags?`<span class="tags">${c.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</span>`:''}
     <span class="cload">${loadTxt}</span></button>`;
@@ -927,7 +938,7 @@ SCREENS.circuits=()=>{
       </div>
       <div class="sumcard">
         <div class="r"><span>Ready to Sync</span><b style="color:${pend?'var(--a-cyan)':'#fff'}">${pend}</b></div>
-        <div class="r"><span>Faults</span><b>0</b></div>
+        <div class="r"><span>Faults</span><b style="color:${fx.scFault?'var(--a-amber)':'#fff'}">${fx.scFault?1:0}</b></div>
         <div class="r"><span>Warnings</span><b>0</b></div>
       </div>
     </div>
@@ -946,16 +957,16 @@ SCREENS.circuitDetail=()=>{
     <button class="icbtn" data-act="none" aria-label="Menu">${I.kebab}</button></div>
   <div style="flex:1">
     <div class="dtop">
-      <button data-act="none" style="text-align:left;padding:16px;flex:1">
+      <button data-act="activeload" style="text-align:left;padding:16px;flex:1">
         <div class="lab" style="font-size:12.5px;color:var(--a-t2);margin-bottom:12px;display:flex;gap:5px;align-items:center">Active load ${I.chevd}</div>
-        <div class="bigread${on?'':' off'}">${on?'0.1':'0.0'}<small>A</small>&ensp;239<small>V</small></div>
+        <div class="bigread${on?'':' off'}"><span id="d-amps">${on?'0.1':'0.0'}</span><small>A</small>&ensp;<span id="d-volts">239</span><small>V</small></div>
       </button>
       <div class="cell-r" style="padding:16px;flex:1">
         <div style="flex:1">
           <div class="lab" style="font-size:12.5px;color:var(--a-t2);margin-bottom:12px">Status</div>
-          <div class="bigread${on?'':' off'}" style="font-weight:700">${on?'ON':'OFF'}</div>
+          <div class="bigread${on?'':' off'}" style="font-weight:700${fx.scFault?';color:var(--a-amber)':''}">${fx.scFault?'FAULT':on?'ON':'OFF'}</div>
         </div>
-        <span class="statusbar-v${on?'':' off'}"></span>
+        <span class="statusbar-v${on?'':' off'}"${fx.scFault?' style="background:var(--a-amber)"':''}></span>
       </div>
     </div>
     <div class="dsec">
@@ -1422,8 +1433,8 @@ const POP={
    what:"Tie the panel to the property: confirm the address, then select the ICP — the property's unique connection point ID on the network.",
    why:"The right ICP links this board to the correct meter and retailer. Energy features, tariffs and compliance all hang off it."},
  11:{k:'Part 4 of 8',t:'Configure a circuit',
-   what:"Every circuit on a Basis panel is software-defined. You'll set up circuit 01 end to end — seven settings, all from the app.",
-   why:"No swapping breakers, no dip switches. Protection and behaviour are set here, then confirmed physically at the board."},
+   what:"Every circuit on a Basis panel is software-defined. You'll set up circuit 01 end to end — seven settings, all from the app. Once you're on a circuit, tap its Active load reading any time to watch live current and voltage.",
+   why:"No swapping breakers, no dip switches. Protection and behaviour are set here, then confirmed physically at the board — and live readings make fault-finding a phone call instead of a site visit."},
  13:{k:'Part 4 · Setting 1 of 7',t:'Label',
    what:"The label says what the circuit supplies — Lights, Oven, EV Charger. It shows on the circuit's e-ink display and in the homeowner's app.",
    why:"Clear labels beat “circuit 7 does… something”. The next sparkie — and the homeowner — will thank you."},
@@ -1473,9 +1484,23 @@ const POP_DONE={k:'All 8 parts complete',t:'Panel commissioned. Nice work.',
 const screenEl=$('#screen');
 let toastEl=null;
 
+function loadOverlay(){
+  const c1=fx.c1||{}, on=!!fx.scLive;
+  return `<div class="loadov">
+    <div class="nav"><button class="icbtn" data-act="loadback" aria-label="Back">${I.back}</button>
+      <span class="ttl">${c1.label||'Circuit'} 01</span><span style="width:34px"></span></div>
+    <div class="big">
+      <div class="lab" style="font-size:14px;color:var(--a-t2)">Active load</div>
+      <div class="amps${on?'':' off'}"><span id="lv-amps">${on?'0.1':'0.0'}</span><small> A</small></div>
+      <div class="volts"><span id="lv-volts">239</span><small> V</small></div>
+      <p class="tiny" style="margin-top:18px;text-align:center;max-width:220px;line-height:1.5">Live readings
+      streamed from the circuit — your first stop when fault-finding with a customer on the phone.</p>
+    </div></div>`;
+}
 function render(){
   clearT();
   const scr=freePlay?SCREENS[freeScr]():SCREENS[steps[cur].screen]();
+  if(fx.showLoad) scr.html+=loadOverlay();
   screenEl.classList.toggle('on-black',!!scr.black);
   screenEl.innerHTML='<div class="island"></div>'
     +(scr.noBar?'':sbar())
@@ -1485,6 +1510,16 @@ function render(){
   toastEl=$('#toast');
   renderStepper();
   renderPanel();
+  /* live telemetry jitter — streams while the readings are on screen */
+  if($('#d-amps')||$('#lv-amps')){
+    TI(()=>{
+      const on=!!fx.scLive&&!fx.scFault;
+      const a=on?(Math.random()<0.8?'0.1':'0.2'):'0.0';
+      const v=String(238+Math.floor(Math.random()*3));
+      ['d-amps','lv-amps'].forEach(id=>{const el=document.getElementById(id); if(el) el.textContent=a;});
+      ['d-volts','lv-volts'].forEach(id=>{const el=document.getElementById(id); if(el) el.textContent=v;});
+    },1100);
+  }
   if(!freePlay) onEnter();
 }
 
@@ -1587,15 +1622,27 @@ function showPop(idx,data){
   seenPop.add(idx);
 }
 $('#coach-x').addEventListener('click',()=>$('#coach').classList.remove('show'));
+function showStart(){
+  $('#pop-kicker').textContent='Interactive simulator';
+  $('#pop-title').textContent='Learn the Basis Trade app';
+  $('#pop-what').textContent="You're about to commission a fresh Basis Smart Panel, end to end: connect to it, update its software, set the site details, configure a circuit, then sync and test it — plus the event log, offline installs, and how to reach the Basis team.";
+  $('#pop-why').textContent="Everything happens by tapping in the app on the left; the switchboard on the right responds like the real thing. Lime highlights show where to tap, and a coach bubble explains each step.";
+  $('#pop-extra').innerHTML='';
+  $('#pop-actions').innerHTML='<button class="pop-go" data-pop="start">Start commissioning</button>';
+  $('#coach').classList.remove('show');
+  popov.hidden=false;
+  $('.pop-go').focus();
+}
 popov.addEventListener('click',e=>{
   const b=e.target.closest('[data-pop]');
   if(b){
+    if(b.dataset.pop==='start'){popov.hidden=true; seenPop.delete(0); showPop(0); return;}
     popov.hidden=true;
     if(b.dataset.pop==='restart') restart();
     else if(b.dataset.pop==='free') freeInit();
     return;
   }
-  if(e.target===popov) popov.hidden=true;
+  if(e.target===popov&&!$('.pop-go [data-pop="start"]')) popov.hidden=true;
 });
 function freeInit(){
   $('#coach').classList.remove('show');
@@ -1607,7 +1654,7 @@ function freeInit(){
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(!popov.hidden) popov.hidden=true; $('#coach').classList.remove('show'); } });
 
-function restart(){ seenPop.clear(); userCfg={}; deviceCfg=null; freePlay=false; goto(0); }
+function restart(){ seenPop.clear(); userCfg={}; deviceCfg=null; freePlay=false; goto(0); showStart(); }
 
 /* ---- physical panel (RHS) ---- */
 function panelNeeds(){
@@ -1819,6 +1866,9 @@ function freeAct(act,el){
 screenEl.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]'); if(!el) return;
   const act=el.dataset.act;
+  /* live-readings view opens over any circuit screen, in both modes */
+  if(act==='activeload'){fx.showLoad=true; render(); return;}
+  if(act==='loadback'){fx.showLoad=false; render(); return;}
   if(freePlay){ freeAct(act,el); return; }
   const s=steps[cur];
   const adv=Array.isArray(s.advanceOn)?s.advanceOn.includes(act):act===s.advanceOn;
@@ -1895,5 +1945,9 @@ document.querySelector('.steps-hdr').addEventListener('click',e=>{
   if(sc){freePlay=false; seenPop.delete(+sc.dataset.jump); goto(+sc.dataset.jump);}
 });
 
-goto(+(new URLSearchParams(location.search).get('step'))||0);
+{
+  const deep=new URLSearchParams(location.search).get('step');
+  goto(+deep||0);
+  if(deep===null) showStart();  /* deep links skip the intro */
+}
 </script>
