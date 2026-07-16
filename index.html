@@ -99,8 +99,8 @@ header.page{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
 .coach .pill{font-size:9.5px; padding:4px 10px; margin-bottom:7px; display:inline-block}
 .coach h3{font-size:14.5px; font-weight:500; letter-spacing:-.01em; margin-bottom:5px; text-wrap:balance}
 .coach p{font-size:12px; line-height:1.5; color:var(--ink2)}
-.coach.flash{animation:coachflash .9s}
-@keyframes coachflash{0%,55%{box-shadow:0 0 0 3px var(--lime)} 100%{box-shadow:none}}
+.coach.flash{animation:coachpop .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes coachpop{0%{transform:scale(.97)} 45%{transform:scale(1.035); box-shadow:0 10px 30px rgba(152,255,171,.4)} 100%{transform:scale(1); box-shadow:none}}
 
 /* ---------- modal (start + completion only) ---------- */
 .pop-ov{position:fixed; inset:0; background:rgba(18,22,20,.55); z-index:200; display:flex;
