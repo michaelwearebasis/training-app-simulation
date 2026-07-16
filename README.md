@@ -5,42 +5,186 @@ built for embedding in training content (Easygenerator or any LMS that accepts a
 
 **Live page:** https://michaelwearebasis.github.io/training-app-simulation/
 
-## Embed
+Learners work through eight guided parts by tapping in a simulated phone app (left) while a
+simulated switchboard (right) responds like the real product — then get a free-play mode to
+experiment. Everything is one self-contained `index.html`: no build step, no dependencies, no
+network requests (all images are inlined data URIs).
+
+---
+
+## Embedding
 
 ```html
 <iframe src="https://michaelwearebasis.github.io/training-app-simulation/"
-        width="100%" height="1000" style="border:0" allowfullscreen></iframe>
+        width="100%" height="1050" style="border:0" allowfullscreen
+        title="Basis Trade app — commissioning simulation"></iframe>
 ```
 
-Deep-link to a specific step with `?step=N` (0–41), e.g. `?step=27` opens at the
-config-confirm moment.
+- `?step=N` (0–41) deep-links into the flow and skips the start screen — e.g. `?step=11` opens
+  at "Configure a circuit", `?step=24` at the sync part. Useful for one-part-per-course-page.
+- Below ~820px wide the layout stacks vertically (phone above panel) and the pressable panel
+  controls float at the bottom of the viewport, so narrow embeds still work.
+- GitHub Pages sends no frame-blocking headers; if an LMS strips iframes, link out instead.
 
-## What it covers
+## Deploying changes
 
-Eight guided parts, each introduced by a what/why pop-up, driven entirely by tapping in the
-simulated app (left) and pressing controls on the simulated switchboard (right):
+Push to `main`. GitHub Pages serves the repo root, so `index.html` goes live in ~1 minute.
+The embed URL never changes, so courses pick updates up automatically.
 
-1. Connect to the Smart Panel (Basis Button, hotspot join, authorise)
-2. Update the software
-3. Set the site details (address + ICP)
-4. Configure a circuit — Label, MCB, RCD, Locations, AFDD, Meter load control, Standby lockout
-5. Sync to the panel & test the RCD (TEST confirm, energise, RCD trip + reset)
-6. Event logs
-7. Offline mode
-8. Report bugs & share feedback
+There is no build or minification — edit `index.html` directly and refresh. For local work,
+any static server does (`python -m http.server`), or just open the file.
 
-## Fidelity notes
+---
 
-- App screens reproduce the real Trade app (copy sourced from the app codebase and screenshots).
-- The Sub-Circuit render follows the firmware: LED solid red = live, solid yellow = electrical
-  fault, blue 1 s/1 s flash = config/firmware pending (overrides state colour), breathing red =
-  standby, off = safe; e-ink shows label/state/MCB/RCD/AFDD and only updates when config applies;
-  TEST = confirm pending config or RCD self-test (injects ~4/3 × threshold, trips the breaker);
-  reset is manual lever OFF→ON.
-- System Manager LEDs follow the head-unit firmware: STATUS breathes white when idle, blinks blue
-  when a Basis-Button press is expected, fast-blinks amber while firmware applies; COMMS blinks
-  blue while the hotspot is up and goes solid blue once the phone joins; CONFIRM heartbeats.
+## The guided flow
 
-Everything is inlined in `index.html` (no external requests) — images are embedded data URIs.
+Ten parts, 74 steps (0–73):
 
-Demo uses sample data only; it is not connected to a real panel.
+| Part | Steps | What happens |
+|---|---|---|
+| 1 Connect | 0–3 | Auto-discovery → Connect → iOS Wi-Fi join → verify press on the Basis Button |
+| 2 Firmware | 4–7 | Firmware banner → download → install → Basis Button press |
+| 3 Site details | 8–10 | Address form → ICP selection |
+| 4 Configure | 11–20 | Circuit 01: Label, MCB, RCD, Locations |
+| 5 Sync & RCD test | 21–28 | Sync → TEST confirms → lever ON → Finish → RCD trip + reset |
+| 6 More circuits | 29–57 | 02 HWC (AFDD + meter load control), 19 Solar (no RCD), 03 office Power (standby lockout) |
+| 7 Sync all | 58–63 | Multi-select sync → bulk apply via two Basis Button presses (power-cycle) |
+| 8 Events | 64–66 | Event log → Earth Leakage Fault detail |
+| 9 Offline | 67–70 | Barcode scan → download panel data → downloaded panels |
+| 10 Feedback | 71–73 | Settings → Support → Report a bug / Share feedback (→ completion → free play) |
+
+The engine is multi-circuit: `CIRCS[n]` is config staged in the app, `DEV[n]` is what's applied on
+the device (what the e-ink shows), `CST[n]` is runtime (live / devPending / fault). "Ready to sync"
+means CIRCS differs from DEV. Free play uses the same rules: edit any circuit → it goes app-pending →
+sync (one, several, or SYNC ALL) → the device flashes blue → TEST **or switching the breaker on**
+confirms. The kebab menu on a circuit offers "Set Circuit to spare". The whole stage scales to fit
+narrow viewports so phone + panel stay side by side even on a mobile screen, and a lime connector
+line draws from the coach card to whatever the current step wants pressed.
+
+## How the code is organised
+
+Everything lives in `index.html`. CSS first, then markup, then one `<script>`. The script is
+divided by banner comments — search for these:
+
+- `/* ============ assets ============ */` — the inlined images (see below) and SVG icons.
+- `/* ============ demo constants ============ */` — serial, address, box serial.
+- `/* ============ screens ============ */` — `SCREENS.*`: each app screen is a function
+  returning `{html, tab, black, noBar}`. Screens read state from `fx` and render fresh each time.
+- `/* ============ parts & steps ============ */` — the heart of it:
+  - `PARTS[]` — the 8 parts with step ranges (drives the chip stepper).
+  - `steps[]` — one entry per step: `screen`, `hotKey` (what gets the lime highlight),
+    `advanceOn` (which tap advances), `sim` (a physical panel action: `'button'`, `'sctest'`,
+    `'sclever'`), `auto` (ms until auto-advance).
+  - `SHORT{}` / `POP{}` — per-step guidance copy for the docked bubble (SHORT is the condensed
+    version that must fit the bubble slot; POP holds kicker + title).
+  - `stateFor(i)` — **pure derivation of demo state from a step index.** Jumping to any step
+    (chips, deep links) rebuilds `fx` from here. If you add or move steps, update the index
+    thresholds in this function and the `PARTS` ranges together.
+- `/* ============ engine ============ */` — `render()` (redraws phone + stepper + bubble +
+  panel), `onEnter()` (per-step timers/animations), `goto()`, click routing on the phone
+  (`screenEl` listener), and `freeAct()` — the free-play navigation router.
+- `/* ---- physical panel (RHS) ---- */` — the switchboard sim: `panelNeeds()` (which physical
+  control is expected), `simPress()` (Basis Button), `scTestPress()`/`scLeverClick()`
+  (Circuit Module), `renderSC()` (e-ink/LED/lever state), `renderPanel()` (zoom visibility,
+  blur, System Manager LEDs, serial callout), `renderBubble()`.
+
+### State model
+
+- `fx` — everything the current render needs; rebuilt by `stateFor()` on every `goto()`.
+  Local interactions (sheet picks, toggles) mutate it between steps.
+- `userCfg` — what the learner chose in the app (label/MCB/RCD/locations). Survives step jumps.
+- `deviceCfg` — what's actually on the Sub-Circuit. Only updated when TEST confirms a pending
+  config. The e-ink renders `deviceCfg`, the app renders `userCfg` — that split is deliberate
+  and mirrors the real product (the display doesn't preview pending config).
+- `freePlay` — after completion: no step gating, `freeAct()` routes navigation, config changes
+  go pending on the device and TEST/lever behave per firmware.
+
+## Firmware fidelity (what the panel does and why)
+
+Behaviour was extracted from the real firmware — keep these rules if you touch the panel sim:
+
+**Sub-Circuit** (from `wearebasis/subcircuit`):
+- LED: **solid red** = live · **solid yellow** = any electrical fault (RCD/MCB/AFDD) ·
+  **blue 1s on / 1s off** = config or firmware pending (overrides every other colour) ·
+  **breathing red (3.5s)** = standby · **off** = safe/OFF.
+- E-ink: black background, white mono text; rows = label+number, state word (`ON`/`OFF`/
+  `ELEC FAULT` + detail like `RCD`), `CONFIG PENDING`, `MCB C16`, `RCD A30mA`, `AFDD ACTIVE`.
+  Unconfigured = `NONE` on all three. It refreshes with an inversion flash and **only updates
+  when config is applied**, never while editing in the app.
+- TEST: short press confirms a pending config; on a live circuit it injects ~4/3 × the RCD
+  threshold for ≥400ms → the breaker must trip (lever throws, solid yellow, `ELEC FAULT/RCD`).
+- Reset after any trip is manual: lever OFF→ON. There is no powered re-close.
+
+**System Manager** (from `wearebasis/system_manager`):
+- STATUS: white breathing = idle · **blue slow-blink = a Basis Button press is expected**
+  (app authorisation, apply window) · amber fast-blink (250ms) = firmware applying.
+- COMMS: off = no network · blue slow-blink = hotspot up, no client · solid blue = phone
+  joined · solid white = cloud connected.
+- The panel only animates these two LEDs; there is no separate CONFIRM indicator.
+- Hotspot SSID is `BasisBoard-<serial>`; discoverability (BLE) is on from boot.
+
+## Assets
+
+All images are base64 data URIs inside `index.html`:
+
+| Asset | Source |
+|---|---|
+| Basis logos (light/dark) | Brand kit SVGs (Google Drive → Assets → Logo Suite) |
+| Panel photo (app cards/dashboard) | Cropped from a real app screenshot |
+| Full unit render (RHS panel) | `BP_005_0010_v008_Unit.png` marketing render → 520px webp |
+| Press-button illustration | Frame from app screen recording |
+| Apply-instructions illustration | Frame from app screen recording |
+| Barcode scan camera view | Real app screenshot |
+| Panel avatar (offline download) | Real app screenshot crop |
+
+To swap one: produce the new image (keep it small — webp/jpeg, ≤50KB), base64 it, and replace
+the corresponding `data:image/...` string (they're assigned to constants like `IMG_PANEL` at
+the top of the script, except the unit render and logos which sit in the markup/`src`).
+
+## Making common changes
+
+- **Copy**: edit `SHORT{}` (bubble text — keep it to ~3 sentences so it fits) and `POP{}`
+  (titles/kickers). App screen copy lives inline in each `SCREENS.*` function and comes from
+  the real app — check the Trade app before "fixing" odd casing (e.g. the lowercase `events`
+  title is genuine).
+- **Values** (serial, address, circuit label/ratings): constants at the top of the script +
+  defaults in `stateFor()`/`userCfg` fallbacks (`'Lights'`, `'C 16A'`, `'A 30mA'`).
+- **Add a step**: insert into `steps[]`, then renumber everything downstream of it:
+  `PARTS` ranges, `stateFor()` thresholds, `SHORT`/`POP` keys, and any hardcoded indices in
+  the panel-visibility rules in `renderPanel()` (`pzShow`/`scShow`) and `renderSC()`.
+  Grep for the old index numbers before shipping.
+- **Timings**: `auto` per step, animation durations in `onEnter()` (firmware download 3.4s,
+  install 2.6s, RCD inject 450ms, download ring 2.2s).
+
+## Testing checklist before pushing
+
+1. Serve locally, open with a clean URL (start screen should appear; `?step=N` should skip it).
+2. Click through all 8 parts end to end — every advance is a tap in the app or on the panel;
+   there is no "next" button. The lime highlight or panel PRESS/FLICK tag marks the next action.
+3. Part 5 specifically: TEST confirm → lever ON → Finish → RCD test (lever must throw + app
+   tile shows FAULT) → lever reset.
+4. Completion dialog → **Explore freely**: change a setting → device flashes blue → TEST →
+   e-ink updates; RCD test + reset; tab/back navigation everywhere.
+5. Jump to every part via the chips (state must be seeded correctly — e.g. jumping to Sync
+   gives a fully configured circuit 01).
+6. Check a ~860px and a ~375px viewport: no horizontal scroll, floating panel controls appear
+   on mobile when a press is needed.
+7. No console errors.
+
+## Known simplifications
+
+- Timings are compressed (the real 30-minute apply/revert windows are shown but don't expire).
+- Phone status bar is decorative; firmware-update screens are code-derived (no product
+  screenshots existed for them).
+- E-ink uses a generic mono font stack (DM Mono isn't bundled), sizes are approximate.
+- Circuits 02–20 are static spares; only circuit 01 is fully simulated.
+- Sample data only — nothing talks to a real panel or backend.
+
+## Source references
+
+Fidelity came from these repos (Basis GitHub org access required): `wearebasis/ios` (Trade app
+screens and copy — `Trade/Trade/Views/**`, `Localizable.xcstrings`), `wearebasis/subcircuit`
+(LED patterns `src/images/faraday/subcircuit_consumer/status_led_patterns.hpp`, display
+`src/application/ui/display.cpp`, config FSM `src/application/config/fsm.hpp`, RCD test
+`src/application/rcd_self_test/`), and `wearebasis/system_manager` (`app/ui/ui.go`,
+`app/ui/ui_output.go`, `app/bluetoothcomms/`).
