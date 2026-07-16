@@ -5,7 +5,7 @@ built for embedding in training content (Easygenerator or any LMS that accepts a
 
 **Live page:** https://michaelwearebasis.github.io/training-app-simulation/
 
-Learners work through eight guided parts by tapping in a simulated phone app (left) while a
+Learners work through ten guided parts by tapping in a simulated phone app (left) while a
 simulated switchboard (right) responds like the real product — then get a free-play mode to
 experiment. Everything is one self-contained `index.html`: no build step, no dependencies, no
 network requests (all images are inlined data URIs).
@@ -20,10 +20,10 @@ network requests (all images are inlined data URIs).
         title="Basis Trade app — commissioning simulation"></iframe>
 ```
 
-- `?step=N` (0–41) deep-links into the flow and skips the start screen — e.g. `?step=11` opens
-  at "Configure a circuit", `?step=24` at the sync part. Useful for one-part-per-course-page.
-- Below ~820px wide the layout stacks vertically (phone above panel) and the pressable panel
-  controls float at the bottom of the viewport, so narrow embeds still work.
+- `?step=N` (0–72) deep-links into the flow and skips the start screen — e.g. `?step=11` opens
+  at "Configure a circuit", `?step=55` at Sync all. Useful for one-part-per-course-page.
+- The whole stage transform-scales to the viewport width (min 0.3), so phone + panel stay side
+  by side even in narrow embeds and on phones.
 - GitHub Pages sends no frame-blocking headers; if an LMS strips iframes, link out instead.
 
 ## Deploying changes
@@ -38,7 +38,7 @@ any static server does (`python -m http.server`), or just open the file.
 
 ## The guided flow
 
-Ten parts, 74 steps (0–73):
+Ten parts, 73 steps (0–72):
 
 | Part | Steps | What happens |
 |---|---|---|
@@ -47,11 +47,15 @@ Ten parts, 74 steps (0–73):
 | 3 Site details | 8–10 | Address form → ICP selection |
 | 4 Configure | 11–20 | Circuit 01: Label, MCB, RCD, Locations |
 | 5 Sync & RCD test | 21–28 | Sync → TEST confirms → lever ON → Finish → RCD trip + reset |
-| 6 More circuits | 29–57 | 02 HWC (AFDD + meter load control), 19 Solar (no RCD), 03 office Power (standby lockout) |
-| 7 Sync all | 58–63 | Multi-select sync → bulk apply via two Basis Button presses (power-cycle) |
-| 8 Events | 64–66 | Event log → Earth Leakage Fault detail |
-| 9 Offline | 67–70 | Barcode scan → download panel data → downloaded panels |
-| 10 Feedback | 71–73 | Settings → Support → Report a bug / Share feedback (→ completion → free play) |
+| 6 More circuits | 29–54 | 02 HWC (AFDD + meter load control) → bottom next-button straight to 03 office Power (standby lockout) → back + scroll down to 19 Solar (bottom module, no RCD) |
+| 7 Sync all | 55–62 | Multi-select sync → bulk apply via two Basis Button presses (2s charge ring between them) → energise circuits 02 and 03 |
+| 8 Events | 63–65 | Event log → Earth Leakage Fault detail |
+| 9 Offline | 66–69 | Barcode scan → download panel data → downloaded panels |
+| 10 Feedback | 70–72 | Settings → Support → Report a bug / Share feedback (→ completion → free play) |
+
+Guided label steps highlight and **enforce** the required choice (HWC / Power / Solar) without
+preselecting it, and app toggles (AFDD, load control, lockout) flip freely but the step only
+advances once they're in the required state.
 
 The engine is multi-circuit: `CIRCS[n]` is config staged in the app, `DEV[n]` is what's applied on
 the device (what the e-ink shows), `CST[n]` is runtime (live / devPending / fault). "Ready to sync"
@@ -59,7 +63,9 @@ means CIRCS differs from DEV. Free play uses the same rules: edit any circuit �
 sync (one, several, or SYNC ALL) → the device flashes blue → TEST **or switching the breaker on**
 confirms. The kebab menu on a circuit offers "Set Circuit to spare". The whole stage scales to fit
 narrow viewports so phone + panel stay side by side even on a mobile screen, and a lime connector
-line draws from the coach card to whatever the current step wants pressed.
+line draws from the coach card to whatever the current step wants pressed — but only when the
+card is showing new text; if the target is below the fold, a bouncing "Scroll down" pill shows
+instead until it's in view.
 
 ## How the code is organised
 
@@ -71,7 +77,7 @@ divided by banner comments — search for these:
 - `/* ============ screens ============ */` — `SCREENS.*`: each app screen is a function
   returning `{html, tab, black, noBar}`. Screens read state from `fx` and render fresh each time.
 - `/* ============ parts & steps ============ */` — the heart of it:
-  - `PARTS[]` — the 8 parts with step ranges (drives the chip stepper).
+  - `PARTS[]` — the 10 parts with step ranges and sub-chips (drives the chip stepper).
   - `steps[]` — one entry per step: `screen`, `hotKey` (what gets the lime highlight),
     `advanceOn` (which tap advances), `sim` (a physical panel action: `'button'`, `'sctest'`,
     `'sclever'`), `auto` (ms until auto-advance).
@@ -92,12 +98,14 @@ divided by banner comments — search for these:
 
 - `fx` — everything the current render needs; rebuilt by `stateFor()` on every `goto()`.
   Local interactions (sheet picks, toggles) mutate it between steps.
-- `userCfg` — what the learner chose in the app (label/MCB/RCD/locations). Survives step jumps.
-- `deviceCfg` — what's actually on the Sub-Circuit. Only updated when TEST confirms a pending
-  config. The e-ink renders `deviceCfg`, the app renders `userCfg` — that split is deliberate
-  and mirrors the real product (the display doesn't preview pending config).
+- `CIRCS[n]` — config staged in the app, per circuit. `userCfgs[n]` holds the learner's own
+  choices and survives step jumps (`stateFor()` overlays it on the scripted defaults).
+- `DEV[n]` — what's actually applied on the Sub-Circuit. Only updated when a sync lands and
+  TEST (or switching the breaker on) confirms. The e-ink renders `DEV`, the app renders
+  `CIRCS` — that split is deliberate and mirrors the real product (the display doesn't preview
+  pending config). `CST[n]` (via `cst(n)`) is runtime state: live / devPending / fault.
 - `freePlay` — after completion: no step gating, `freeAct()` routes navigation, config changes
-  go pending on the device and TEST/lever behave per firmware.
+  go app-pending → sync makes them device-pending → TEST/lever behave per firmware.
 
 ## Firmware fidelity (what the panel does and why)
 
@@ -159,17 +167,23 @@ the top of the script, except the unit render and logos which sit in the markup/
 ## Testing checklist before pushing
 
 1. Serve locally, open with a clean URL (start screen should appear; `?step=N` should skip it).
-2. Click through all 8 parts end to end — every advance is a tap in the app or on the panel;
-   there is no "next" button. The lime highlight or panel PRESS/FLICK tag marks the next action.
+2. Click through all 10 parts end to end — every advance is a tap in the app or on the panel;
+   there is no "next" button. The lime highlight, connector line or "Scroll down" pill marks
+   the next action (the line only draws when the coach card is showing new text).
 3. Part 5 specifically: TEST confirm → lever ON → Finish → RCD test (lever must throw + app
    tile shows FAULT) → lever reset.
-4. Completion dialog → **Explore freely**: change a setting → device flashes blue → TEST →
-   e-ink updates; RCD test + reset; tab/back navigation everywhere.
-5. Jump to every part via the chips (state must be seeded correctly — e.g. jumping to Sync
+4. Part 7 specifically: first Basis press starts a 2s lime charge ring (a second press is
+   blocked until it completes) → second press applies → lever circuits 02 and 03 ON. Free
+   toggles and trips are allowed here; flicking a spare's lever pops up a "needs configuring"
+   explainer.
+5. Completion dialog → **Explore freely**: change a setting → it goes app-pending → sync →
+   device flashes blue → TEST or breaker-on confirms; RCD test + reset; tab/back navigation
+   everywhere.
+6. Jump to every part via the chips (state must be seeded correctly — e.g. jumping to Sync
    gives a fully configured circuit 01).
-6. Check a ~860px and a ~375px viewport: no horizontal scroll, floating panel controls appear
-   on mobile when a press is needed.
-7. No console errors.
+7. Check a ~860px and a ~375px viewport: phone + panel stay side by side (the stage scales
+   down), no horizontal scroll.
+8. No console errors.
 
 ## Known simplifications
 
@@ -177,7 +191,8 @@ the top of the script, except the unit render and logos which sit in the markup/
 - Phone status bar is decorative; firmware-update screens are code-derived (no product
   screenshots existed for them).
 - E-ink uses a generic mono font stack (DM Mono isn't bundled), sizes are approximate.
-- Circuits 02–20 are static spares; only circuit 01 is fully simulated.
+- The guided flow scripts circuits 01, 02, 03 and 19; the rest start as spares — but every
+  circuit is fully simulated and configurable in free play.
 - Sample data only — nothing talks to a real panel or backend.
 
 ## Source references
