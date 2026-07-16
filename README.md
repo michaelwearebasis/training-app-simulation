@@ -35,8 +35,8 @@ network requests (all images are inlined data URIs).
         title="Basis Trade app — commissioning simulation"></iframe>
 ```
 
-- `?step=N` (0–72) deep-links into the flow and skips the start screen — e.g. `?step=11` opens
-  at "Configure a circuit", `?step=55` at Sync all. Useful for one-part-per-course-page.
+- `?step=N` (0–76) deep-links into the flow and skips the start screen — e.g. `?step=11` opens
+  at "Configure a circuit", `?step=57` at Sync all. Useful for one-part-per-course-page.
 - The whole stage transform-scales to the viewport width (min 0.3), so phone + panel stay side
   by side even in narrow embeds and on phones.
 - GitHub Pages sends no frame-blocking headers; if an LMS strips iframes, link out instead.
@@ -53,7 +53,7 @@ any static server does (`python -m http.server`), or just open the file.
 
 ## The guided flow
 
-Ten parts, 73 steps (0–72):
+Ten parts, 77 steps (0–76):
 
 | Part | Steps | What happens |
 |---|---|---|
@@ -62,21 +62,27 @@ Ten parts, 73 steps (0–72):
 | 3 Site details | 8–10 | Address form → ICP selection |
 | 4 Configure | 11–20 | Circuit 01: Label, MCB, RCD, Locations |
 | 5 Sync & RCD test | 21–28 | Sync → TEST confirms → lever ON → Finish → RCD trip + reset |
-| 6 More circuits | 29–54 | 02 HWC (AFDD + meter load control) → bottom next-button straight to 03 office Power (standby lockout) → back + scroll down to 19 Solar (bottom module, no RCD) |
-| 7 Sync all | 55–62 | Multi-select sync → bulk apply via two Basis Button presses (2s charge ring between them) → energise circuits 02 and 03 |
-| 8 Events | 63–65 | Event log → Earth Leakage Fault detail |
-| 9 Offline | 66–69 | Barcode scan → download panel data → downloaded panels |
-| 10 Feedback | 70–72 | Settings → Support → Report a bug / Share feedback (→ completion → free play) |
+| 6 More circuits | 29–56 | 02 HWC (AFDD + meter load control) → bottom next-button straight to 03 office Power (standby lockout) → back + scroll down to 19 Solar (bottom module, no RCD) → the "if you mess up" tour of the panel menu (set all to spare / discard all pending) |
+| 7 Sync all | 57–66 | Multi-select sync → bulk apply via two Basis Button presses (2s charge ring between them) → energise circuits 02 and 03 → trip-test the new HWC circuit + reset |
+| 8 Events | 67–69 | Event log → Earth Leakage Fault detail |
+| 9 Offline | 70–73 | Barcode scan → download panel data → downloaded panels |
+| 10 Feedback | 74–76 | Settings → Support → Report a bug / Share feedback (→ completion → free play) |
 
 Guided label steps highlight and **enforce** the required choice (HWC / Power / Solar) without
-preselecting it, and app toggles (AFDD, load control, lockout) flip freely but the step only
-advances once they're in the required state.
+preselecting it. App toggles (AFDD, load control, lockout) flip freely and never advance the
+step themselves — the coach card grows a **Next** button that enables once the toggle is in
+the required state, so the guidance text can't vanish mid-read. Mid-guided, any detail row
+(Label / MCB / RCD / Locations) opens its sheet as an overlay so learners can go back and
+change earlier choices without derailing the script; the MCB and RCD sheets carry a **Reset**
+in the top bar, opposite the X. TEST never RCD-trips a circuit that has no RCD configured.
 
 The engine is multi-circuit: `CIRCS[n]` is config staged in the app, `DEV[n]` is what's applied on
 the device (what the e-ink shows), `CST[n]` is runtime (live / devPending / fault). "Ready to sync"
 means CIRCS differs from DEV. Free play uses the same rules: edit any circuit → it goes app-pending →
 sync (one, several, or SYNC ALL) → the device flashes blue → TEST **or switching the breaker on**
-confirms. The kebab menu on a circuit offers "Set Circuit to spare". The whole stage scales to fit
+confirms. The kebab menu on a circuit offers "Set Circuit to spare" and "Discard pending
+updates"; the kebab on the Circuits screen opens the panel-wide menu (set **all** circuits to
+spare / discard **all** pending changes). The whole stage scales to fit
 narrow viewports so phone + panel stay side by side even on a mobile screen, and a lime connector
 line draws from the coach card to whatever the current step wants pressed — but only when the
 card is showing new text; if the target is below the fold, a bouncing "Scroll down" pill shows
@@ -188,9 +194,13 @@ the top of the script, except the unit render and logos which sit in the markup/
 3. Part 5 specifically: TEST confirm → lever ON → Finish → RCD test (lever must throw + app
    tile shows FAULT) → lever reset.
 4. Part 7 specifically: first Basis press starts a 2s lime charge ring (a second press is
-   blocked until it completes) → second press applies → lever circuits 02 and 03 ON. Free
-   toggles and trips are allowed here; flicking a spare's lever pops up a "needs configuring"
-   explainer.
+   blocked until it completes) → second press applies → lever circuits 02 and 03 ON → TEST
+   on 02 must trip (lever throws, yellow LED) → lever resets it. Free toggles and trips are
+   allowed here; flicking a spare's lever pops up a "needs configuring" explainer, and TEST
+   on a circuit with no RCD must toast instead of tripping.
+5. Toggle steps (AFDD / load control / lockout): flipping the toggle must NOT advance — the
+   coach card's Next button enables instead. While on those steps, opening another sheet
+   (say MCB) as an overlay, editing, and confirming must land you back on the same step.
 5. Completion dialog → **Explore freely**: change a setting → it goes app-pending → sync →
    device flashes blue → TEST or breaker-on confirms; RCD test + reset; tab/back navigation
    everywhere.
