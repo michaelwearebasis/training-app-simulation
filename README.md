@@ -1,7 +1,22 @@
-# Basis Trade app — training simulation
+# Basis app training simulations
 
-An interactive, single-file simulation of commissioning a Basis Smart Panel with the Trade app,
-built for embedding in training content (Easygenerator or any LMS that accepts an iframe).
+Interactive, single-file simulations of the Basis apps, built for embedding in training
+content (Easygenerator or any LMS that accepts an iframe). One repo hosts them all —
+every `.html` file in the repo root gets its own GitHub Pages URL:
+
+| Page | URL | What it teaches |
+|---|---|---|
+| `index.html` | https://michaelwearebasis.github.io/training-app-simulation/ | **Trade app** — commissioning a Smart Panel end to end (app + interactive switchboard) |
+| `home.html` | https://michaelwearebasis.github.io/training-app-simulation/home.html | **Home app** — the customer-value pitch: why the panel pays for itself |
+
+To add another demo, drop `whatever.html` in the repo root and push — it's live at
+`/whatever.html` in about a minute. No extra repos or config needed.
+
+---
+
+# Trade app simulation (`index.html`)
+
+An interactive simulation of commissioning a Basis Smart Panel with the Trade app.
 
 **Live page:** https://michaelwearebasis.github.io/training-app-simulation/
 
@@ -203,3 +218,47 @@ screens and copy — `Trade/Trade/Views/**`, `Localizable.xcstrings`), `wearebas
 `src/application/ui/display.cpp`, config FSM `src/application/config/fsm.hpp`, RCD test
 `src/application/rcd_self_test/`), and `wearebasis/system_manager` (`app/ui/ui.go`,
 `app/ui/ui_output.go`, `app/bluetoothcomms/`).
+
+---
+
+# Home app simulation (`home.html`)
+
+A sales-pitch walkthrough of the **Home app** for the trade audience: what the customer gets,
+and why the panel pays for itself. Phone on the left, coach card plus a running
+**"Basis pays for itself, three ways"** tracker on the right — the three pillars (see the
+waste / shift the big loads / the right plan, proven) light up with dollar values as the
+learner works through the flow, ending in an ROI screen: **$39 + $44 ≈ $83/mo, about $1,000
+a year** for the demo home.
+
+```html
+<iframe src="https://michaelwearebasis.github.io/training-app-simulation/home.html"
+        width="100%" height="1050" style="border:0" allowfullscreen
+        title="Basis Home app — customer value demo"></iframe>
+```
+
+Seven parts, 39 steps (0–38), `?step=N` deep-links work the same as the Trade demo:
+
+| Part | Steps | What happens |
+|---|---|---|
+| 1 Connect | 0–2 | Unlinked home → Connect → pairing progress |
+| 2 Energy plan | 3–9 | Add retailer (Meridian) → pick plan (Anytime) → confirm rates → everything turns into dollars |
+| 3 Live | 10–12 | Live usage on Home → Control tab circuit grid → Hot water 3 kW at peak |
+| 4 Costs | 13–20 | Cost insight → $284 month → towel rails ($30, 24/7) → garage fridge ($17) → pillar 1: $39/mo |
+| 5 Activity | 21–24 | Overview (safety events + **Your electrician** card) → event log → overheating HWC detail ("Get help" → installer) |
+| 6 Routines | 25–33 | Suggested hot-water routine → EV → towel rails (Standby-scheduling, as in the real app) → pillar 2: 10.8 kWh/day |
+| 7 Right plan | 34–38 | My energy plan → Compare plans re-prices 30 days of real data → MoveMaster saves $44/mo → pillar 3 → ROI |
+
+The layout matches the real Home app (mined from `wearebasis/ios` → `Home/`): 4 tabs
+(Home / Control / Routines / Activity), light theme, `#39E581` accent, live power formatted
+`999 W` / `1.500 kW`, importing red / exporting green, routines put a circuit on **Standby**
+during scheduled windows, Activity has Overview|Events segments and a linked-electrician
+section. The demo chrome (coach card, stepper, value tracker) uses the Basis brand palette
+(Coal/Lime/Sand) to stay visually distinct from the app under demonstration.
+
+Numbers are indicative NZ prices (flat 28.7c/kWh vs a TOU night rate), chosen so the three
+pillars never double-count: insights savings work on any plan; the routines + plan-switch
+saving is quoted as a combination (switching without shifting would cost more — that's the
+"only Basis does both" line in part 7). A footnote on the page marks it as sample data.
+
+After the ROI screen, **Explore freely** unlocks the whole app: tabs, routine toggles,
+the plan-setup flow and the comparison all work.
