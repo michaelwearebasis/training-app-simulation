@@ -7,7 +7,7 @@ every `.html` file in the repo root gets its own GitHub Pages URL:
 | Page | URL | What it teaches |
 |---|---|---|
 | `index.html` | https://michaelwearebasis.github.io/training-app-simulation/ | **Trade app** — commissioning a Smart Panel end to end (app + interactive switchboard) |
-| `home.html` | https://michaelwearebasis.github.io/training-app-simulation/home.html | **Home app** — the customer-value pitch: why the panel pays for itself |
+| `home.html` | https://michaelwearebasis.github.io/training-app-simulation/home.html | **Home app** — four mini demos of what the customer gets (`?sim=live`, `?sim=routine`, `?sim=insights`, `?sim=plans`) |
 
 To add another demo, drop `whatever.html` in the repo root and push — it's live at
 `/whatever.html` in about a minute. No extra repos or config needed.
@@ -231,44 +231,45 @@ screens and copy — `Trade/Trade/Views/**`, `Localizable.xcstrings`), `wearebas
 
 ---
 
-# Home app simulation (`home.html`)
+# Home app mini demos (`home.html`)
 
-A sales-pitch walkthrough of the **Home app** for the trade audience: what the customer gets,
-and why the panel pays for itself. Phone on the left, coach card plus a running
-**"Basis pays for itself, three ways"** tracker on the right — the three pillars (see the
-waste / shift the big loads / the right plan, proven) light up with dollar values as the
-learner works through the flow, ending in an ROI screen: **$39 + $44 ≈ $83/mo, about $1,000
-a year** for the demo home.
+Four tiny, hands-on demos of the **Home app** for the trade audience — no setup flow, no
+guided tour, no next buttons. Each one is the real app doing one or two things, built from
+**a real Basis home's data** (the live wattages, the $209.94 month, and the actual
+plan-comparison results). A one-line hint above the phone says what to try; everything else
+is just the app.
+
+One file serves all four — pick the demo with a query parameter:
+
+| Embed URL | What the learner does |
+|---|---|
+| `home.html?sim=live` | Watch the whole home live (450 W), open Control, flick **HWC 01** on and off and watch the home total jump to 3.4 kW |
+| `home.html?sim=routine` | Build the hot-water Standby routine: Start → pick HWC 01 → toggle repeat days → Create → active card with Stop routine |
+| `home.html?sim=insights` | The month in dollars: donut + circuit list ($209.94), flick D/W/M/Y, tap a circuit for its daily chart |
+| `home.html?sim=plans` | Scroll every retailer priced against this home's usage (ecoSOLAR $429.71 → Freedom $330.65, ↓23%, $99 saved), open a plan, walk the switch flow |
+
+`home.html` with no parameter shows a four-card menu linking to each demo.
 
 ```html
-<iframe src="https://michaelwearebasis.github.io/training-app-simulation/home.html"
-        width="100%" height="1050" style="border:0" allowfullscreen
-        title="Basis Home app — customer value demo"></iframe>
+<iframe src="https://michaelwearebasis.github.io/training-app-simulation/home.html?sim=live"
+        width="100%" height="960" style="border:0" allowfullscreen
+        title="Basis Home app — live power demo"></iframe>
 ```
 
-Seven parts, 39 steps (0–38), `?step=N` deep-links work the same as the Trade demo:
+Design notes:
 
-| Part | Steps | What happens |
-|---|---|---|
-| 1 Connect | 0–2 | Unlinked home → Connect → pairing progress |
-| 2 Energy plan | 3–9 | Add retailer (Meridian) → pick plan (Anytime) → confirm rates → everything turns into dollars |
-| 3 Live | 10–12 | Live usage on Home → Control tab circuit grid → Hot water 3 kW at peak |
-| 4 Costs | 13–20 | Cost insight → $284 month → towel rails ($30, 24/7) → garage fridge ($17) → pillar 1: $39/mo |
-| 5 Activity | 21–24 | Overview (safety events + **Your electrician** card) → event log → overheating HWC detail ("Get help" → installer) |
-| 6 Routines | 25–33 | Suggested hot-water routine → EV → towel rails (Standby-scheduling, as in the real app) → pillar 2: 10.8 kWh/day |
-| 7 Right plan | 34–38 | My energy plan → Compare plans re-prices 30 days of real data → MoveMaster saves $44/mo → pillar 3 → ROI |
+- Visuals are matched to a screen recording of the production Home app: grey background,
+  white cards, floating pill tab bar (icon-only), centred red-pip Live usage, insight widget
+  cards with coloured averages, circuit cards with type icons + tan tag chips + caps
+  ON/STANDBY status, donut cost view, banded plan cards with savings pills (green "saved",
+  red "more"), and the mint/green/black button set.
+- Tabs that belong to another demo are dimmed and toast a pointer, so each embed stays on
+  topic but still looks like the full app.
+- Wattages tick every second; flicking HWC on genuinely re-derives the whole-home number.
+- The plan list keeps the real ordering including the plans that would cost MORE (red pills) —
+  that asymmetry is the proof the ranking comes from this home’s data, not a brochure.
+- Single self-contained file, ~65 KB, no network requests. The phone scales down for narrow
+  embeds (min 0.5×).
 
-The layout matches the real Home app (mined from `wearebasis/ios` → `Home/`): 4 tabs
-(Home / Control / Routines / Activity), light theme, `#39E581` accent, live power formatted
-`999 W` / `1.500 kW`, importing red / exporting green, routines put a circuit on **Standby**
-during scheduled windows, Activity has Overview|Events segments and a linked-electrician
-section. The demo chrome (coach card, stepper, value tracker) uses the Basis brand palette
-(Coal/Lime/Sand) to stay visually distinct from the app under demonstration.
-
-Numbers are indicative NZ prices (flat 28.7c/kWh vs a TOU night rate), chosen so the three
-pillars never double-count: insights savings work on any plan; the routines + plan-switch
-saving is quoted as a combination (switching without shifting would cost more — that's the
-"only Basis does both" line in part 7). A footnote on the page marks it as sample data.
-
-After the ROI screen, **Explore freely** unlocks the whole app: tabs, routine toggles,
-the plan-setup flow and the comparison all work.
+The earlier ten-part guided walkthrough of the Home app was replaced by these mini-demos in
+July 2026 (it lives in git history if ever needed).
