@@ -7,7 +7,7 @@ every `.html` file in the repo root gets its own GitHub Pages URL:
 | Page | URL | What it teaches |
 |---|---|---|
 | `index.html` | https://michaelwearebasis.github.io/training-app-simulation/ | **Trade app** — commissioning a Smart Panel end to end (app + interactive switchboard) |
-| `home.html` | https://michaelwearebasis.github.io/training-app-simulation/home.html | **Home app** — four mini demos of what the customer gets (`?sim=live`, `?sim=routine`, `?sim=insights`, `?sim=plans`) |
+| `home.html` | https://michaelwearebasis.github.io/training-app-simulation/home.html | **Home app** — four-phone showcase of what the customer gets (live power, routine, insights, plans) |
 
 To add another demo, drop `whatever.html` in the repo root and push — it's live at
 `/whatever.html` in about a minute. No extra repos or config needed.
@@ -231,45 +231,30 @@ screens and copy — `Trade/Trade/Views/**`, `Localizable.xcstrings`), `wearebas
 
 ---
 
-# Home app mini demos (`home.html`)
+# Home app — four-phone showcase (`home.html`)
 
-Four tiny, hands-on demos of the **Home app** for the trade audience — no setup flow, no
-guided tour, no next buttons. Each one is the real app doing one or two things, built from
-**a real Basis home's data** (the live wattages, the $209.94 month, and the actual
-plan-comparison results). A one-line hint above the phone says what to try; everything else
-is just the app.
+One page, four phones, each permanently on the screen that tells its part of the customer
+story — built from **a real Basis home's data**. Minimal interaction by design: a tap or a
+scroll per phone, with live-updating values where it matters.
 
-One file serves all four — pick the demo with a query parameter:
-
-| Embed URL | What the learner does |
-|---|---|
-| `home.html?sim=live` | Watch the whole home live (450 W), open Control, flick **HWC 01** on and off and watch the home total jump to 3.4 kW |
-| `home.html?sim=routine` | Build the hot-water Standby routine: Start → pick HWC 01 → toggle repeat days → Create → active card with Stop routine |
-| `home.html?sim=insights` | The month in dollars: donut + circuit list ($209.94), flick D/W/M/Y, tap a circuit for its daily chart |
-| `home.html?sim=plans` | Scroll every retailer priced against this home's usage (ecoSOLAR $429.71 → Freedom $330.65, ↓23%, $99 saved), open a plan, walk the switch flow |
-
-`home.html` with no parameter shows a four-card menu linking to each demo.
+| Phone | Shows | Interaction |
+|---|---|---|
+| Live, circuit by circuit | Control grid, all 20 circuits with live wattages ticking + a sticky whole-home total | Tap any circuit to flick it (HWC jumps the total from ~450 W to 3.5 kW) |
+| Set-and-forget routines | The hot-water Standby routine story | One button: create the routine ⇄ stop it |
+| The month, in dollars | The real $209.94 month, donut + all 15 circuits priced | Flick D · W · M · Y |
+| The right plan, proven | The real comparison vs ecoSOLAR $429.71 — Freedom $330.65 ↓23% "$99 saved" down to plans that cost $116 MORE | Scroll the list |
 
 ```html
-<iframe src="https://michaelwearebasis.github.io/training-app-simulation/home.html?sim=live"
-        width="100%" height="960" style="border:0" allowfullscreen
-        title="Basis Home app — live power demo"></iframe>
+<iframe src="https://michaelwearebasis.github.io/training-app-simulation/home.html"
+        width="100%" height="1400" style="border:0" allowfullscreen
+        title="Basis Home app — what the customer gets"></iframe>
 ```
 
-Design notes:
+The phones wrap responsively: 4-up above ~1420px (height ≈ 760), 2×2 on a typical course
+column (height ≈ 1400), single column on phones. Visuals are matched to a screen recording
+of the production Home app; all values (wattages, circuit labels and tags, monthly costs,
+plan prices) are that home's real data. Single self-contained file, ~38 KB, no network
+requests.
 
-- Visuals are matched to a screen recording of the production Home app: grey background,
-  white cards, floating pill tab bar (icon-only), centred red-pip Live usage, insight widget
-  cards with coloured averages, circuit cards with type icons + tan tag chips + caps
-  ON/STANDBY status, donut cost view, banded plan cards with savings pills (green "saved",
-  red "more"), and the mint/green/black button set.
-- Tabs that belong to another demo are dimmed and toast a pointer, so each embed stays on
-  topic but still looks like the full app.
-- Wattages tick every second; flicking HWC on genuinely re-derives the whole-home number.
-- The plan list keeps the real ordering including the plans that would cost MORE (red pills) —
-  that asymmetry is the proof the ranking comes from this home’s data, not a brochure.
-- Single self-contained file, ~65 KB, no network requests. The phone scales down for narrow
-  embeds (min 0.5×).
-
-The earlier ten-part guided walkthrough of the Home app was replaced by these mini-demos in
-July 2026 (it lives in git history if ever needed).
+Earlier formats (the ten-part guided walkthrough, then four separate query-param sims) are
+in git history if ever wanted.

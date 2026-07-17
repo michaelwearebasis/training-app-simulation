@@ -3,40 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Basis Home app — mini demos</title>
+<title>Basis Home app — what the customer gets</title>
 <style>
-/* ============ demo shell (Basis brand) ============ */
 :root{
   --coal:#212629; --lime:#98FFAB; --sand:#F9F5F1;
-  --ink:#212629; --ink2:#4D5154; --ink3:#83878A; --line:#E7E0D7; --chip:#EFEAE3;
-  /* Home app tokens, matched to the real app recording */
+  --ink:#212629; --ink2:#4D5154; --ink3:#83878A; --line:#E7E0D7;
   --a-bg:#F2F2F3; --a-ink:#1E1E1F; --a-ink2:#77777A; --a-ink3:#AAAAAD;
   --a-line:#EAEAEB; --a-green:#1B8A2F; --a-red:#FF2B1F; --a-btn:#1B1E1F;
   --t-purple:#AF52DE; --t-blue:#007AFF; --t-yellow:#FFCC00; --t-orange:#FF9500;
   --t-red:#FF3B30; --t-teal:#01A4B7; --t-pink:#F7224F; --t-indigo:#5856D6;
+  --s:.82;
 }
 *{box-sizing:border-box; margin:0; padding:0}
-html,body{height:100%}
 body{background:var(--sand); color:var(--ink);
   font-family:'Oracle','Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
   -webkit-font-smoothing:antialiased; overflow-x:hidden}
 button{font:inherit; color:inherit; background:none; border:none; cursor:pointer; -webkit-tap-highlight-color:transparent; text-align:left}
-[hidden]{display:none!important}
 ::selection{background:var(--lime); color:var(--coal)}
 
-.hdr{display:flex; align-items:center; justify-content:center; gap:10px; padding:14px 16px 4px}
+.hdr{display:flex; align-items:center; justify-content:center; gap:10px; padding:16px 16px 6px}
 .hdr img{height:18px; display:block}
-.hdr .sub{font-size:12px; color:var(--ink3); border-left:1px solid var(--line); padding-left:10px}
-.hint{max-width:430px; margin:10px auto 12px; padding:0 16px; display:flex; gap:9px; align-items:flex-start}
-.hint .dot{flex:0 0 auto; width:22px; height:22px; border-radius:50%; background:var(--lime); color:var(--coal);
-  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin-top:1px}
-.hint p{font-size:13.5px; line-height:1.45; color:var(--ink2)}
-.hint p b{color:var(--ink)}
+.hdr .sub{font-size:12.5px; color:var(--ink3); border-left:1px solid var(--line); padding-left:10px}
 
-.phonewrap{display:flex; justify-content:center; padding:2px 10px 26px}
-.phone{position:relative; width:390px; flex:0 0 390px; background:#000; border-radius:44px;
-  padding:10px; box-shadow:0 18px 50px rgba(33,38,41,.28); transform-origin:top center}
-.phone .bezel{position:relative; background:var(--a-bg); border-radius:34px; overflow:hidden; height:730px;
+.wall{display:flex; flex-wrap:wrap; justify-content:center; gap:26px 22px; padding:14px 18px 8px; max-width:1440px; margin:0 auto}
+.cell{width:calc(390px * var(--s))}
+.cellhead{padding:0 2px 10px}
+.cellhead .ct{font-size:15.5px; font-weight:600; letter-spacing:-.01em}
+.cellhead .cc{font-size:12.5px; color:var(--ink2); line-height:1.4; margin-top:2px}
+.cellhead .cc b{color:var(--ink)}
+.phonebox{width:calc(390px * var(--s)); height:calc(660px * var(--s))}
+.phone{position:relative; width:390px; background:#000; border-radius:44px; padding:10px;
+  box-shadow:0 16px 44px rgba(33,38,41,.26); transform:scale(var(--s)); transform-origin:top left}
+.bezel{position:relative; background:var(--a-bg); border-radius:34px; overflow:hidden; height:620px;
   display:flex; flex-direction:column}
 .notch{position:absolute; top:10px; left:50%; transform:translateX(-50%); width:118px; height:26px;
   background:#000; border-radius:999px; z-index:40}
@@ -45,226 +43,189 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 .sbar .r{display:flex; gap:5px; align-items:center}
 .scr{flex:1; overflow-y:auto; overflow-x:hidden; position:relative; scrollbar-width:none; background:var(--a-bg)}
 .scr::-webkit-scrollbar{display:none}
+.tabwrap{background:var(--a-bg); padding:6px 14px 14px}
+.tabbar{display:flex; background:#fff; border-radius:999px; padding:6px; box-shadow:0 4px 18px rgba(0,0,0,.07)}
+.tabbar span{flex:1; display:flex; align-items:center; justify-content:center; color:#C9CACC; padding:10px 0; border-radius:999px}
+.tabbar span.on{background:#E9E9EB; color:var(--a-ink)}
+.tabbar span svg{width:20px; height:20px}
 
-/* floating white pill tab bar */
-.tabwrap{background:var(--a-bg); padding:6px 14px 16px}
-.tabbar{display:flex; background:#fff; border-radius:999px; padding:7px; box-shadow:0 4px 18px rgba(0,0,0,.07)}
-.tabbar button{flex:1; display:flex; align-items:center; justify-content:center;
-  color:#26282A; padding:11px 0; border-radius:999px; text-align:center}
-.tabbar button svg{width:21px; height:21px}
-.tabbar button.on{background:#E9E9EB; color:var(--a-ink)}
-.tabbar button.dim{color:#C9CACC}
-
-/* app furniture */
-.appwrap{padding:6px 16px 20px}
-.tlh{display:flex; align-items:flex-start; justify-content:space-between; margin:6px 0 10px}
-.tlh .t{font-size:30px; font-weight:600; letter-spacing:-.02em; color:var(--a-ink)}
-.tlh .s{font-size:14.5px; color:var(--a-ink2); margin-top:1px}
-.avatar{width:38px; height:38px; border-radius:50%; background:#101314; color:#fff;
-  display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; flex:0 0 38px}
-.card{background:#fff; border:1px solid #EFEFF0; border-radius:16px; padding:14px 15px; margin-bottom:10px}
-.h4{font-size:16px; font-weight:650; color:var(--a-ink); margin:6px 0 8px}
-.rowline{display:flex; justify-content:space-between; align-items:center; padding:11px 2px;
-  border-bottom:1px solid var(--a-line); font-size:14px; width:100%}
+.appwrap{padding:6px 14px 16px}
+.tlh{display:flex; align-items:flex-start; justify-content:space-between; margin:4px 0 8px}
+.tlh .t{font-size:26px; font-weight:600; letter-spacing:-.02em; color:var(--a-ink)}
+.avatar{width:34px; height:34px; border-radius:50%; background:#101314; color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; flex:0 0 34px}
+.card{background:#fff; border:1px solid #EFEFF0; border-radius:16px; padding:13px 14px; margin-bottom:10px}
+.h4{font-size:15px; font-weight:650; color:var(--a-ink); margin:4px 0 8px}
+.rowline{display:flex; justify-content:space-between; align-items:center; padding:10px 2px;
+  border-bottom:1px solid var(--a-line); font-size:13.5px; width:100%}
 .rowline:last-child{border-bottom:0}
 .rowline .k{color:var(--a-ink2)}
 .rowline .v{font-weight:600; color:var(--a-ink)}
-.tag{border-radius:999px; padding:2.5px 10px; font-size:11px; font-weight:600}
-.tag.neutral{background:#EDEDEE; color:var(--a-ink2)}
 .abtn{display:flex; align-items:center; justify-content:center; gap:8px; border-radius:999px;
-  padding:13px 18px; font-size:15px; font-weight:550; width:100%; text-align:center}
+  padding:12px 18px; font-size:14.5px; font-weight:550; width:100%; text-align:center}
 .abtn.primary{background:var(--a-btn); color:#fff}
-.abtn.mint{background:#B9F2C8; color:#123B22}
 .abtn.green{background:#2BE080; color:#0A3D1F}
-.abtn.secondary{background:#EDEDEE; color:var(--a-ink)}
-.icbtn{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-  background:#EDEDEE; color:var(--a-ink2); flex:0 0 34px}
-.icbtn svg{width:17px; height:17px}
-.shead{display:flex; align-items:center; justify-content:space-between; margin:4px 0 12px}
-.shead .ttl{font-size:17px; font-weight:650; color:var(--a-ink)}
+.icbtn{width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:#EDEDEE; color:var(--a-ink2); flex:0 0 32px; font-size:13px}
 .seg{display:flex; background:#E9E9EB; border-radius:999px; padding:3px; margin:2px 0 12px}
-.seg button{flex:1; text-align:center; border-radius:999px; padding:8px 0; font-size:13px; font-weight:550; color:var(--a-ink2)}
+.seg button{flex:1; text-align:center; border-radius:999px; padding:7px 0; font-size:12.5px; font-weight:550; color:var(--a-ink2)}
 .seg button.on{background:#fff; color:var(--a-ink); box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.snack{position:absolute; left:50%; transform:translateX(-50%); bottom:96px; background:var(--a-btn); color:#fff;
-  padding:10px 17px; border-radius:18px; font-size:13px; z-index:70; box-shadow:0 8px 24px rgba(0,0,0,.25);
+.snack{position:absolute; left:50%; transform:translateX(-50%); bottom:20px; background:var(--a-btn); color:#fff;
+  padding:9px 16px; border-radius:16px; font-size:12.5px; z-index:70; box-shadow:0 8px 24px rgba(0,0,0,.25);
   width:max-content; max-width:86%; text-align:center; line-height:1.4; animation:snackin .25s ease-out}
 @keyframes snackin{from{opacity:0; transform:translateX(-50%) translateY(8px)}}
-.backcircle{position:absolute; top:10px; left:12px; width:40px; height:40px; border-radius:50%; background:#fff;
-  display:flex; align-items:center; justify-content:center; color:var(--a-ink); box-shadow:0 2px 10px rgba(0,0,0,.08); z-index:8}
-.xcircle{position:absolute; top:12px; right:14px; width:38px; height:38px; border-radius:50%; background:#fff;
-  display:flex; align-items:center; justify-content:center; color:var(--a-ink); box-shadow:0 2px 8px rgba(0,0,0,.08); z-index:8}
 
-/* home tab */
-.livepip{display:inline-block; width:4px; height:11px; border-radius:2px; background:var(--a-red); margin-right:7px;
-  vertical-align:-1px; animation:pdot 1.6s ease-in-out infinite}
+/* live phone */
+.totstrip{position:sticky; top:0; z-index:20; background:var(--a-bg); padding:2px 0 8px; text-align:center}
+.totstrip .in{background:#fff; border-radius:999px; display:inline-flex; align-items:center; gap:8px;
+  padding:8px 16px; font-size:13px; color:var(--a-ink2); box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.totstrip b{font-size:15px; color:var(--a-ink); font-variant-numeric:tabular-nums}
+.livepip{display:inline-block; width:4px; height:11px; border-radius:2px; background:var(--a-red);
+  animation:pdot 1.6s ease-in-out infinite}
 @keyframes pdot{0%,100%{opacity:1} 50%{opacity:.35}}
-.livelab{font-size:14px; color:var(--a-ink2); font-weight:500}
-.liveblock{text-align:center; margin:18px 0 6px}
-.d3{font-size:50px; font-weight:550; letter-spacing:-.02em; color:var(--a-ink); line-height:1.1; margin:3px 0 2px;
-  font-variant-numeric:tabular-nums}
-.inslab{font-size:12.5px; color:var(--a-ink3); margin:14px 0 8px; display:flex; align-items:center; gap:3px}
-.carousel{display:flex; gap:10px; overflow-x:auto; margin:0 -16px 4px; padding:2px 16px 8px; scrollbar-width:none;
-  scroll-snap-type:x mandatory}
-.carousel::-webkit-scrollbar{display:none}
-.icard{flex:0 0 150px; border-radius:16px; padding:13px 14px 12px; scroll-snap-align:start; background:#fff;
-  display:flex; flex-direction:column; min-height:118px}
-.icard .il{font-size:13.5px; font-weight:500; color:var(--a-ink2)}
-.icard .iv{font-size:22px; font-weight:700; letter-spacing:-.02em; color:var(--a-ink); margin-top:3px}
-.icard .ic2{font-size:11.5px; color:var(--a-ink2); margin-top:2px}
-.icard .ic2 .avg-b{color:var(--t-blue); font-weight:600} .icard .ic2 .avg-p{color:#8E44D8; font-weight:600}
-.mbars{display:flex; align-items:flex-end; gap:2.5px; height:32px; margin-top:auto; padding-top:8px}
-.mbars i{flex:1; background:#8E44D8; border-radius:2px}
-.mbars i.dk{background:#3A1F52}
-.mbaxis{display:flex; justify-content:space-between; font-size:8.5px; color:var(--a-ink3); margin-top:2px}
-.wicon{width:34px; height:34px; border-radius:10px; margin-top:auto; display:flex; align-items:center; justify-content:center; color:#fff}
-.panelimg{display:block; width:52%; margin:14px auto 4px; border-radius:6px}
-
-/* control grid */
-.cgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-.ccard{background:#fff; border-radius:16px; padding:12px 13px; min-height:148px; display:flex; flex-direction:column}
-.ccard .cn{font-size:11.5px; color:var(--a-ink3); font-weight:600}
-.ccard .cl{font-size:15px; font-weight:650; color:var(--a-ink); margin-top:1px; line-height:1.2}
-.cicon{width:34px; height:34px; border-radius:11px; display:flex; align-items:center; justify-content:center;
-  color:#fff; margin-top:9px; flex:0 0 auto}
-.cicon svg{width:18px; height:18px}
-.ccard .ctags{display:flex; gap:4px; flex-wrap:wrap; margin-top:8px; min-height:18px}
-.ctag{background:#F4EBDD; color:#6B5B3E; border-radius:999px; padding:2px 8px; font-size:9.5px; font-weight:600;
+.cgrid{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+.ccard{background:#fff; border-radius:15px; padding:11px 12px; min-height:138px; display:flex; flex-direction:column;
+  transition:box-shadow .15s}
+.ccard:not(.spare):not(.solar):hover{box-shadow:0 0 0 2px #D8D8DA}
+.ccard .cn{font-size:11px; color:var(--a-ink3); font-weight:600}
+.ccard .cl{font-size:14px; font-weight:650; color:var(--a-ink); margin-top:1px; line-height:1.2}
+.cicon{width:31px; height:31px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  color:#fff; margin-top:8px; flex:0 0 auto}
+.cicon svg{width:16px; height:16px}
+.ccard .ctags{display:flex; gap:4px; flex-wrap:wrap; margin-top:7px; min-height:17px}
+.ctag{background:#F4EBDD; color:#6B5B3E; border-radius:999px; padding:2px 7px; font-size:9px; font-weight:600;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
-.ccard .cf{display:flex; gap:7px; align-items:baseline; margin-top:auto; padding-top:8px}
-.ccard .st{font-size:10.5px; font-weight:700; color:var(--a-ink2); letter-spacing:.05em}
-.ccard .cw{font-size:12.5px; font-weight:650; font-variant-numeric:tabular-nums}
+.ccard .cf{display:flex; gap:6px; align-items:baseline; margin-top:auto; padding-top:7px}
+.ccard .st{font-size:10px; font-weight:700; color:var(--a-ink2); letter-spacing:.05em}
+.ccard .cw{font-size:12px; font-weight:650; font-variant-numeric:tabular-nums}
 .cw.imp{color:var(--a-red)} .cw.exp{color:var(--a-green)} .cw.zero{color:var(--a-ink2)}
-.ccard.spare{opacity:.55}
+.ccard.spare{opacity:.5}
 
-/* insights */
-.donutrow{display:flex; align-items:center; gap:16px; margin:8px 0 16px}
-.donut{width:138px; height:138px; border-radius:50%; flex:0 0 138px; position:relative;
+/* routine phone */
+.rcard{background:#fff; border-radius:16px; padding:13px 14px; margin-bottom:10px; width:100%}
+.rchip{display:inline-block; background:var(--t-blue); color:#fff; border-radius:999px; padding:3px 10px;
+  font-size:11px; font-weight:650}
+.rstat{font-size:14px; color:var(--a-ink); font-weight:550; margin-top:8px}
+.rstat b{font-weight:650}
+.rends{font-size:11px; color:var(--a-ink3); margin-top:2px}
+.rprog{height:4px; background:#EDEDEE; border-radius:99px; margin-top:9px; overflow:hidden}
+.rprog i{display:block; height:100%; background:var(--a-ink); border-radius:99px}
+.promo .pt{font-size:16px; font-weight:700; color:var(--a-ink)}
+.promo .pb{font-size:12px; color:var(--a-ink2); margin:4px 0 10px; line-height:1.5}
+.steps{font-size:12px; color:var(--a-ink2); line-height:1.55}
+.steps b{color:var(--a-ink)}
+
+/* insights phone */
+.donutrow{display:flex; align-items:center; gap:13px; margin:4px 0 12px}
+.donut{width:118px; height:118px; border-radius:50%; flex:0 0 118px; position:relative;
   display:flex; align-items:center; justify-content:center}
-.donut::after{content:''; position:absolute; inset:20px; background:var(--a-bg); border-radius:50%}
+.donut::after{content:''; position:absolute; inset:17px; background:var(--a-bg); border-radius:50%}
 .donut .ctr{position:relative; z-index:2; text-align:center}
-.donut .ctr .dv{font-size:20px; font-weight:700; color:var(--a-ink); letter-spacing:-.02em}
-.donut .ctr .dd{font-size:8.5px; letter-spacing:.14em; color:var(--a-ink3); margin-top:2px}
-.dside .kick2{font-size:10px; letter-spacing:.12em; color:var(--a-ink3); font-weight:600; margin-bottom:4px}
-.dside .dh{font-size:15.5px; font-weight:650; color:var(--a-ink); margin-bottom:3px}
-.dside .db{font-size:12px; color:var(--a-ink2); line-height:1.45}
-.crow{display:flex; align-items:center; gap:11px; padding:10px 0; border-bottom:1px solid var(--a-line); width:100%}
+.donut .ctr .dv{font-size:17px; font-weight:700; color:var(--a-ink); letter-spacing:-.02em}
+.donut .ctr .dd{font-size:7.5px; letter-spacing:.13em; color:var(--a-ink3); margin-top:2px}
+.dside .dh{font-size:13.5px; font-weight:650; color:var(--a-ink); margin-bottom:3px; line-height:1.3}
+.dside .db{font-size:11px; color:var(--a-ink2); line-height:1.45}
+.crow{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--a-line); width:100%}
 .crow:last-child{border-bottom:0}
 .crow .crmain{flex:1; display:flex; align-items:center; min-width:0}
-.crow .crn{font-size:14px; font-weight:600; color:var(--a-ink); white-space:nowrap}
+.crow .crn{font-size:13px; font-weight:600; color:var(--a-ink); white-space:nowrap}
 .crow .crval{text-align:right}
-.crow .crval b{font-size:14px; font-weight:650; color:var(--a-ink); display:block}
-.crow .crval small{font-size:11px; color:var(--a-ink3)}
-.bigbars{display:flex; align-items:flex-end; gap:3px; height:120px; margin:14px 0 4px}
-.bigbars i{flex:1; background:#8E44D8; border-radius:3px 3px 1px 1px; min-height:2px}
+.crow .crval b{font-size:13px; font-weight:650; color:var(--a-ink); display:block}
+.crow .crval small{font-size:10.5px; color:var(--a-ink3)}
+.bigbars{display:flex; align-items:flex-end; gap:2.5px; height:96px; margin:10px 0 4px}
+.bigbars i{flex:1; background:#8E44D8; border-radius:2.5px 2.5px 1px 1px; min-height:2px}
 .bigbars i.dk{background:#3A1F52}
-.axis{display:flex; justify-content:space-between; font-size:9.5px; color:var(--a-ink3); margin-top:3px}
-.legend{display:flex; gap:14px; font-size:11px; color:var(--a-ink2); margin-top:10px; justify-content:center}
-.legend i{display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px}
-.statline{background:#fff; border-radius:14px; padding:11px 14px; display:flex; justify-content:space-between;
-  align-items:center; font-size:13px; color:var(--a-ink2); margin-bottom:10px}
+.axis{display:flex; justify-content:space-between; font-size:9px; color:var(--a-ink3); margin-top:3px}
+.legend{display:flex; gap:12px; font-size:10.5px; color:var(--a-ink2); margin-top:8px; justify-content:center}
+.legend i{display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:4px}
+.statline{background:#fff; border-radius:13px; padding:10px 13px; display:flex; justify-content:space-between;
+  align-items:center; font-size:12.5px; color:var(--a-ink2)}
 .statline b{color:var(--a-ink)}
 
-/* plans */
-.sheettitle{font-size:26px; font-weight:550; letter-spacing:-.02em; color:var(--a-ink); margin:2px 0 8px}
-.sheetsub{font-size:13.5px; color:var(--a-ink2); line-height:1.5; margin-bottom:16px}
-.availrow{display:flex; align-items:center; gap:9px; font-size:16px; font-weight:600; color:var(--a-ink); margin:16px 0 10px}
-.countchip{background:#E7E7E9; color:var(--a-ink2); border-radius:999px; padding:2px 10px; font-size:12px; font-weight:600}
-.plan{width:100%; background:#fff; border-radius:14px; margin-bottom:12px; overflow:hidden; text-align:left}
-.plan .band{padding:9px 15px; font-size:12.5px; font-weight:600}
+/* plans phone */
+.sheettitle{font-size:22px; font-weight:550; letter-spacing:-.02em; color:var(--a-ink); margin:2px 0 6px}
+.sheetsub{font-size:12px; color:var(--a-ink2); line-height:1.5; margin-bottom:12px}
+.availrow{display:flex; align-items:center; gap:8px; font-size:14.5px; font-weight:600; color:var(--a-ink); margin:12px 0 9px}
+.countchip{background:#E7E7E9; color:var(--a-ink2); border-radius:999px; padding:2px 9px; font-size:11px; font-weight:600}
+.plan{width:100%; background:#fff; border-radius:14px; margin-bottom:11px; overflow:hidden}
+.plan .band{padding:8px 14px; font-size:12px; font-weight:600}
 .plan .band.grey{background:#E9E9EB; color:var(--a-ink)}
 .plan .band.black{background:#101314; color:#fff}
-.plan .pbody{padding:13px 15px 6px; position:relative}
-.plan .pn{font-size:17px; font-weight:600; color:var(--a-ink)}
-.plan .pr{font-size:12.5px; color:var(--a-ink2); margin-top:1px}
-.plan .logo{position:absolute; top:13px; right:15px; width:30px; height:30px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px}
-.plan .pm{font-size:26px; font-weight:650; letter-spacing:-.02em; color:var(--a-ink); margin-top:11px}
-.plan .pm small{font-size:11px; color:var(--a-ink2); font-weight:500}
-.plan .est{font-size:12.5px; color:var(--a-ink2); margin:2px 0 10px}
-.plan .saveside{position:absolute; right:15px; top:52px; text-align:right}
-.plan .pct{font-size:15px; font-weight:650; color:var(--a-green)}
+.plan .pbody{padding:12px 14px 12px; position:relative}
+.plan .pn{font-size:15.5px; font-weight:600; color:var(--a-ink)}
+.plan .pr{font-size:11.5px; color:var(--a-ink2); margin-top:1px}
+.plan .logo{position:absolute; top:12px; right:14px; width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px}
+.plan .pm{font-size:23px; font-weight:650; letter-spacing:-.02em; color:var(--a-ink); margin-top:9px}
+.plan .pm small{font-size:10.5px; color:var(--a-ink2); font-weight:500}
+.plan .est{font-size:11.5px; color:var(--a-ink2); margin-top:2px}
+.plan .saveside{position:absolute; right:14px; top:48px; text-align:right}
+.plan .pct{font-size:14px; font-weight:650; color:var(--a-green)}
 .plan .pct.neg{color:#C4271D}
 .plan .savepill{display:inline-block; background:var(--a-green); color:#fff; border-radius:999px;
-  padding:3px 10px; font-size:11px; font-weight:650; margin-top:5px}
+  padding:3px 9px; font-size:10.5px; font-weight:650; margin-top:4px}
 .plan .savepill.more{background:#D63C31}
-.plan .vdet{display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--a-line);
-  padding:12px 15px; font-size:13.5px; color:var(--a-ink2)}
-.ttag{background:#E9E9EB; color:var(--a-ink2); border-radius:6px; padding:2px 8px; font-size:10.5px; font-weight:600; margin-left:4px}
-.ttag.red{background:#FDE2E0; color:#C4271D}
-.ratebar{height:26px; border-radius:6px; margin:8px 0 4px}
-/* retailer dots */
-.lg-mer{background:#17E3B1}.lg-gen{background:linear-gradient(135deg,#FF7A00,#E8380D)}
-.lg-mercury{background:#FFD400; color:#3a3000}.lg-eco{background:#14203A}.lg-ek{background:#7CC8F0; color:#0A3550}
-.lg-oct{background:#B03BE0}.lg-con{background:#E23B34}.lg-pow{background:#E0287E}
 
-/* routines */
-.rcard{background:#fff; border-radius:16px; padding:13px 14px; margin-bottom:10px; width:100%}
-.rchip{display:inline-block; background:var(--t-blue); color:#fff; border-radius:999px; padding:3px 11px;
-  font-size:11.5px; font-weight:650}
-.rstat{font-size:14.5px; color:var(--a-ink); font-weight:550; margin-top:8px}
-.rstat b{font-weight:650}
-.rends{font-size:11.5px; color:var(--a-ink3); margin-top:2px}
-.rprog{height:4px; background:#EDEDEE; border-radius:99px; margin-top:10px; overflow:hidden}
-.rprog i{display:block; height:100%; background:var(--a-ink); border-radius:99px}
-.promo{background:#fff; border-radius:18px; overflow:hidden; margin-bottom:10px}
-.promo .pin{padding:14px 15px}
-.promo .pt{font-size:17px; font-weight:700; color:var(--a-ink); letter-spacing:-.01em}
-.promo .pb{font-size:12.5px; color:var(--a-ink2); margin:4px 0 10px; line-height:1.5}
-.daychips{display:flex; gap:6px; margin:8px 0 4px}
-.daychip{width:34px; height:34px; border-radius:50%; background:#EDEDEE; color:var(--a-ink2);
-  display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:650}
-.daychip.on{background:#101314; color:#fff}
-.timebox{background:#EDEDEE; border-radius:10px; padding:9px 13px; font-size:14px; font-weight:600; color:var(--a-ink)}
-.okmodal{position:absolute; inset:0; background:rgba(30,30,31,.4); z-index:60; display:flex; align-items:center;
-  justify-content:center; padding:24px}
-.okcard{background:#fff; border-radius:20px; padding:22px 20px; text-align:center; width:100%;
-  box-shadow:0 20px 50px rgba(0,0,0,.3)}
-.okcard .big{width:52px; height:52px; border-radius:50%; background:#1DB954; color:#fff; font-size:24px;
-  display:flex; align-items:center; justify-content:center; margin:0 auto 12px}
-
-/* menu (no ?sim) */
-.menu{max-width:430px; margin:0 auto; padding:8px 16px 40px}
-.menu h1{font-size:24px; font-weight:600; letter-spacing:-.02em; margin:14px 0 4px}
-.menu .lede{font-size:13.5px; color:var(--ink2); line-height:1.5; margin-bottom:18px}
-.mcard{display:block; width:100%; background:#fff; border:1px solid var(--line); border-radius:16px;
-  padding:15px 16px; margin-bottom:10px; text-decoration:none; color:var(--ink)}
-.mcard .mt{font-size:15.5px; font-weight:600; display:flex; justify-content:space-between; align-items:center}
-.mcard .ms{font-size:12.5px; color:var(--ink2); margin-top:3px; line-height:1.45}
-.mcard:hover{border-color:var(--ink3)}
-.footnote{text-align:center; font-size:11px; color:var(--ink3); padding:0 18px 26px; line-height:1.5}
+.footnote{text-align:center; font-size:11px; color:var(--ink3); padding:6px 18px 24px; line-height:1.5}
 </style>
 </head>
 <body>
 
 <header class="hdr">
   <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI3LjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxMzY2IDc2OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTM2NiA3Njg7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7fQo8L3N0eWxlPgo8Zz4KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNzEuODIsMzY1LjQxaDIwMy40NmMxNC40MiwwLDI2LjEtMTEuNjYsMjYuMS0yNi4wM2MwLTE0LjM3LTExLjY5LTI2LjAzLTI2LjEtMjYuMDNIMTcxLjgyCgkJYy0yLjg3LDAtNS4yMiwyLjM0LTUuMjIsNS4ydjQxLjY3YzAsMi44NiwyLjM1LDUuMjEsNS4yMiw1LjIxVjM2NS40MXoiLz4KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNzEuODEsNDU4LjE1aDIwMy4wN2MxNC4zOSwwLDI2LjA1LTExLjcxLDI2LjA1LTI2LjE0YzAtMTQuNDMtMTEuNjctMjYuMTQtMjYuMDUtMjYuMTRIMTcxLjgxCgkJYy0yLjg2LDAtNS4yMSwyLjM1LTUuMjEsNS4yMnY0MS44NWMwLDIuODcsMi4zNCw1LjIzLDUuMjEsNS4yM1Y0NTguMTV6Ii8+Cgk8cGF0aCBkPSJNODM0LjY2LDMzOC44NWwtMjUuMzgsMC4wM2MtMS40MywwLTIuNjYsMS4wMy0yLjkxLDIuNDVMODA0LDM1NS4wNWMtNC4yNi00LjczLTkuMzctOC42My0xNS4yNS0xMS42NAoJCWMtNy45NS00LjA2LTE3LjQyLTYuMS0yOC4wOS02LjFjLTEyLjksMC0yNC42OCwzLjEyLTM0Ljk3LDkuMjNjLTEwLjMzLDYuMTItMTguNTQsMTQuODgtMjQuNDQsMjYuMDMKCQljLTUuODUsMTEuMS04LjgyLDI0LjA2LTguODEsMzguNTRjMC4wMiwxNC44MiwyLjk3LDI3Ljk1LDguNzUsMzkuMDRjNS44NCwxMS4xNywxNC4wNSwxOS44MywyNC40MSwyNS43NQoJCWMxMC4yOCw1Ljg4LDIyLjEsOC44NSwzNS4xNCw4Ljg1aDAuMWMxMC41MywwLDE5LjkyLTIuMjMsMjcuODgtNi42YzUuODUtMy4yMSwxMC45Ni03LjI0LDE1LjI5LTEyLjAxbDIuMjUsMTQuNDQKCQljMC4yMiwxLjQzLDEuNDYsMi41LDIuOTMsMi41bDI1LjY2LTAuMDNjMC43OCwwLDEuNTQtMC4zMSwyLjA4LTAuODdjMC41Ni0wLjU2LDAuODYtMS4zLDAuODYtMi4wOGwtMC4xNi0xMzguMjgKCQljMC0xLjYzLTEuMzMtMi45Ni0yLjk2LTIuOTZIODM0LjY2eiBNODAyLjg5LDQxMS41MWMwLDEyLjcxLTMuNDYsMjMuMTQtMTAuMzEsMzEuMDFjLTYuODQsNy44OC0xNS42NSwxMS43LTI2LjkyLDExLjcyaC0wLjA2CgkJYy0xMS4yNCwwLTIwLjA0LTMuODYtMjYuODktMTEuNzhjLTYuODktNy45NS0xMC4zNy0xOC41MS0xMC4zOS0zMS40MWMwLTEyLjcxLDMuNDYtMjMuMiwxMC4zMS0zMS4xNgoJCWM2Ljg0LTcuOTUsMTUuNjUtMTEuODIsMjYuOTItMTEuODRoMC4wNmMxMS4yMywwLDIwLjAyLDMuODksMjYuODgsMTEuODlDNzk5LjM4LDM4Ny45OSw4MDIuODgsMzk4LjYxLDgwMi44OSw0MTEuNTF6Ii8+Cgk8cGF0aCBkPSJNOTYwLjI4LDQwMC4wMmMtOC4yNi0yLjY1LTE4LjU0LTQuNjQtMzAuNTQtNS45Yy04LjctMS4wNS0xNS4wNy0xLjk4LTE4Ljk0LTIuNzhjLTMuNDktMC43MS02LjM4LTEuOTYtOC42MS0zLjc0CgkJYy0xLjg5LTEuNDktMi44MS0zLjc4LTIuODEtN2MwLTQuNTIsMi4xLTguMDQsNi40My0xMC43M2M0LjcxLTIuOTQsMTEuMS00LjQzLDE4Ljk2LTQuNDNoMC4wNmM3Ljc2LDAsMTQuMjQsMS44NSwxOS4yOCw1LjUKCQljNC45MywzLjU4LDcuNjQsNy45OCw4LjI3LDEzLjQ2YzAuMTgsMS40OSwxLjQzLDIuNjIsMi45NCwyLjYybDI4LjM1LTAuMDNjMC44MSwwLDEuNi0wLjM0LDIuMTYtMC45MwoJCWMwLjU2LTAuNTksMC44NC0xLjQsMC44LTIuMjJjLTAuOTgtMTQuOTEtNy4zNi0yNi42NC0xOC45Ny0zNC44N2MtMTEuMzMtOC4wNC0yNi4xOC0xMi4xLTQ0LjEyLTEyLjFoLTAuMTUKCQljLTEwLjk4LDAtMjAuOTUsMS45Mi0yOS42NSw1LjY3Yy04LjgyLDMuODEtMTUuODUsOS4yOC0yMC45MiwxNi4yN2MtNS4xMSw3LjA2LTcuNywxNS4yMy03LjcsMjQuMjkKCQljMCw5LjcxLDIuNjksMTcuNiw3Ljk1LDIzLjQzYzUuMTEsNS42OSwxMS45Miw5Ljg3LDIwLjI0LDEyLjQ0YzcuOTYsMi40NywxOC4xOSw0LjQ1LDMwLjM2LDUuODgKCQljOC42OSwxLjA1LDE1LjE2LDIuMDcsMTkuMjcsMy4wM2MzLjcxLDAuODYsNi42NiwyLjMsOC43OSw0LjI3YzEuOTEsMS43NywyLjg0LDQuNTEsMi44NSw4LjM2YzAsNC41MS0yLjIyLDguMDctNi44LDEwLjg1CgkJYy00Ljk5LDMuMDQtMTEuNyw0LjU4LTE5LjkzLDQuNmgtMC4wN2MtOS4xOCwwLTE2LjctMi4xMS0yMi4zNi02LjI4Yy01LjU0LTQuMDgtOC40Ny05LjE2LTguOTUtMTUuNTMKCQljLTAuMTItMS41NC0xLjQtMi43My0yLjk0LTIuNzNsLTI4LjA5LDAuMDNjLTAuOCwwLTEuNTUsMC4zMy0yLjExLDAuODljLTAuNTYsMC41OC0wLjg2LDEuMzQtMC44NCwyLjE0CgkJYzAuNCwxNS42Niw2Ljc3LDI4LjEsMTguOTQsMzdjMTEuODgsOC42NywyNy41NCwxMy4wOCw0Ni41OSwxMy4wOGgwLjE1YzExLjMsMCwyMS42Ny0xLjg2LDMwLjc5LTUuNTEKCQljOS4yOC0zLjcxLDE2LjctOS4xMiwyMi4wMy0xNi4wOWM1LjQyLTcuMDgsOC4xNi0xNS4zNyw4LjE0LTI0LjYzYzAtMTAuNC0yLjcyLTE4LjgyLTguMDQtMjUKCQljLTUuMi02LjA2LTEyLjItMTAuNTMtMjAuOC0xMy4yOFY0MDAuMDJ6Ii8+Cgk8cGF0aCBkPSJNMTAzMS4yMiwyODMuMjVoLTAuMDNjLTUuODEsMC0xMC43NywxLjk4LTE0Ljc0LDUuODVjLTMuOTksMy45LTYuMDEsOC44NC02LjAxLDE0LjY5czIuMDQsMTAuNzksNi4wNCwxNC42NwoJCWMzLjk3LDMuODYsOC45Miw1LjgyLDE0LjczLDUuODJoMC4wM2M1LjgxLDAsMTAuNzctMS45OCwxNC43NC01Ljg1YzMuOTktMy45LDYuMDEtOC44NCw2LjAxLTE0LjY5cy0yLjA0LTEwLjc3LTYuMDUtMTQuNjcKCQlDMTA0MS45NywyODUuMjEsMTAzNy4wMiwyODMuMjUsMTAzMS4yMiwyODMuMjV6Ii8+Cgk8cGF0aCBkPSJNMTA0NS44NSwzMzguNTlsLTI5LjE3LDAuMDNjLTAuNzgsMC0xLjU0LDAuMzEtMi4wOCwwLjg3Yy0wLjU1LDAuNTYtMC44NiwxLjMtMC44NiwyLjA4bDAuMTYsMTM4LjI4CgkJYzAsMS42MywxLjMzLDIuOTUsMi45NSwyLjk1bDI5LjE2LTAuMDNjMC43OSwwLDEuNTQtMC4zMSwyLjA4LTAuODdjMC41NS0wLjU2LDAuODYtMS4zLDAuODYtMi4wOGwtMC4xNi0xMzguMjgKCQlDMTA0OC44LDMzOS45MiwxMDQ3LjQ3LDMzOC41OSwxMDQ1Ljg1LDMzOC41OXoiLz4KCTxwYXRoIGQ9Ik0xMTkxLjM1LDQxMy4wNWMtNS4yLTYuMDYtMTIuMi0xMC41Mi0yMC44LTEzLjI4Yy04LjI2LTIuNjUtMTguNTQtNC42NC0zMC41NC01LjljLTguNjktMS4wNS0xNS4wNi0xLjk4LTE4Ljk1LTIuNzgKCQljLTMuNDgtMC43MS02LjM4LTEuOTYtOC42MS0zLjc0Yy0xLjktMS40OS0yLjgtMy43OC0yLjgtN2MwLTQuNTIsMi4wOS04LjA0LDYuNDItMTAuNzNjNC43MS0yLjk0LDExLjEtNC40MywxOC45NS00LjQzaDAuMDYKCQljNy43NiwwLDE0LjI1LDEuODUsMTkuMjgsNS41YzQuOTQsMy41OCw3LjY0LDcuOTgsOC4yOCwxMy40NmMwLjE4LDEuNDksMS40MywyLjYyLDIuOTQsMi42MmwyOC4zNS0wLjAzYzAuODEsMCwxLjYtMC4zNCwyLjE1LTAuOTMKCQljMC41Ny0wLjU5LDAuODUtMS40LDAuOC0yLjIyYy0wLjk3LTE0LjkxLTcuMzYtMjYuNjQtMTguOTctMzQuODdjLTExLjMzLTguMDQtMjYuMTgtMTIuMS00NC4xMi0xMi4xaC0wLjEzCgkJYy0xMC45OCwwLTIwLjk1LDEuOTItMjkuNjYsNS42N2MtOC44MiwzLjgxLTE1Ljg1LDkuMjgtMjAuOTIsMTYuMjdjLTUuMTEsNy4wNi03LjcsMTUuMjMtNy43LDI0LjI5YzAsOS43MSwyLjY5LDE3LjYsNy45NSwyMy40MwoJCWM1LjExLDUuNjksMTEuOTIsOS44NywyMC4yNCwxMi40NGM3Ljk4LDIuNDcsMTguMTksNC40NSwzMC4zNiw1Ljg4YzguNjgsMS4wNSwxNS4xNiwyLjA3LDE5LjI3LDMuMDNjMy43MSwwLjg2LDYuNjYsMi4zLDguNzksNC4yNwoJCWMxLjkxLDEuNzcsMi44NCw0LjUxLDIuODUsOC4zNmMwLDQuNTEtMi4yMSw4LjA3LTYuNzksMTAuODVjLTQuOTksMy4wNC0xMS43LDQuNTgtMTkuOTMsNC42aC0wLjA4Yy05LjE3LDAtMTYuNjktMi4xMS0yMi4zNS02LjI4CgkJYy01LjU0LTQuMDktOC40Ny05LjE2LTguOTUtMTUuNTNjLTAuMTItMS41NC0xLjQxLTIuNzMtMi45NC0yLjczbC0yOC4wOSwwLjAzYy0wLjgsMC0xLjU1LDAuMzMtMi4xMSwwLjg5CgkJYy0wLjU3LDAuNTgtMC44NiwxLjM0LTAuODQsMi4xNGMwLjM5LDE1LjY2LDYuNzcsMjguMSwxOC45NCwzN2MxMS44OCw4LjY3LDI3LjU0LDEzLjA4LDQ2LjU3LDEzLjA4aDAuMTUKCQljMTEuMywwLDIxLjY4LTEuODYsMzAuOC01LjUxYzkuMjgtMy43MSwxNi42OS05LjEyLDIyLjAyLTE2LjA5YzUuNDMtNy4wOCw4LjE2LTE1LjM3LDguMTUtMjQuNjNjMC0xMC40LTIuNzItMTguODItOC4wNC0yNQoJCVY0MTMuMDV6Ii8+Cgk8cGF0aCBkPSJNNjM2LjA5LDM4Mi42N2gwLjAzYzctMi45NiwxMi43NS03LjExLDE3LjE0LTEyLjQ0YzYuNDQtNy44Miw5LjcxLTE3Ljg1LDkuNjktMjkuODUKCQljLTAuMDItMTYuMzktNi4yMS0yOS4zNi0xOC4zNy0zOC41MmMtMTEuODgtOC45NS0yOC42NS0xMy41LTQ5Ljg0LTEzLjVoLTAuMThsLTY5LjQyLDAuMDljLTAuNzgsMC0xLjU0LDAuMzEtMi4wOCwwLjg3CgkJYy0wLjU2LDAuNTYtMC44NiwxLjMtMC44NiwyLjA4bDAuMjIsMTg5LjA1YzAsMS42MywxLjMzLDIuOTUsMi45NiwyLjk1bDcxLjg0LTAuMDljMjMuMDctMC4wMyw0MS4xNi00Ljk4LDUzLjc3LTE0LjcyCgkJYzEyLjg1LTkuOTMsMTkuMzYtMjMuNzEsMTkuMzMtNDAuOTlDNjcwLjMsNDA0LjYsNjU4LjgsMzg5LjUzLDYzNi4wOSwzODIuNjd6IE01NTkuMjQsMzIwLjI0bDQzLjAxLDAKCQljMTMuMjksMCwyNC4wNywxMC44MiwyNC4wNywyNC4xNWMwLDEzLjMzLTEwLjc3LDI0LjE1LTI0LjA3LDI0LjE1aC00My4wMVYzMjAuMjR6IE02MDcuMzIsNDUxLjM1bC00OC4wNywwdi01MS4wN2g0OC4wNwoJCWMxNC4wNSwwLDI1LjQ1LDExLjQ0LDI1LjQ1LDI1LjUzQzYzMi43Niw0MzkuOTEsNjIxLjM4LDQ1MS4zNSw2MDcuMzIsNDUxLjM1eiIvPgo8L2c+Cjwvc3ZnPg==" alt="Basis">
-  <span class="sub" id="hdrsub">Home app — try it yourself</span>
+  <span class="sub">Home app — what the customer gets, on a real Basis home</span>
 </header>
 
-<div id="menuview" class="menu" hidden>
-  <h1>What the customer gets</h1>
-  <p class="lede">Four tiny hands-on demos of the Basis Home app, each built from a real Basis home's data.
-  Embed them one per course page, or run through all four.</p>
-  <a class="mcard" href="?sim=live"><span class="mt">Live power, circuit by circuit <span>→</span></span>
-    <span class="ms">Watch the whole home live, then flick the hot water cylinder on and off.</span></a>
-  <a class="mcard" href="?sim=routine"><span class="mt">Set up a hot water routine <span>→</span></span>
-    <span class="ms">Put the cylinder on Standby through the day so it heats off-peak.</span></a>
-  <a class="mcard" href="?sim=insights"><span class="mt">Where the month went <span>→</span></span>
-    <span class="ms">$209.94, broken down by circuit — flick between day, week, month and year.</span></a>
-  <a class="mcard" href="?sim=plans"><span class="mt">The right power plan <span>→</span></span>
-    <span class="ms">Every retailer priced against this home's actual usage. Scroll the list.</span></a>
-</div>
-
-<div class="hint" id="hintbar" hidden><span class="dot">→</span><p id="hinttext"></p></div>
-
-<div class="phonewrap" id="phonewrap" hidden>
-  <div class="phone" id="phone">
-    <div class="bezel">
+<div class="wall">
+  <div class="cell">
+    <div class="cellhead">
+      <div class="ct">Live, circuit by circuit</div>
+      <div class="cc">Straight off the switchboard, every second. <b>Tap a circuit</b> to flick it — watch the total.</div>
+    </div>
+    <div class="phonebox"><div class="phone"><div class="bezel">
       <div class="notch"></div>
       <div class="sbar"><span>11:17</span><span class="r"><span>▲▲▲</span><span>Wi-Fi</span><span>54%</span></span></div>
-      <div class="scr" id="screen"></div>
-      <div id="tabslot"></div>
+      <div class="scr" id="scr-live"></div>
+      <div class="tabwrap"><div class="tabbar" id="tabs-live"></div></div>
+    </div></div></div>
+  </div>
+
+  <div class="cell">
+    <div class="cellhead">
+      <div class="ct">Set-and-forget routines</div>
+      <div class="cc">Hot water is a quarter of this bill. <b>One tap</b> and the cylinder heats off-peak instead.</div>
     </div>
+    <div class="phonebox"><div class="phone"><div class="bezel">
+      <div class="notch"></div>
+      <div class="sbar"><span>11:17</span><span class="r"><span>▲▲▲</span><span>Wi-Fi</span><span>54%</span></span></div>
+      <div class="scr" id="scr-rout"></div>
+      <div class="tabwrap"><div class="tabbar" id="tabs-rout"></div></div>
+    </div></div></div>
+  </div>
+
+  <div class="cell">
+    <div class="cellhead">
+      <div class="ct">The month, in dollars</div>
+      <div class="cc">$209.94 last month — every circuit priced. <b>Flick D · W · M · Y</b>.</div>
+    </div>
+    <div class="phonebox"><div class="phone"><div class="bezel">
+      <div class="notch"></div>
+      <div class="sbar"><span>11:17</span><span class="r"><span>▲▲▲</span><span>Wi-Fi</span><span>54%</span></span></div>
+      <div class="scr" id="scr-ins"></div>
+      <div class="tabwrap"><div class="tabbar" id="tabs-ins"></div></div>
+    </div></div></div>
+  </div>
+
+  <div class="cell">
+    <div class="cellhead">
+      <div class="ct">The right plan, proven</div>
+      <div class="cc">Every retailer, re-priced on this home's actual usage. <b>Scroll the list</b> — $99 a month on the table.</div>
+    </div>
+    <div class="phonebox"><div class="phone"><div class="bezel">
+      <div class="notch"></div>
+      <div class="sbar"><span>11:17</span><span class="r"><span>▲▲▲</span><span>Wi-Fi</span><span>54%</span></span></div>
+      <div class="scr" id="scr-plans"></div>
+    </div></div></div>
   </div>
 </div>
 
@@ -273,14 +234,13 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 <script>
 'use strict';
 const $=s=>document.querySelector(s);
-const screenEl=$('#screen');
-function toast(msg){
-  const old=screenEl.querySelector('.snack'); if(old) old.remove();
-  const el=document.createElement('div'); el.className='snack'; el.textContent=msg;
-  screenEl.appendChild(el); setTimeout(()=>el.remove(),2600);
-}
 const NB=' ';
 function wString(w){ return w<999.5 ? Math.round(w)+NB+'W' : (w/1000).toFixed(2)+NB+'kW'; }
+function toast(scrEl,msg){
+  const old=scrEl.querySelector('.snack'); if(old) old.remove();
+  const el=document.createElement('div'); el.className='snack'; el.textContent=msg;
+  scrEl.appendChild(el); setTimeout(()=>el.remove(),2400);
+}
 
 /* ============ icons ============ */
 const I={
@@ -288,43 +248,41 @@ const I={
   grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg>',
   clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
   lines:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h10"/></svg>',
-  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 5 8 12l6.5 7"/></svg>',
-  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>',
-  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M9 5.5 15.5 12 9 18.5"/></svg>',
   drop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>',
   bolt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke-linejoin="round"/></svg>',
   fire:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3s1 3-1.5 5.5S8 12 8 14a4 4 0 0 0 8 0c0-1.5-.6-2.6-1.5-3.5.2 1-.2 2-1 2.5.3-2.5-1.5-4-1.5-10z" stroke-linejoin="round"/></svg>',
   plug:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3v5M15 3v5M6.5 8h11l-1 5.5A4.5 4.5 0 0 1 12 17a4.5 4.5 0 0 1-4.5-3.5L6.5 8z"/><path d="M12 17v4"/></svg>',
   sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>',
-  snow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M4 6l16 12M20 6 4 18"/></svg>',
-  gauge:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 14a8 8 0 1 1 16 0"/><path d="M12 14l3.5-4"/><path d="M3 18h18"/></svg>',
-  funnel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg>'
+  snow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M4 6l16 12M20 6 4 18"/></svg>'
 };
+function tabsHtml(active){
+  return ['home','grid','clock','lines'].map((k,ix)=>
+    `<span class="${ix===active?'on':''}">${I[{0:'home',1:'grid',2:'clock',3:'lines'}[ix]]}</span>`).join('');
+}
 
 /* ============ this panel, straight from the recording ============ */
 const CIRC=[
- {num:'01',label:'HWC',   tags:['Water Heater'],   ic:'drop', col:'var(--t-blue)',   w:0,    onW:3000, standby:true},
- {num:'02',label:'Spare', tags:[],                 ic:null,   col:'',                w:0,    spare:true},
- {num:'03',label:'Hob',   tags:['Hob'],            ic:'plug', col:'var(--t-purple)', w:0,    onW:2200},
- {num:'04',label:'Septic Pump',tags:['Septic Pump'],ic:'drop',col:'var(--t-teal)',   w:3,    onW:3},
- {num:'05',label:'Oven',  tags:['Oven'],           ic:'fire', col:'var(--t-orange)', w:0,    onW:2400},
- {num:'06',label:'Power', tags:['Guest Bath…','Heater'],ic:'bolt',col:'var(--t-pink)',w:0,   onW:8},
- {num:'07',label:'Air-Con',tags:['Air Conditioner'],ic:'snow',col:'var(--t-indigo)', w:175,  onW:175},
- {num:'08',label:'Power', tags:['Heater'],         ic:'bolt', col:'var(--t-pink)',   w:0,    onW:5},
- {num:'09',label:'Power', tags:[],                 ic:'bolt', col:'var(--t-pink)',   w:102,  onW:102},
- {num:'10',label:'Lights',tags:[],                 ic:'bolt', col:'var(--t-yellow)', w:115,  onW:115},
- {num:'11',label:'Power', tags:['Outdoor Socket'], ic:'bolt', col:'var(--t-pink)',   w:0,    onW:4},
- {num:'12',label:'Power', tags:['Electric Vehicle'],ic:'bolt',col:'var(--t-pink)',   w:0,    onW:7200},
- {num:'13',label:'Lights',tags:[],                 ic:'bolt', col:'var(--t-yellow)', w:7,    onW:7},
- {num:'14',label:'Power', tags:[],                 ic:'bolt', col:'var(--t-pink)',   w:0,    onW:6},
- {num:'15',label:'Power', tags:['Air Fryer +2'],   ic:'bolt', col:'var(--t-pink)',   w:6,    onW:6},
- {num:'16',label:'Power', tags:[],                 ic:'bolt', col:'var(--t-pink)',   w:23,   onW:23},
- {num:'17',label:'Power', tags:[],                 ic:'bolt', col:'var(--t-pink)',   w:0,    onW:9},
- {num:'18',label:'Air-Con',tags:['Air Conditioner'],ic:'snow',col:'var(--t-indigo)', w:6,    onW:6},
- {num:'19',label:'Power', tags:['Dryer +1'],       ic:'bolt', col:'var(--t-pink)',   w:13,   onW:13},
+ {num:'01',label:'HWC',   tags:['Water Heater'],   ic:'drop', col:'var(--t-blue)',   w:0,   onW:3000, standby:true},
+ {num:'02',label:'Spare', tags:[],                 ic:null,   col:'',                w:0,   spare:true},
+ {num:'03',label:'Hob',   tags:['Hob'],            ic:'plug', col:'var(--t-purple)', w:0,   onW:2200},
+ {num:'04',label:'Septic Pump',tags:['Septic Pump'],ic:'drop',col:'var(--t-teal)',   w:3,   onW:3},
+ {num:'05',label:'Oven',  tags:['Oven'],           ic:'fire', col:'var(--t-orange)', w:0,   onW:2400},
+ {num:'06',label:'Power', tags:['Guest Bath…','Heater'],ic:'bolt',col:'var(--t-pink)',w:0,  onW:8},
+ {num:'07',label:'Air-Con',tags:['Air Conditioner'],ic:'snow',col:'var(--t-indigo)', w:175, onW:175},
+ {num:'08',label:'Power', tags:['Heater'],         ic:'bolt', col:'var(--t-pink)',   w:0,   onW:5},
+ {num:'09',label:'Power', tags:[],                 ic:'bolt', col:'var(--t-pink)',   w:102, onW:102},
+ {num:'10',label:'Lights',tags:[],                 ic:'bolt', col:'var(--t-yellow)', w:115, onW:115},
+ {num:'11',label:'Power', tags:['Outdoor Socket'], ic:'bolt', col:'var(--t-pink)',   w:0,   onW:4},
+ {num:'12',label:'Power', tags:['Electric Vehicle'],ic:'bolt',col:'var(--t-pink)',   w:0,   onW:7200},
+ {num:'13',label:'Lights',tags:[],                 ic:'bolt', col:'var(--t-yellow)', w:7,   onW:7},
+ {num:'14',label:'Power', tags:[],                 ic:'bolt', col:'var(--t-pink)',   w:0,   onW:6},
+ {num:'15',label:'Power', tags:['Air Fryer +2'],   ic:'bolt', col:'var(--t-pink)',   w:6,   onW:6},
+ {num:'16',label:'Power', tags:[],                 ic:'bolt', col:'var(--t-pink)',   w:23,  onW:23},
+ {num:'17',label:'Power', tags:[],                 ic:'bolt', col:'var(--t-pink)',   w:0,   onW:9},
+ {num:'18',label:'Air-Con',tags:['Air Conditioner'],ic:'snow',col:'var(--t-indigo)', w:6,   onW:6},
+ {num:'19',label:'Power', tags:['Dryer +1'],       ic:'bolt', col:'var(--t-pink)',   w:13,  onW:13},
  {num:'20',label:'Solar', tags:['Solar'],          ic:'sun',  col:'var(--t-yellow)', w:-2250,solar:true}
 ];
-/* this month, per circuit — the real $209.94 breakdown */
 const COST=[
  {n:'HWC 01',tag:'Water Heater',v:52.59,p:25,col:'var(--t-blue)',ic:'drop'},
  {n:'Power 19',tag:'Dryer +1',v:36.32,p:17,col:'var(--t-pink)',ic:'bolt'},
@@ -342,7 +300,6 @@ const COST=[
  {n:'Hob 03',tag:'Hob',v:2.12,p:1,col:'#BF5AF2',ic:'plug'},
  {n:'Power 08',tag:'Heater',v:1.02,p:1,col:'#8E8E93',ic:'bolt'}
 ];
-/* the real comparison list (vs ecoSOLAR, $429.71 for the same 30 days) */
 const PLANS=[
  {n:'Freedom',r:'Meridian Energy',lg:'lg-mer',g:'✳',price:'330.65',pct:23,save:99},
  {n:'Freedom',r:'Meridian Energy',lg:'lg-mer',g:'✳',price:'331.64',pct:23,save:98},
@@ -364,129 +321,115 @@ const PLANS=[
  {n:'Everyday',r:'Electric Kiwi',lg:'lg-ek',g:'◔',price:'545.77',pct:27,more:116}
 ];
 
-/* ============ state ============ */
-const qp=new URLSearchParams(location.search);
-const SIM=qp.get('sim');
-let scr='home';
-let detIx=0;
-let insSeg='M';
-let insCirc=null;
-let planIx=null;
-let switching=false;
-let routine={exists:false, created:false, days:[1,1,1,1,1,1,1], from:'5:00 AM', to:'10:00 PM', scr:'promo', picked:false};
-
-const HINTS={
- live:"This is <b>live from the switchboard</b> — every circuit, updating every second. Open Control, tap <b>HWC 01</b> and flick the cylinder on and off. Watch the whole-home number react.",
- routine:"Hot water is this home's biggest cost. Put the cylinder on <b>Standby through the day</b> so it heats off-peak — tap <b>Start</b> and build the routine.",
- insights:"Last month, in dollars, circuit by circuit — <b>$209.94 all up</b>. Flick between day, week, month and year, and tap a circuit for its story.",
- plans:"Every plan on the market, re-priced against <b>this home's actual usage</b> — not a questionnaire. Scroll the list, open one, and see what switching looks like."
-};
-
-/* ============ shared bits ============ */
-function tabs(on){
-  const en={live:['home','control'], routine:['routines'], insights:[], plans:[]}[SIM]||[];
-  if(!en.length) return '';
-  const b=(id,icon)=>`<button data-act="tab-${id}" class="${on===id?'on':''}${en.includes(id)?'':' dim'}">${icon}</button>`;
-  return `<div class="tabwrap"><div class="tabbar">
-    ${b('home',I.home)}${b('control',I.grid)}${b('routines',I.clock)}${b('activity',I.lines)}
-  </div></div>`;
+/* ============ phone 1 — live ============ */
+const scrLive=$('#scr-live');
+$('#tabs-live').innerHTML=tabsHtml(1);
+function liveTotal(){ return CIRC.reduce((a,c)=>a+((c.solar||c.spare)?0:Math.max(0,c.w)),0); }
+function renderLive(){
+  const keep=scrLive.scrollTop;
+  scrLive.innerHTML=`<div class="appwrap" style="padding-top:2px">
+    <div class="totstrip"><span class="in"><span class="livepip"></span>Live usage <b data-live="tot">${wString(liveTotal())}</b></span></div>
+    <div class="tlh" style="margin-top:0"><div><div class="t">Control</div></div><span class="avatar">M</span></div>
+    <div class="h4" style="margin-top:0">Circuits</div>
+    <div class="cgrid">
+      ${CIRC.map((c,ix)=>{
+        if(c.spare) return `<button class="ccard spare" data-flick="${ix}">
+          <span class="cn">${c.num}</span><span class="cl">Spare</span>
+          <span class="cicon" style="background:#E3E3E5; color:#9C9CA0">▫</span>
+          <span class="ctags"></span><span class="cf"><span class="st"></span></span></button>`;
+        const st=c.solar?'ON':c.standby?'STANDBY':'ON';
+        const wtxt=c.solar?'+'+wString(-c.w):wString(Math.max(0,c.w));
+        return `<button class="ccard${c.solar?' solar':''}" data-flick="${ix}">
+          <span class="cn">${c.num}</span><span class="cl">${c.label}</span>
+          <span class="cicon" style="background:${c.col}">${I[c.ic]}</span>
+          <span class="ctags">${c.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</span>
+          <span class="cf"><span class="st">${st}</span>
+          <span class="cw ${c.solar?'exp':c.w>0?'imp':'zero'}" data-livew="${ix}">${wtxt}</span></span>
+        </button>`;
+      }).join('')}
+    </div>
+  </div>`;
+  scrLive.scrollTop=keep;
 }
-function liveTotal(){
-  return CIRC.reduce((a,c)=>a+((c.solar||c.spare)?0:Math.max(0,c.w)),0);
-}
+scrLive.addEventListener('click',e=>{
+  const b=e.target.closest('[data-flick]'); if(!b) return;
+  const c=CIRC[+b.dataset.flick];
+  if(c.spare){ toast(scrLive,'Spare — not wired to anything yet'); return; }
+  if(c.solar){ toast(scrLive,'Solar is managed by the inverter'); return; }
+  c.standby=!c.standby;
+  c.w=c.standby?0:c.onW;
+  renderLive();
+  toast(scrLive, c.standby?`${c.label} ${c.num} set to Standby`
+    :`${c.label} ${c.num} on${c.onW>500?' — watch the total':''}`);
+});
+renderLive();
 
-/* ============ screens ============ */
-const SCREENS={};
+/* live tick */
+let jig=0;
+setInterval(()=>{
+  jig++;
+  scrLive.querySelectorAll('[data-livew]').forEach(el=>{
+    const c=CIRC[+el.dataset.livew];
+    if(!c||c.w<=0) return;
+    el.textContent=wString(Math.max(1,c.w*(1+0.05*Math.sin(jig*1.7+(+el.dataset.livew)))));
+  });
+  const t=scrLive.querySelector('[data-live="tot"]');
+  if(t) t.textContent=wString(liveTotal()*(1+0.02*Math.sin(jig*1.3)));
+},1000);
 
-SCREENS.home=()=>({html:`<div class="appwrap">
-  <div class="tlh"><div><div class="t">Home</div><div class="s">Fri, 17 July</div></div><span class="avatar">M</span></div>
-  <div class="liveblock">
-    <span class="livelab"><span class="livepip"></span>Live usage</span>
-    <div class="d3"><span data-live="tot">${wString(liveTotal())}</span></div>
-  </div>
-  <div class="inslab">Insights ${I.chev}</div>
-  <div class="carousel">
-    <button class="icard" data-act="wtoast">
-      <span class="il">HWC 01</span><div class="iv">$0.00</div><div class="ic2">Avg: <span class="avg-b">$3.25</span></div>
-      <span class="wicon" style="background:var(--t-blue)">${I.drop}</span>
-    </button>
-    <button class="icard" data-act="wtoast">
-      <span class="il">Energy Cost</span><div class="iv">$3.60</div><div class="ic2">Avg: <span class="avg-p">$11.06</span></div>
-      <span class="mbars"><i style="height:100%"></i><i class="dk" style="height:26%"></i><i style="height:18%"></i><i class="dk" style="height:22%"></i><i style="height:30%"></i><i class="dk" style="height:38%"></i><i style="height:44%"></i><i class="dk" style="height:52%"></i><i style="height:40%"></i><i class="dk" style="height:24%"></i></span>
-      <span class="mbaxis"><span>12AM</span><span>12PM</span></span>
-    </button>
-    <button class="icard" data-act="wtoast">
-      <span class="il">Solar Generation</span><div class="iv">3.60 kWh</div><div class="ic2">Avg: <span style="color:#B8860B; font-weight:600">8.59 kWh</span></div>
-      <span class="wicon" style="background:var(--t-yellow); color:#3a3000">${I.sun}</span>
-    </button>
-  </div>
-  <img class="panelimg" src="data:image/jpeg;base64,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" alt="Basis Smart Panel">
-</div>`, tab:'home'});
-
-SCREENS.control=()=>({html:`<div class="appwrap">
-  <div class="tlh"><div><div class="t">Control</div></div><span class="avatar">M</span></div>
-  <div class="h4">Circuits</div>
-  <div class="cgrid">
-    ${CIRC.map((c,ix)=>{
-      if(c.spare) return `<button class="ccard spare" data-act="sparetoast">
-        <span class="cn">${c.num}</span><span class="cl">Spare</span>
-        <span class="cicon" style="background:#E3E3E5; color:#9C9CA0">▫</span>
-        <span class="ctags"></span>
-        <span class="cf"><span class="st"></span></span></button>`;
-      const st=c.solar?'ON':c.standby?'STANDBY':'ON';
-      const wtxt=c.solar?'+'+wString(-c.w):wString(Math.max(0,c.w));
-      return `<button class="ccard" data-act="opencirc" data-n="${ix}">
-        <span class="cn">${c.num}</span><span class="cl">${c.label}</span>
-        <span class="cicon" style="background:${c.col}">${I[c.ic]}</span>
-        <span class="ctags">${c.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</span>
-        <span class="cf"><span class="st">${st}</span>
-        <span class="cw ${c.solar?'exp':c.w>0?'imp':'zero'}" data-livew="${ix}">${wtxt}</span></span>
-      </button>`;
-    }).join('')}
-  </div>
-</div>`, tab:'control'});
-
-SCREENS.detail=()=>{
-  const c=CIRC[detIx];
-  const on=!c.standby;
-  return {html:`<div class="appwrap">
-    <button class="backcircle" data-act="detback" aria-label="Back">${I.back}</button>
-    <div style="text-align:center; margin:34px 0 16px">
-      <span class="cicon" style="background:${c.col}; width:64px; height:64px; border-radius:20px; margin:0 auto">${I[c.ic]}</span>
-      <div style="font-size:25px; font-weight:650; color:var(--a-ink); margin-top:12px">${c.label}</div>
-      <div style="font-size:14px; color:var(--a-ink2)">Circuit ${c.num}</div>
-      <div style="font-size:15px; margin-top:10px; font-weight:600; color:${c.solar?'var(--a-green)':on?(c.w>0?'var(--a-green)':'var(--a-ink)'):'var(--a-ink2)'}">
-        ${c.solar?'● On · ∿ +'+wString(-c.w):on?('● On · <span data-livew="'+detIx+'">'+wString(Math.max(0,c.w))+'</span>'):'❚❚ Standby · 0'+NB+'W'}</div>
-      <div style="display:flex; gap:9px; justify-content:center; margin-top:14px">
-        <button class="abtn ${on?'primary':'green'}" data-act="power" style="width:auto; padding:11px 26px">
-          ${on?'❚❚&ensp;Standby':'▶&ensp;Turn on'}</button>
-        <span class="icbtn" style="width:44px; height:44px">${I.gauge}</span>
+/* ============ phone 2 — routine ============ */
+const scrRout=$('#scr-rout');
+$('#tabs-rout').innerHTML=tabsHtml(2);
+let hasRoutine=false;
+function renderRout(){
+  scrRout.innerHTML=`<div class="appwrap">
+    <div class="tlh"><div><div class="t">Routines</div></div><span class="icbtn">?</span></div>
+    <div class="seg"><button class="on">Scheduled</button><button style="pointer-events:none">Suggested</button></div>
+    ${hasRoutine
+    ?`<div class="h4">Currently active</div>
+      <div class="rcard">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start">
+          <span><span class="rchip">HWC 01</span>
+          <div class="rstat">HWC 01 routine <b>is on Standby</b></div>
+          <div class="rends">Everyday · 5:00 AM – 10:00 PM · ends in 10h 41m</div></span>
+        </div>
+        <div class="rprog"><i style="width:63%"></i></div>
+        <button class="abtn primary" data-r="stop" style="width:auto; padding:8px 18px; font-size:12px; margin-top:11px">⏹&ensp;Stop routine</button>
       </div>
-    </div>
-    <div class="h4">Tags</div>
-    <div style="display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px">
-      ${c.tags.map(t=>`<span class="tag neutral" style="background:#fff; padding:6px 13px">${t}</span>`).join('')}
-      <span class="tag neutral" style="padding:6px 13px">+ Add tags</span>
-    </div>
-    <div class="h4">Activity</div>
-    <div style="display:flex; gap:9px; margin-bottom:10px">
-      <div class="card" style="flex:1; margin:0"><div style="font-size:12.5px; color:var(--a-ink2)">Usage today</div>
-        <div style="font-size:19px; font-weight:700; color:var(--a-ink)">${detIx===0?'0.0':'0.76'} <small style="font-size:12px">kWh</small></div>
-        <div style="font-size:11px; color:var(--a-ink2)">Avg: <span class="avg-b" style="color:var(--t-blue); font-weight:600">${detIx===0?'8.2 kWh':'2.48 kWh'}</span></div></div>
-      <div class="card" style="flex:1; margin:0"><div style="font-size:12.5px; color:var(--a-ink2)">Cost today</div>
-        <div style="font-size:19px; font-weight:700; color:var(--a-ink)">${detIx===0?'$0.00':'$0.25'}</div>
-        <div style="font-size:11px; color:var(--a-ink2)">Avg: <span style="color:#8E44D8; font-weight:600">${detIx===0?'$3.25':'$0.75'}</span></div></div>
-    </div>
-    <div class="card">
-      <div style="font-size:10px; letter-spacing:.12em; color:var(--a-ink3); font-weight:600">ADDITIONAL INFO</div>
-      <div class="rowline"><span class="k">Overcurrent protection</span><span class="v">Yes <span style="color:var(--a-green)">✔</span></span></div>
-      <div class="rowline"><span class="k">Shock protection</span><span class="v">Yes <span style="color:var(--a-green)">✔</span></span></div>
-      <div class="rowline"><span class="k">Temperature</span><span class="v">OK <span style="color:var(--a-green)">✔</span></span></div>
-    </div>
-  </div>`, tab:'control'};
-};
+      <div class="card">
+        <div class="rowline"><span class="k">Cylinder heats</span><span class="v">10 PM – 5 AM, off-peak</span></div>
+        <div class="rowline"><span class="k">Comfort</span><span class="v">Unchanged — boost anytime</span></div>
+        <div class="rowline"><span class="k">This circuit last month</span><span class="v">$52.59</span></div>
+      </div>`
+    :`<div class="card" style="text-align:center; padding:18px 16px">
+        <div style="font-size:14px; font-weight:650; color:var(--a-ink)">No routines scheduled yet</div>
+        <div style="font-size:12px; color:var(--a-ink2); margin-top:3px">Your scheduled and active routines can be found here.</div>
+      </div>
+      <div class="card promo">
+        <div class="pt">Energy routines</div>
+        <div class="pb">Set your circuits to Standby and save energy during peak electricity prices.</div>
+        <div style="font-size:11.5px; color:#33513F; margin:-4px 0 10px">⚡ Up to 15% bill savings&emsp;🕐 2 minutes</div>
+        <button class="abtn green" data-r="create" style="padding:11px">Create the hot water routine</button>
+      </div>
+      <div class="card">
+        <div class="h4" style="margin-top:0">What it will do</div>
+        <div class="steps"><b>HWC 01</b> goes on Standby <b>5:00 AM – 10:00 PM, every day</b> —
+        the cylinder heats overnight when power is cheapest, and the tank keeps the water hot all day.</div>
+      </div>`}
+  </div>`;
+}
+scrRout.addEventListener('click',e=>{
+  const b=e.target.closest('[data-r]'); if(!b) return;
+  hasRoutine=b.dataset.r==='create';
+  renderRout();
+  toast(scrRout, hasRoutine?'✓ Routine created — starts at the next scheduled time':'Routine stopped');
+});
+renderRout();
 
-/* --- insights --- */
+/* ============ phone 3 — insights ============ */
+const scrIns=$('#scr-ins');
+$('#tabs-ins').innerHTML=tabsHtml(0);
+let insSeg='M';
 const IDATA={D:{tot:'$3.60',cap:'TODAY',mult:0.0171},W:{tot:'$48.72',cap:'THIS WEEK',mult:0.232},
              M:{tot:'$209.94',cap:'THIS MONTH',mult:1},Y:{tot:'$2,410',cap:'THIS YEAR',mult:11.48}};
 function donutGrad(){
@@ -495,41 +438,14 @@ function donutGrad(){
   parts.push(`#D9D9DC ${deg}deg 360deg`);
   return `conic-gradient(${parts.join(',')})`;
 }
-SCREENS.insights=()=>{
-  if(insCirc!==null){
-    const c=COST[insCirc], m=IDATA[insSeg].mult;
-    const bars=[62,20,14,18,26,30,44,58,40,22,34,66,88,54,38,28,46,72,94,60,42,30,52,80];
-    return {html:`<div class="appwrap">
-      <button class="backcircle" data-act="insback" aria-label="Back">${I.back}</button>
-      <div style="text-align:center; margin:14px 0 10px">
-        <span class="cicon" style="background:${c.col}; width:48px; height:48px; border-radius:15px; margin:0 auto">${I[c.ic]}</span>
-        <div style="font-size:20px; font-weight:650; color:var(--a-ink); margin-top:8px">${c.n}</div>
-        ${c.tag?`<div style="margin-top:5px"><span class="ctag" style="font-size:11px; padding:3px 10px">${c.tag}</span></div>`:''}
-      </div>
-      <div style="font-size:30px; font-weight:700; color:var(--a-ink)">$${(c.v*m).toFixed(2)}</div>
-      <div style="font-size:12.5px; color:var(--a-ink2); margin-bottom:8px">${IDATA[insSeg].cap.toLowerCase()} · ${c.p}% of the home's spend</div>
-      <div class="card">
-        <div class="bigbars">${bars.map((h,i2)=>`<i class="${i2%2?'dk':''}" style="height:${h}%"></i>`).join('')}</div>
-        <div class="axis"><span>1</span><span>8</span><span>15</span><span>22</span><span>30</span></div>
-      </div>
-      <div class="statline"><span>Daily average this month</span><b>$${(c.v/16).toFixed(2)}</b></div>
-      ${insCirc===0?`<div class="card" style="background:#FEF9EC; border-color:#F0D9A8">
-        <div style="font-size:13.5px; font-weight:650; color:var(--a-ink)">A quarter of the whole bill</div>
-        <div style="font-size:12.5px; color:#5C5C5E; line-height:1.5; margin-top:3px">Hot water is the biggest controllable load in almost every home — which is exactly why the routine demo puts it on Standby through the day.</div>
-      </div>`:''}
-    </div>`, tab:null};
-  }
+function renderIns(){
   const d=IDATA[insSeg];
-  return {html:`<div class="appwrap">
-    <div class="shead"><span style="width:34px"></span><span class="ttl">Cost</span><span class="icbtn">?</span></div>
-    <div class="seg">${['D','W','M','Y'].map(k=>`<button class="${insSeg===k?'on':''}" data-act="seg" data-v="${k}">${k}</button>`).join('')}</div>
-    <div style="display:flex; align-items:center; gap:8px; margin:0 0 12px; color:var(--a-ink2)">
-      <span class="tag neutral" style="background:#fff; padding:5px 12px">All circuits</span>
-      <span style="width:18px; margin-left:auto">${I.funnel}</span><span style="font-weight:700">$ ⇅</span>
-    </div>
+  scrIns.innerHTML=`<div class="appwrap">
+    <div class="tlh" style="justify-content:center"><div><div class="t" style="font-size:18px; text-align:center">Cost</div></div></div>
+    <div class="seg">${['D','W','M','Y'].map(k=>`<button class="${insSeg===k?'on':''}" data-seg="${k}">${k}</button>`).join('')}</div>
     ${insSeg==='D'
-      ?`<div style="font-size:30px; font-weight:700; color:var(--a-ink)">$3.60</div>
-        <div style="font-size:12.5px; color:var(--a-ink2); margin-bottom:6px">Today, hour by hour</div>
+      ?`<div style="font-size:26px; font-weight:700; color:var(--a-ink)">$3.60</div>
+        <div style="font-size:11.5px; color:var(--a-ink2); margin-bottom:6px">Today, hour by hour</div>
         <div class="card">
           <div class="bigbars">${[88,26,18,20,24,30,42,58,36,20,28,28,32,26,22,24,30,38,52,64,48,34,26,20].map((h,i2)=>`<i class="${(i2>=7&&i2<=10)||(i2>=17&&i2<=20)?'':'dk'}" style="height:${h}%"></i>`).join('')}</div>
           <div class="axis"><span>12AM</span><span>6AM</span><span>12PM</span><span>6PM</span><span>12AM</span></div>
@@ -541,288 +457,48 @@ SCREENS.insights=()=>{
           <div class="ctr"><div class="dv">${d.tot}</div><div class="dd">${d.cap}</div></div>
         </div>
         <div class="dside">
-          <div class="kick2">CIRCUIT SPEND</div>
           <div class="dh">Hot water leads — a quarter of the bill.</div>
-          <div class="db">Tap a circuit to see its month, day by day.</div>
+          <div class="db">Every circuit in dollars, ${d.cap.toLowerCase()}.</div>
         </div>
       </div>
-      <div class="h4" style="margin-top:2px">Circuits</div>
-      <div class="card" style="padding:4px 13px">
-        ${COST.map((c,ix)=>`<button class="crow" data-act="inscirc" data-n="${ix}">
-          <span class="cicon" style="background:${c.col}; width:30px; height:30px; border-radius:9px; margin:0">${I[c.ic]}</span>
+      <div class="card" style="padding:3px 12px">
+        ${COST.map(c=>`<div class="crow">
+          <span class="cicon" style="background:${c.col}; width:28px; height:28px; border-radius:9px; margin:0">${I[c.ic]}</span>
           <span class="crmain"><span class="crn">${c.n}</span>
             ${c.tag?`<span class="ctag" style="margin-left:6px">${c.tag}</span>`:''}</span>
           <span class="crval"><b>$${(c.v*d.mult).toFixed(2)}</b><small>${c.p}%</small></span>
-        </button>`).join('')}
+        </div>`).join('')}
       </div>`}
-  </div>`, tab:null};
-};
+  </div>`;
+}
+scrIns.addEventListener('click',e=>{
+  const b=e.target.closest('[data-seg]'); if(!b) return;
+  insSeg=b.dataset.seg; renderIns();
+});
+renderIns();
 
-/* --- plans --- */
-function planCard(o,ix){
-  return `<button class="plan" data-act="openplan" data-n="${ix}">
-    ${o.band?`<div class="band ${o.bandCls}">${o.band}</div>`:''}
+/* ============ phone 4 — plans ============ */
+const scrPlans=$('#scr-plans');
+function planCard(o,band){
+  return `<div class="plan">
+    ${band?`<div class="band ${band[1]}">${band[0]}</div>`:''}
     <div class="pbody">
-      <span class="logo ${o.lg}">${o.g}</span>
+      <span class="logo ${o.lg}" style="${{'lg-mer':'background:#17E3B1','lg-gen':'background:linear-gradient(135deg,#FF7A00,#E8380D)','lg-mercury':'background:#FFD400; color:#3a3000','lg-eco':'background:#14203A','lg-ek':'background:#7CC8F0; color:#0A3550','lg-oct':'background:#B03BE0','lg-con':'background:#E23B34','lg-pow':'background:#E0287E'}[o.lg]}">${o.g}</span>
       <div class="pn">${o.n}</div><div class="pr">${o.r}</div>
       <div class="pm">$${o.price}<small> (inc. GST)</small></div>
       <div class="est">Last 30 days estimate</div>
       ${o.pct!==undefined?`<div class="saveside"><div class="pct ${o.more?'neg':''}">${o.more?'↑':'↓'} ${o.pct}%</div>
         <div><span class="savepill ${o.more?'more':''}">$${o.more||o.save} ${o.more?'more':'saved'}</span></div></div>`:''}
     </div>
-    <div class="vdet"><span>View details</span><span>${I.chev}</span></div>
-  </button>`;
+  </div>`;
 }
-SCREENS.plans=()=>{
-  if(switching){
-    const o=PLANS[planIx];
-    return {html:`<div class="appwrap" style="padding-top:14px">
-      <button class="xcircle" data-act="swclose" aria-label="Close">${I.close}</button>
-      <div class="sheettitle" style="font-size:22px">Ready to switch plans?</div>
-      <div class="sheetsub" style="margin-bottom:10px">Follow the steps below</div>
-      <div class="card">
-        <span class="logo ${o.lg}" style="position:static; display:inline-flex; width:30px; height:30px; border-radius:50%; align-items:center; justify-content:center; color:#fff">${o.g}</span>
-        <div style="font-size:16px; font-weight:650; color:var(--a-ink); margin-top:8px">${o.n}</div>
-        <div style="font-size:12.5px; color:var(--a-ink2)">${o.r}</div>
-      </div>
-      <div class="card">
-        <div class="rowline" style="align-items:flex-start"><span class="k" style="flex:1"><b style="color:var(--a-ink)">1.</b>&ensp;Apply for your new plan on the provider's website.</span></div>
-        <div class="rowline" style="align-items:flex-start"><span class="k" style="flex:1"><b style="color:var(--a-ink)">2.</b>&ensp;Update your plan in the app to get accurate estimates.</span></div>
-      </div>
-      <button class="abtn primary" data-act="swgo">Continue&ensp;↗</button>
-    </div>`, tab:null};
-  }
-  if(planIx!==null){
-    const cur=planIx===-1;
-    const o=cur?{n:'ecoSOLAR',r:'Ecotricity',lg:'lg-eco',g:'❋',price:'429.71'}:PLANS[planIx];
-    return {html:`<div class="appwrap" style="padding-top:14px">
-      <button class="xcircle" data-act="plansback" aria-label="Close">${I.close}</button>
-      <div class="sheettitle" style="font-size:22px">${cur?'Current Plan':'Compare Plans'}</div>
-      <div class="plan" style="cursor:default">
-        <div class="pbody">
-          <span class="logo ${o.lg}">${o.g}</span>
-          <div class="pn">${o.n}</div><div class="pr">${o.r}</div>
-          <div class="pm">$${o.price}<small> (inc. GST)</small></div>
-          <div class="est">Last 30 days estimate</div>
-          ${!cur&&o.pct!==undefined?`<div class="saveside"><div class="pct ${o.more?'neg':''}">${o.more?'↑':'↓'} ${o.pct}%</div>
-            <div><span class="savepill ${o.more?'more':''}">$${o.more||o.save} ${o.more?'more':'saved'}</span></div></div>`:''}
-        </div>
-      </div>
-      <div class="card">
-        <div class="h4" style="margin-top:0">Rates</div>
-        <div class="rowline"><span class="k">User pricing</span><span class="v">Standard</span></div>
-        <div class="rowline"><span class="k">Daily charge</span><span class="v">${cur?'$1.5525':'$1.9579'}</span></div>
-        <div class="rowline"><span class="k">Solar export price</span><span class="v">${cur?'0¢ / kWh':'12¢ / kWh'}</span></div>
-      </div>
-      ${cur?`<div class="card">
-        <div style="font-size:13px; font-weight:650; color:var(--a-ink); margin-bottom:6px">Monday to Friday</div>
-        <div class="ratebar" style="background:linear-gradient(90deg,#F5A83C 0 29%,#E8483F 29% 46%,#F5A83C 46% 71%,#E8483F 71% 87%,#F5A83C 87% 100%)"></div>
-        <div class="axis"><span>12AM</span><span>6AM</span><span>12PM</span><span>6PM</span></div>
-        <div class="rowline"><span class="k">Peak <span style="color:#E8483F">●</span> 38.8815¢</span><span><span class="ttag red">7AM – 11AM</span><span class="ttag red">5PM – 9PM</span></span></div>
-        <div class="rowline"><span class="k">Off-peak <span style="color:#F5A83C">●</span> 31.395¢</span><span class="ttag">Other times</span></div>
-        <div style="font-size:13px; font-weight:650; color:var(--a-ink); margin:12px 0 6px">Weekends</div>
-        <div class="ratebar" style="background:#5B5BD6"></div>
-        <div class="rowline"><span class="k">Night <span style="color:#5B5BD6">●</span> 25.4265¢</span><span class="ttag">All day</span></div>
-      </div>`
-      :`<div class="card">
-        <div style="font-size:13px; font-weight:650; color:var(--a-ink); margin-bottom:6px">Every day</div>
-        <div class="ratebar" style="background:#2BB673"></div>
-        <div class="axis"><span>12AM</span><span>6AM</span><span>12PM</span><span>6PM</span></div>
-        <div class="rowline"><span class="k">Anytime <span style="color:#2BB673">●</span> 22.38¢ / kWh</span><span class="ttag">All day</span></div>
-      </div>
-      <button class="abtn primary" data-act="switchplan">Switch to this plan</button>`}
-    </div>`, tab:null};
-  }
-  return {html:`<div class="appwrap" style="padding-top:14px">
-    <div class="sheettitle">Compare energy plans</div>
-    <div class="sheetsub">Find the best energy plan based on your historical usage and save on your energy bills.</div>
-    <button class="plan" data-act="openplan" data-n="-1">
-      <div class="band grey">Current plan</div>
-      <div class="pbody">
-        <span class="logo lg-eco">❋</span>
-        <div class="pn">ecoSOLAR</div><div class="pr">Ecotricity</div>
-        <div class="pm">$429.71<small> (inc. GST)</small></div>
-        <div class="est">Last 30 days estimate</div>
-      </div>
-      <div class="vdet"><span>View details</span><span>${I.chev}</span></div>
-    </button>
-    <div class="availrow">Available plans <span class="countchip">26</span></div>
-    ${PLANS.map((o,ix)=>planCard(ix===0?Object.assign({band:'Cheapest plan',bandCls:'black'},o):o,ix)).join('')}
-  </div>`, tab:null};
-};
-
-/* --- routine --- */
-function activeRoutineHtml(){
-  return `<div class="h4">Currently active</div>
-  <div class="rcard">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start">
-      <span><span class="rchip">HWC 01</span>
-      <div class="rstat">HWC 01 routine <b>is on Standby</b></div>
-      <div class="rends">Ends at 10:00 PM · 10h 41m</div></span>
-      <span style="color:var(--a-ink3)">${I.chev}</span>
-    </div>
-    <div class="rprog"><i style="width:63%"></i></div>
-    <button class="abtn primary" data-act="rstop" style="width:auto; padding:8px 18px; font-size:12.5px; margin-top:11px">⏹&ensp;Stop routine</button>
-  </div>
-  <button class="card" data-act="rstart" style="width:100%; text-align:center; font-size:14px; font-weight:600; color:var(--a-ink)">+ New routine</button>`;
-}
-SCREENS.routine=()=>{
-  const r=routine;
-  if(r.scr==='pick') return {html:`<div class="appwrap">
-    <div class="shead"><button class="icbtn" data-act="rcancel">${I.close}</button><span class="ttl">Select Circuit</span><span style="width:34px"></span></div>
-    ${[0,2,3,4,6].map(ix=>{const c=CIRC[ix]; return `<button class="crow" data-act="rpick" data-n="${ix}" style="background:#fff; border-radius:13px; border:0; padding:11px 13px; margin-bottom:8px">
-      <span class="cicon" style="background:${c.col}; width:32px; height:32px; border-radius:10px; margin:0">${I[c.ic]}</span>
-      <span class="crmain"><span class="crn">${c.label} ${c.num}</span>
-        ${c.tags[0]?`<span class="ctag" style="margin-left:6px">${c.tags[0]}</span>`:''}</span>
-      <span style="width:19px; height:19px; border-radius:50%; border:2px solid ${ix===0&&r.picked?'var(--a-btn)':'var(--a-line)'}; ${ix===0&&r.picked?'background:radial-gradient(circle, var(--a-btn) 42%, transparent 46%)':''}"></span>
-    </button>`;}).join('')}
-  </div>`, tab:'routines'};
-  if(r.scr==='editor'){
-    const nDays=r.days.filter(Boolean).length;
-    const hrs=nDays===0?'0h':nDays===7?'17h':Math.round(nDays*17/7)+'h avg';
-    return {html:`<div class="appwrap">
-    <div class="shead"><button data-act="rcancel" style="font-size:14px; color:var(--a-ink2)">Cancel</button><span class="ttl">Custom routine</span><span style="width:44px"></span></div>
-    <div class="h4" style="margin-top:2px">Circuit affected</div>
-    <div style="font-size:11.5px; color:var(--a-ink2); margin:-4px 0 8px">This circuit will be set to Standby during the routine</div>
-    <div class="card"><div class="rowline" style="border:0; padding:4px 0">
-      <span style="display:flex; gap:9px; align-items:center"><span class="cicon" style="background:var(--t-blue); width:30px; height:30px; border-radius:9px; margin:0">${I.drop}</span><b>HWC 01</b></span>
-      <span class="ctag">Water Heater</span></div></div>
-    <div class="h4">Schedule</div>
-    <div style="font-size:11.5px; color:var(--a-ink2); margin:-4px 0 8px">Choose when the circuit will be on Standby</div>
-    <div class="card">
-      <div style="font-size:12.5px; color:var(--a-ink2); margin-bottom:6px">Repeat</div>
-      <div class="daychips">${['M','T','W','T','F','S','S'].map((d,ix)=>`<button class="daychip ${r.days[ix]?'on':''}" data-act="rday" data-n="${ix}">${d}</button>`).join('')}</div>
-      <div style="font-size:12.5px; color:var(--a-ink2); margin:12px 0 6px">Time</div>
-      <div style="display:flex; gap:8px; align-items:center">
-        <span class="timebox">${r.from}</span><span style="color:var(--a-ink3)">to</span><span class="timebox">${r.to}</span>
-      </div>
-      <div class="rowline" style="border:0; margin-top:8px; padding-bottom:0"><span class="k">Standby hours per day</span><span class="v">${hrs}</span></div>
-    </div>
-    <button class="abtn mint" data-act="rcreate" ${nDays?'':'disabled style="opacity:.5"'}>Create</button>
-  </div>`, tab:'routines'};
-  }
-  return {html:`<div class="appwrap">
-    <div class="tlh"><div><div class="t">Routines</div></div><span class="icbtn">?</span></div>
-    <div class="seg"><button class="on">Scheduled</button><button data-act="rtoast">Suggested</button></div>
-    ${r.exists?activeRoutineHtml():`
-    <div class="card" style="text-align:center; padding:22px 16px">
-      <div style="font-size:14.5px; font-weight:650; color:var(--a-ink)">No routines scheduled yet</div>
-      <div style="font-size:12.5px; color:var(--a-ink2); margin-top:3px">Your scheduled and active routines can be found here.</div>
-    </div>
-    <div class="promo">
-      <div class="pin">
-        <div class="pt">Energy routines</div>
-        <div class="pb">Set your circuits to Standby and save energy during peak electricity prices.</div>
-        <div style="font-size:12px; color:#33513F; margin:-2px 0 12px">⚡ Up to 15% bill savings&emsp;🕐 2 minutes</div>
-        <button class="abtn green" data-act="rstart" style="padding:12px">Start</button>
-      </div>
-    </div>`}
-  </div>`, tab:'routines'};
-};
-
-/* ============ render ============ */
-function render(){
-  const key=SIM==='live'?({home:'home',control:'control',detail:'detail'}[scr]||'home'):
-            SIM==='routine'?'routine':SIM==='insights'?'insights':'plans';
-  const out=SCREENS[key]();
-  screenEl.innerHTML=out.html+(routine.created?`<div class="okmodal"><div class="okcard">
-    <div class="big">✓</div>
-    <div style="font-size:17px; font-weight:650">Routine created</div>
-    <div style="font-size:12.5px; color:var(--a-ink2); margin:6px 0 14px; line-height:1.5">Your new routine has been set up and will start running at the next scheduled time.</div>
-    <button class="abtn primary" data-act="rok">Continue to the app</button>
-  </div></div>`:'');
-  $('#tabslot').innerHTML=out.tab!==null?tabs(out.tab):'';
-}
-
-/* live wattage tick */
-let jig=0;
-setInterval(()=>{
-  jig++;
-  document.querySelectorAll('[data-livew]').forEach(el=>{
-    const c=CIRC[+el.dataset.livew];
-    if(!c||c.w<=0) return;
-    el.textContent=wString(Math.max(1,c.w*(1+0.05*Math.sin(jig*1.7+(+el.dataset.livew)))));
-  });
-  document.querySelectorAll('[data-live="tot"]').forEach(el=>{
-    el.textContent=wString(liveTotal()*(1+0.02*Math.sin(jig*1.3)));
-  });
-},1000);
-
-/* ============ interactions ============ */
-screenEl.addEventListener('click',e=>{
-  const el=e.target.closest('[data-act]'); if(!el) return;
-  switch(el.dataset.act){
-    case 'opencirc': detIx=+el.dataset.n; scr='detail'; render(); break;
-    case 'detback': scr='control'; render(); break;
-    case 'power': {
-      const c=CIRC[detIx];
-      if(c.solar){ toast('Solar is managed by the inverter'); break; }
-      c.standby=!c.standby;
-      c.w=c.standby?0:c.onW;
-      toast(c.standby?c.label+' '+c.num+' set to Standby':c.label+' '+c.num+' is back on'+(c.onW>500?' — watch the home total':''));
-      render(); break;
-    }
-    case 'sparetoast': toast('Spare — not wired to anything yet'); break;
-    case 'wtoast': toast('Cost breakdowns live in the Insights demo'); break;
-    case 'seg': insSeg=el.dataset.v; render(); break;
-    case 'inscirc': insCirc=+el.dataset.n; render(); break;
-    case 'insback': insCirc=null; render(); break;
-    case 'openplan': planIx=+el.dataset.n; render(); screenEl.scrollTop=0; break;
-    case 'plansback': planIx=null; switching=false; render(); break;
-    case 'switchplan': switching=true; render(); screenEl.scrollTop=0; break;
-    case 'swclose': switching=false; render(); break;
-    case 'swgo': switching=false; planIx=null; render(); toast('In the real app this opens the provider\'s website'); break;
-    case 'rstart': routine.scr='pick'; routine.picked=false; render(); break;
-    case 'rtoast': toast('Suggested routines are in the real app — this demo builds one by hand'); break;
-    case 'rcancel': routine.scr='promo'; render(); break;
-    case 'rpick':
-      if(+el.dataset.n!==0){ toast('For this demo, pick the hot water cylinder — HWC 01'); break; }
-      routine.picked=true; render();
-      setTimeout(()=>{ routine.scr='editor'; render(); },350);
-      break;
-    case 'rday': routine.days[+el.dataset.n]=routine.days[+el.dataset.n]?0:1; render(); break;
-    case 'rcreate':
-      if(!routine.days.some(Boolean)) break;
-      routine.created=true; render(); break;
-    case 'rok':
-      routine.created=false; routine.exists=true; routine.scr='promo';
-      CIRC[0].standby=true; CIRC[0].w=0;
-      render(); break;
-    case 'rstop':
-      routine.exists=false; routine.scr='promo';
-      render(); toast('Routine stopped'); break;
-  }
-});
-document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-act^="tab-"]'); if(!t) return;
-  const id=t.dataset.act.slice(4);
-  const en={live:['home','control'], routine:['routines'], insights:[], plans:[]}[SIM]||[];
-  if(!en.includes(id)){ toast('That tab lives in one of the other demos'); return; }
-  if(SIM==='live'){ scr=id==='control'?'control':'home'; render(); }
-});
-
-/* ============ scale + boot ============ */
-function fitPhone(){
-  const w=Math.min(document.documentElement.clientWidth,innerWidth||9999)-20;
-  const sc=Math.max(.5,Math.min(1,w/410));
-  $('#phone').style.transform=sc<1?`scale(${sc})`:'';
-  $('#phonewrap').style.height=sc<1?Math.round(750*sc+30)+'px':'';
-}
-addEventListener('resize',fitPhone);
-
-const qpSim=['live','routine','insights','plans'];
-if(qpSim.includes(SIM)){
-  $('#phonewrap').hidden=false;
-  $('#hintbar').hidden=false;
-  $('#hinttext').innerHTML=HINTS[SIM];
-  $('#hdrsub').textContent={live:'Home app · live power',routine:'Home app · routines',
-    insights:'Home app · insights',plans:'Home app · energy plans'}[SIM];
-  scr=SIM==='live'?'home':SIM;
-  render();
-  fitPhone();
-} else {
-  $('#menuview').hidden=false;
-}
+scrPlans.innerHTML=`<div class="appwrap" style="padding-top:12px">
+  <div class="sheettitle">Compare energy plans</div>
+  <div class="sheetsub">Find the best energy plan based on your historical usage and save on your energy bills.</div>
+  ${planCard({n:'ecoSOLAR',r:'Ecotricity',lg:'lg-eco',g:'❋',price:'429.71'},['Current plan','grey'])}
+  <div class="availrow">Available plans <span class="countchip">26</span></div>
+  ${PLANS.map((o,ix)=>planCard(o,ix===0?['Cheapest plan','black']:null)).join('')}
+</div>`;
 </script>
 </body>
 </html>
