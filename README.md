@@ -233,16 +233,17 @@ screens and copy — `Trade/Trade/Views/**`, `Localizable.xcstrings`), `wearebas
 
 # Home app — four-phone showcase (`home.html`)
 
-One page, four phones, each permanently on the screen that tells its part of the customer
-story — built from **a real Basis home's data**. Minimal interaction by design: a tap or a
-scroll per phone, with live-updating values where it matters.
+One page, four phones, each on its part of the customer story — with the **real app's look
+and flows** inside every phone, built from **a real Basis home's data**. Lime highlights with
+little action bubbles point at what to press ("Open the cylinder", "Start here", "Open the
+cheapest plan"), and values update live.
 
-| Phone | Shows | Interaction |
-|---|---|---|
-| Live, circuit by circuit | Control grid, all 20 circuits with live wattages ticking + a sticky whole-home total | Tap any circuit to flick it (HWC jumps the total from ~450 W to 3.5 kW) |
-| Set-and-forget routines | The hot-water Standby routine story | One button: create the routine ⇄ stop it |
-| The month, in dollars | The real $209.94 month, donut + all 15 circuits priced | Flick D · W · M · Y |
-| The right plan, proven | The real comparison vs ecoSOLAR $429.71 — Freedom $330.65 ↓23% "$99 saved" down to plans that cost $116 MORE | Scroll the list |
+| Phone | Real flow inside it |
+|---|---|
+| Live, circuit by circuit | Control grid (20 circuits, wattages ticking, sticky whole-home total) → circuit detail (hero icon, green live line, Tags, Activity cards, protection rows) → black Standby / green Turn-on button; flicking HWC jumps the total ~450 W → 3.4 kW |
+| Set-and-forget routines | The real creation flow: Energy-routines promo → Select Circuit (radio list) → Custom routine editor (repeat day chips recalc standby hours, time window) → mint Create → "Routine created ✓" → active card with Stop routine |
+| The month, in dollars | Cost screen: D/W/M/Y segments, donut, all 15 circuits priced ($209.94 real month) → tap a circuit for its daily chart + monthly average |
+| The right plan, proven | Real comparison list vs ecoSOLAR $429.71 (Freedom $330.65 ↓23% "$99 saved" → plans costing $116 MORE) → plan detail with rate windows (the current plan shows the real TOU peak bands) → "Switch to this plan" → Ready-to-switch steps |
 
 ```html
 <iframe src="https://michaelwearebasis.github.io/training-app-simulation/home.html"
@@ -251,10 +252,9 @@ scroll per phone, with live-updating values where it matters.
 ```
 
 The phones wrap responsively: 4-up above ~1420px (height ≈ 760), 2×2 on a typical course
-column (height ≈ 1400), single column on phones. Visuals are matched to a screen recording
-of the production Home app; all values (wattages, circuit labels and tags, monthly costs,
-plan prices) are that home's real data. Single self-contained file, ~38 KB, no network
-requests.
+column (height ≈ 1400), single column on phones. Tab bars are rendered per the real app;
+tapping a tab that belongs to another phone toasts a pointer so each phone stays on topic.
+Single self-contained file, ~60 KB, no network requests.
 
-Earlier formats (the ten-part guided walkthrough, then four separate query-param sims) are
-in git history if ever wanted.
+Earlier formats (guided walkthrough, query-param mini-sims, simplified wall) are in git
+history if ever wanted.
