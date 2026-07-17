@@ -245,7 +245,7 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
   <div class="cell">
     <div class="cellhead">
       <div class="ct">The month, in dollars</div>
-      <div class="cc">$209.94 last month — every circuit priced. Flick the period, <b>open a circuit</b> for its story.</div>
+      <div class="cc">$212.02 this month — every circuit priced, day to year. Flick the period, <b>open a circuit</b>.</div>
     </div>
     <div class="phonebox"><div class="phone"><div class="bezel">
       <div class="notch"></div>
@@ -327,23 +327,56 @@ const CIRC=[
  {num:'19',label:'Power', tags:['Dryer +1'],       ic:'bolt', col:'var(--t-pink)',   w:13,  onW:13},
  {num:'20',label:'Solar', tags:['Solar'],          ic:'sun',  col:'var(--t-yellow)', w:-2250,solar:true}
 ];
-const COST=[
- {n:'HWC 01',tag:'Water Heater',v:52.59,p:25,col:'var(--t-blue)',ic:'drop'},
- {n:'Power 19',tag:'Dryer +1',v:36.32,p:17,col:'var(--t-pink)',ic:'bolt'},
- {n:'Power 12',tag:'Electric Vehicle',v:31.92,p:15,col:'var(--t-red)',ic:'bolt'},
- {n:'Air-Con 07',tag:'Air Conditioner',v:27.61,p:13,col:'var(--t-indigo)',ic:'snow'},
- {n:'Air-Con 18',tag:'Air Conditioner',v:13.78,p:7,col:'var(--t-purple)',ic:'snow'},
- {n:'Power 15',tag:'Air Fryer +2',v:12.26,p:6,col:'var(--t-orange)',ic:'bolt'},
- {n:'Oven 05',tag:'Oven',v:7.19,p:3,col:'var(--t-teal)',ic:'fire'},
- {n:'Lights 10',tag:'',v:6.58,p:3,col:'var(--t-yellow)',ic:'bolt'},
- {n:'Power 09',tag:'',v:4.57,p:2,col:'#5AC8FA',ic:'bolt'},
- {n:'Power 14',tag:'',v:3.72,p:2,col:'#FF6482',ic:'bolt'},
- {n:'Lights 13',tag:'',v:3.23,p:2,col:'#D9C400',ic:'bolt'},
- {n:'Power 16',tag:'',v:3.19,p:2,col:'#34C759',ic:'bolt'},
- {n:'Power 06',tag:'Guest Bathroom',v:2.21,p:1,col:'#A2845E',ic:'bolt'},
- {n:'Hob 03',tag:'Hob',v:2.12,p:1,col:'#BF5AF2',ic:'plug'},
- {n:'Power 08',tag:'Heater',v:1.02,p:1,col:'#8E8E93',ic:'bolt'}
-];
+/* per-circuit meta + the real D/W/M/Y breakdowns from the recording */
+const CMETA={
+ 'HWC 01':      {tag:'Water Heater',col:'var(--t-blue)',ic:'drop'},
+ 'Power 19':    {tag:'Dryer +1',col:'var(--t-pink)',ic:'bolt'},
+ 'Power 12':    {tag:'Electric Vehicle',col:'var(--t-red)',ic:'bolt'},
+ 'Air-Con 07':  {tag:'Air Conditioner',col:'var(--t-indigo)',ic:'snow'},
+ 'Air-Con 18':  {tag:'Air Conditioner',col:'var(--t-purple)',ic:'snow'},
+ 'Power 15':    {tag:'Air Fryer +2',col:'var(--t-orange)',ic:'bolt'},
+ 'Oven 05':     {tag:'Oven',col:'var(--t-teal)',ic:'fire'},
+ 'Lights 10':   {tag:'',col:'var(--t-yellow)',ic:'bolt'},
+ 'Power 09':    {tag:'',col:'#5AC8FA',ic:'bolt'},
+ 'Power 14':    {tag:'',col:'#FF6482',ic:'bolt'},
+ 'Lights 13':   {tag:'',col:'#D9C400',ic:'bolt'},
+ 'Power 16':    {tag:'',col:'#34C759',ic:'bolt'},
+ 'Power 06':    {tag:'Guest Bathroom',col:'#A2845E',ic:'bolt'},
+ 'Hob 03':      {tag:'Hob',col:'#BF5AF2',ic:'plug'},
+ 'Power 08':    {tag:'Heater',col:'#8E8E93',ic:'bolt'},
+ 'Power 17':    {tag:'',col:'#FF9F0A',ic:'bolt'},
+ 'Septic Pump 04':{tag:'Septic Pump',col:'var(--t-teal)',ic:'drop'},
+ 'Solar 20':    {tag:'Solar',col:'var(--t-yellow)',ic:'sun'},
+ 'Spare 02':    {tag:'',col:'#E3E3E5',ic:'bolt'},
+ 'Power 11':    {tag:'Outdoor Socket',col:'var(--t-pink)',ic:'bolt'}
+};
+const PERIODS={
+ D:{tot:'$5.67',sub:'Today',avg:['Hourly average today',5.67/24],rows:[
+  ['HWC 01',1.59,28],['Air-Con 07',1.05,19],['Power 19',0.86,15],['Power 12',0.65,11],
+  ['Air-Con 18',0.43,8],['Lights 10',0.29,5],['Power 15',0.29,5],['Power 09',0.20,4],
+  ['Power 16',0.11,2],['Lights 13',0.10,2],['Power 14',0.07,1],['Septic Pump 04',0.02,0],
+  ['Power 17',0.01,0],['Solar 20',0.01,0],['Hob 03',0,0],['Oven 05',0,0],
+  ['Power 06',0,0],['Power 08',0,0],['Spare 02',0,0],['Power 11',0,0]]},
+ W:{tot:'$60.54',sub:'This week',avg:['Daily average this week',60.54/7],rows:[
+  ['HWC 01',16.24,27],['Power 19',11.67,19],['Power 12',9.54,16],['Air-Con 07',7.24,12],
+  ['Power 15',3.38,6],['Air-Con 18',3.00,5],['Lights 10',1.78,3],['Oven 05',1.45,2],
+  ['Power 09',1.40,2],['Power 16',1.08,2],['Power 14',1.03,2],['Lights 13',0.91,2],
+  ['Power 06',0.70,1],['Hob 03',0.56,1],['Power 17',0.29,0],['Septic Pump 04',0.15,0],
+  ['Solar 20',0.09,0],['Power 08',0.03,0],['Spare 02',0,0],['Power 11',0,0]]},
+ M:{tot:'$212.02',sub:'This month',avg:['Daily average this month',212.02/16],rows:[
+  ['HWC 01',54.18,26],['Power 19',36.45,17],['Power 12',31.93,15],['Air-Con 07',27.69,13],
+  ['Air-Con 18',13.79,7],['Power 15',12.30,6],['Oven 05',7.19,3],['Lights 10',6.69,3],
+  ['Power 09',4.64,2],['Power 14',3.72,2],['Lights 13',3.25,2],['Power 16',3.21,2],
+  ['Power 06',2.21,1],['Hob 03',2.12,1],['Power 08',1.02,0],['Power 17',0.86,0],
+  ['Septic Pump 04',0.47,0],['Solar 20',0.32,0],['Spare 02',0,0],['Power 11',0,0]]},
+ Y:{tot:'$1,689.83',sub:'This year',avg:['Monthly average this year',1689.83/6.5],rows:[
+  ['HWC 01',486.24,29],['Power 12',273.07,16],['Power 19',228.21,14],['Power 15',151.07,9],
+  ['Air-Con 07',150.16,9],['Lights 10',66.10,4],['Oven 05',54.48,3],['Power 14',45.87,3],
+  ['Power 09',42.34,3],['Hob 03',41.35,2],['Air-Con 18',39.27,2],['Power 16',35.71,2],
+  ['Lights 13',33.74,2],['Power 06',16.44,1],['Power 17',10.80,1],['Power 08',6.43,0],
+  ['Septic Pump 04',5.34,0],['Solar 20',3.23,0],['Spare 02',0,0],['Power 11',0,0]]}
+};
+const pctTxt=(v,p)=>p>=1?p+'%':(v>0?'~0%':'0%');
 const LG={'lg-mer':'background:#17E3B1','lg-gen':'background:linear-gradient(135deg,#FF7A00,#E8380D)',
   'lg-mercury':'background:#FFD400; color:#3a3000','lg-eco':'background:#14203A',
   'lg-ek':'background:#7CC8F0; color:#0A3550','lg-oct':'background:#B03BE0','lg-con':'background:#E23B34','lg-pow':'background:#E0287E'};
@@ -489,7 +522,7 @@ setInterval(()=>{
 
 /* ============ phone 2 — routine (real creation flow) ============ */
 const scrRout=$('#scr-rout');
-const rout={scr:'promo', pickIx:null, days:[1,1,1,1,1,1,1], created:false, exists:false, activeIx:0};
+const rout={scr:'list', pickIx:null, days:[1,1,1,1,1,1,1], created:false, routines:[]};
 function renderRout(){
   const r=rout;
   let html='';
@@ -498,11 +531,14 @@ function renderRout(){
       <div class="shead"><button class="icbtn" data-ract="cancel">${I.close}</button><span class="ttl">Select Circuit</span><span class="icbtn" style="background:#101314; color:#fff">✓</span></div>
       ${CIRC.map((c,ix)=>{
         if(c.solar) return '';
-        if(c.spare) return `<div class="crow" style="background:#fff; border-radius:12px; border:0; padding:10px 12px; margin-bottom:7px; opacity:.45">
-          <span class="cicon" style="background:#E3E3E5; color:#9C9CA0; width:30px; height:30px; border-radius:9px; margin:0">▫</span>
-          <span class="crmain"><span class="crn">Spare ${c.num}</span></span></div>`;
-        return `<button class="crow${ix===0?' hot':''}" data-rpick="${ix}" style="background:#fff; border-radius:12px; border:0; padding:10px 12px; margin-bottom:7px; position:relative">
-          ${ix===0?bub('The cylinder — the big one','top:-11px; right:2px'):''}
+        const taken=r.routines.some(x=>x.ix===ix);
+        if(c.spare||taken) return `<div class="crow" style="background:#fff; border-radius:12px; border:0; padding:10px 12px; margin-bottom:7px; opacity:.45">
+          <span class="cicon" style="background:${c.spare?'#E3E3E5':c.col}; ${c.spare?'color:#9C9CA0;':''} width:30px; height:30px; border-radius:9px; margin:0">${c.spare?'▫':I[c.ic]}</span>
+          <span class="crmain"><span class="crn">${c.label} ${c.num}</span>
+          ${taken?'<span class="ctag" style="margin-left:6px">routine set</span>':''}</span></div>`;
+        const hint=r.routines.length===0&&ix===0;
+        return `<button class="crow${hint?' hot':''}" data-rpick="${ix}" style="background:#fff; border-radius:12px; border:0; padding:10px 12px; margin-bottom:7px; position:relative">
+          ${hint?bub('The cylinder — the big one','top:-11px; right:2px'):''}
           <span class="cicon" style="background:${c.col}; width:30px; height:30px; border-radius:9px; margin:0">${I[c.ic]}</span>
           <span class="crmain"><span class="crn">${c.label} ${c.num}</span>
             ${c.tags[0]?`<span class="ctag" style="margin-left:6px">${c.tags[0]}</span>`:''}</span>
@@ -536,29 +572,25 @@ function renderRout(){
         ${nDays?bub('Create it','top:-13px; right:6px'):''}Create</button>
     </div>`;
   } else {
-    const c=r.exists?CIRC[r.activeIx]:null;
     html=`<div class="appwrap">
       <div class="tlh"><div><div class="t">Routines</div></div><span class="icbtn">?</span></div>
       <div class="seg"><button class="on">Scheduled</button><button data-ract="sug">Suggested</button></div>
-      ${r.exists
+      ${r.routines.length
       ?`<div class="h4">Currently active</div>
-        <div class="rcard">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start">
-            <span><span class="rchip" style="background:${c.col.startsWith('var')?c.col:'var(--t-blue)'}">${c.label} ${c.num}</span>
-            <div class="rstat">${c.label} ${c.num} routine <b>is on Standby</b></div>
-            <div class="rends">Everyday · 5:00 AM – 10:00 PM · ends in 10h 41m</div></span>
-            <span style="color:var(--a-ink3)">${I.chev}</span>
-          </div>
-          <div class="rprog"><i style="width:63%"></i></div>
-          <button class="abtn primary hot" data-ract="stop" style="width:auto; padding:8px 18px; font-size:12px; margin-top:11px; position:relative">
-            ${bub('Stop or restart any time','top:-13px; left:-4px')}⏹&ensp;Stop routine</button>
-        </div>
-        <div class="card">
-          <div class="rowline"><span class="k">Cylinder heats</span><span class="v">10 PM – 5 AM, off-peak</span></div>
-          <div class="rowline"><span class="k">Comfort</span><span class="v">Unchanged — boost anytime</span></div>
-          <div class="rowline"><span class="k">This circuit last month</span><span class="v">$52.59</span></div>
-        </div>
-        <button class="card" data-ract="start" style="width:100%; text-align:center; font-size:13.5px; font-weight:600; color:var(--a-ink)">+ New routine</button>`
+        ${r.routines.map((rt,ri)=>{
+          const c=CIRC[rt.ix];
+          return `<div class="rcard">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start">
+              <span><span class="rchip" style="background:${c.col}">${c.label} ${c.num}</span>
+              <div class="rstat">${c.label} ${c.num} routine <b>is on Standby</b></div>
+              <div class="rends">Everyday · 5:00 AM – 10:00 PM · ends in 10h 41m</div></span>
+              <span style="color:var(--a-ink3)">${I.chev}</span>
+            </div>
+            <div class="rprog"><i style="width:63%"></i></div>
+            <button class="abtn primary" data-rstop="${ri}" style="width:auto; padding:8px 18px; font-size:12px; margin-top:11px">⏹&ensp;Stop routine</button>
+          </div>`;}).join('')}
+        <button class="card hot" data-ract="start" style="width:100%; text-align:center; font-size:13.5px; font-weight:600; color:var(--a-ink); position:relative">
+          ${bub('Add another circuit','top:-11px; right:4px')}+ New routine</button>`
       :`<div class="card" style="text-align:center; padding:18px 16px">
           <div style="font-size:14px; font-weight:650; color:var(--a-ink)">No routines scheduled yet</div>
           <div style="font-size:12px; color:var(--a-ink2); margin-top:3px">Your scheduled and active routines can be found here.</div>
@@ -569,10 +601,6 @@ function renderRout(){
           <div style="font-size:11.5px; color:#33513F; margin:-4px 0 10px">⚡ Up to 15% bill savings&emsp;🕐 2 minutes</div>
           <button class="abtn green hot" data-ract="start" style="padding:11px; position:relative">
             ${bub('Start here','top:-13px; right:6px')}Start</button>
-        </div>
-        <div class="card">
-          <div class="h4" style="margin-top:0">Why hot water first</div>
-          <div style="font-size:12px; color:var(--a-ink2); line-height:1.55">It's <b style="color:var(--a-ink)">$52.59 of this month's $209.94</b> — and the tank keeps water hot for hours, so shifting the heating costs nothing in comfort.</div>
         </div>`}
     </div>`;
   }
@@ -587,26 +615,31 @@ scrRout.addEventListener('click',e=>{
   const pick=e.target.closest('[data-rpick]');
   if(pick){
     rout.pickIx=+pick.dataset.rpick; renderRout();
-    setTimeout(()=>{ rout.scr='editor'; renderRout(); },330);
+    setTimeout(()=>{ rout.scr='editor'; rout.days=[1,1,1,1,1,1,1]; renderRout(); },330);
     return;
   }
   const day=e.target.closest('[data-rday]');
   if(day){ rout.days[+day.dataset.rday]^=1; renderRout(); return; }
+  const stop=e.target.closest('[data-rstop]');
+  if(stop){
+    const rt=rout.routines.splice(+stop.dataset.rstop,1)[0];
+    renderRout(); toast(scrRout, CIRC[rt.ix].label+' '+CIRC[rt.ix].num+' routine stopped');
+    return;
+  }
   const act=e.target.closest('[data-ract]'); if(!act) return;
   switch(act.dataset.ract){
     case 'start': rout.scr='pick'; rout.pickIx=null; renderRout(); break;
-    case 'cancel': rout.scr=rout.exists?'promo':'promo'; renderRout(); break;
+    case 'cancel': rout.scr='list'; renderRout(); break;
     case 'sug': toast(scrRout,'Suggested routines are personalised in the real app'); break;
     case 'create':
       if(!rout.days.some(Boolean)) break;
       rout.created=true; renderRout(); break;
     case 'ok':
-      rout.created=false; rout.exists=true; rout.activeIx=rout.pickIx; rout.scr='promo';
-      CIRC[rout.activeIx].standby=true; CIRC[rout.activeIx].w=0;
+      rout.created=false;
+      rout.routines.push({ix:rout.pickIx});
+      CIRC[rout.pickIx].standby=true; CIRC[rout.pickIx].w=0;
+      rout.scr='list';
       renderRout(); break;
-    case 'stop':
-      rout.exists=false; rout.scr='promo';
-      renderRout(); toast(scrRout,'Routine stopped'); break;
   }
 });
 renderRout();
@@ -614,14 +647,15 @@ renderRout();
 /* ============ phone 3 — insights ============ */
 const scrIns=$('#scr-ins');
 let insSeg='M', insCirc=null;
-const IDATA={D:{tot:'$3.60',sub:'Today',mult:0.0171},W:{tot:'$48.72',sub:'This week',mult:0.232},
-             M:{tot:'$209.94',sub:'This month',mult:1},Y:{tot:'$2,410',sub:'This year',mult:11.48}};
-function donutSvg(centreTop,centreSub){
-  const R=46, C=2*Math.PI*R, total=209.94, gap=3.4;
+
+function donutSvg(P){
+  const R=46, C=2*Math.PI*R, gap=3.4;
+  const total=P.rows.reduce((a,r)=>a+r[1],0);
   let acc=0, segs='';
-  COST.forEach(c=>{
-    const frac=c.v/total, len=Math.max(1.6, frac*C-gap);
-    segs+=`<circle r="${R}" cx="60" cy="60" fill="none" stroke="${c.col}" stroke-width="10.5"
+  P.rows.forEach(r=>{
+    if(r[1]<=0) return;
+    const frac=r[1]/total, len=Math.max(1.6, frac*C-gap);
+    segs+=`<circle r="${R}" cx="60" cy="60" fill="none" stroke="${CMETA[r[0]].col}" stroke-width="10.5"
       stroke-linecap="round" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-acc*C}"></circle>`;
     acc+=frac;
   });
@@ -629,8 +663,8 @@ function donutSvg(centreTop,centreSub){
     <div style="position:relative; width:196px; height:196px">
       <svg viewBox="0 0 120 120" style="width:100%; height:100%; transform:rotate(-90deg)">${segs}</svg>
       <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center">
-        <div style="font-size:23px; font-weight:700; color:var(--a-ink); letter-spacing:-.02em">${centreTop}</div>
-        <div style="font-size:12px; color:var(--a-ink2); margin-top:2px">${centreSub}</div>
+        <div style="font-size:23px; font-weight:700; color:var(--a-ink); letter-spacing:-.02em">${P.tot}</div>
+        <div style="font-size:12px; color:var(--a-ink2); margin-top:2px">${P.sub}</div>
       </div>
     </div>
   </div>`;
@@ -638,34 +672,35 @@ function donutSvg(centreTop,centreSub){
 const CAL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>';
 const FUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
 function renderIns(){
+  const P=PERIODS[insSeg];
   if(insCirc!==null){
-    const c=COST[insCirc], m=IDATA[insSeg].mult;
+    const r=P.rows.find(x=>x[0]===insCirc)||[insCirc,0,0];
+    const meta=CMETA[insCirc];
     const bars=[62,20,14,18,26,30,44,58,40,22,34,66,88,54,38,28,46,72,94,60,42,30,52,80];
     scrIns.innerHTML=`<div class="appwrap">
       <button class="backcircle" data-iact="back" aria-label="Back">${I.back}</button>
       <div style="text-align:center; padding-top:6px; font-size:17px; font-weight:650; color:var(--a-ink); margin-bottom:12px">Cost</div>
       <div style="display:flex; align-items:center; gap:9px; margin:6px 0 4px">
-        <span class="cicon" style="background:${c.col}; width:34px; height:34px; border-radius:11px; margin:0">${I[c.ic]}</span>
-        <b style="font-size:15px">${c.n.split(' ')[0]} <span style="color:var(--a-ink3)">${c.n.split(' ')[1]}</span></b>
+        <span class="cicon" style="background:${meta.col}; width:34px; height:34px; border-radius:11px; margin:0">${I[meta.ic]}</span>
+        <b style="font-size:15px">${insCirc.split(' ')[0]} <span style="color:var(--a-ink3)">${insCirc.split(' ')[1]}</span></b>
         <span style="margin-left:auto" class="icbtn">${FUN}</span>
         <span class="icbtn" style="width:auto; border-radius:999px; padding:0 12px; font-weight:700; font-size:12px">$ ⇅</span>
       </div>
-      <div style="font-size:27px; font-weight:700; color:var(--a-ink); margin-top:8px">$${(c.v*m).toFixed(2)}</div>
-      <div style="font-size:12px; color:var(--a-ink2); margin-bottom:8px">${IDATA[insSeg].sub} · ${c.p}% of the home's spend</div>
+      <div style="font-size:27px; font-weight:700; color:var(--a-ink); margin-top:8px">$${r[1].toFixed(2)}</div>
+      <div style="font-size:12px; color:var(--a-ink2); margin-bottom:8px">${P.sub} · ${pctTxt(r[1],r[2])} of the home's spend</div>
       <div class="card">
         <div class="bigbars">${bars.map((h,i2)=>`<i class="${i2%2?'dk':''}" style="height:${h}%"></i>`).join('')}</div>
         <div class="axis"><span>1</span><span>8</span><span>15</span><span>22</span><span>30</span></div>
       </div>
-      <div class="statline"><span>Daily average this month</span><b>$${(c.v/16).toFixed(2)}</b></div>
-      <div style="text-align:center; margin-top:4px"><span class="icbtn" style="width:auto; border-radius:999px; padding:6px 16px; font-size:12px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.06)">‹&emsp;This month&emsp;›</span></div>
-      ${insCirc===0?`<div class="card" style="background:#FEF9EC; border-color:#F0D9A8; margin-top:10px">
-        <div style="font-size:12.5px; font-weight:650; color:var(--a-ink)">A quarter of the whole bill</div>
+      <div class="statline"><span>${P.avg[0]}</span><b>$${(r[1]/{D:24,W:7,M:16,Y:6.5}[insSeg]).toFixed(2)}</b></div>
+      <div style="text-align:center; margin-top:4px"><span class="icbtn" style="width:auto; border-radius:999px; padding:6px 16px; font-size:12px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.06)">‹&emsp;${P.sub}&emsp;›</span></div>
+      ${insCirc==='HWC 01'?`<div class="card" style="background:#FEF9EC; border-color:#F0D9A8; margin-top:10px">
+        <div style="font-size:12.5px; font-weight:650; color:var(--a-ink)">The biggest slice of the bill</div>
         <div style="font-size:11.5px; color:#5C5C5E; line-height:1.5; margin-top:3px">Hot water is the biggest controllable load in almost every home — the routine on the phone beside this one fixes it.</div>
       </div>`:''}
     </div>`;
     return;
   }
-  const d=IDATA[insSeg];
   scrIns.innerHTML=`<div class="appwrap">
     <button class="backcircle" data-iact="none" aria-label="Back" style="opacity:.9">${I.back}</button>
     <span class="icbtn" style="position:absolute; top:10px; right:12px; background:#101314; color:#fff; z-index:8">?</span>
@@ -679,33 +714,26 @@ function renderIns(){
       <span class="icbtn" style="background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.05)">${FUN}</span>
       <span class="icbtn" style="width:auto; border-radius:999px; padding:0 13px; font-weight:700; font-size:12.5px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.05)">$ ⇅</span>
     </div>
-    ${insSeg==='D'
-      ?`<div style="font-size:26px; font-weight:700; color:var(--a-ink); margin-top:6px">$3.60</div>
-        <div style="font-size:11.5px; color:var(--a-ink2); margin-bottom:6px">Today, hour by hour</div>
-        <div class="card">
-          <div class="bigbars">${[88,26,18,20,24,30,42,58,36,20,28,28,32,26,22,24,30,38,52,64,48,34,26,20].map((h,i2)=>`<i class="${(i2>=7&&i2<=10)||(i2>=17&&i2<=20)?'':'dk'}" style="height:${h}%"></i>`).join('')}</div>
-          <div class="axis"><span>12AM</span><span>6AM</span><span>12PM</span><span>6PM</span><span>12AM</span></div>
-          <div class="legend"><span><i style="background:#8E44D8"></i>Peak</span><span><i style="background:#3A1F52"></i>Off Peak</span></div>
-        </div>
-        <div class="statline"><span>Hourly average today</span><b>$0.15</b></div>
-        <div style="text-align:center; margin-top:4px"><span class="icbtn" style="width:auto; border-radius:999px; padding:6px 16px; font-size:12px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.06)">‹&emsp;Today&emsp;›</span></div>`
-      :donutSvg(d.tot,d.sub)+`
-      <div class="h4" style="margin-top:6px">Circuits</div>
-      ${COST.map((c,ix)=>`<button class="crowB${ix===0?' hot':''}" data-icirc="${ix}" style="position:relative">
-        ${ix===0?bub('Tap for its month','top:-10px; right:2px'):''}
-        <span class="cicon" style="background:${c.col}; width:40px; height:40px; border-radius:13px; margin:0">${I[c.ic]}</span>
-        <span class="crmainB"><span class="crnB">${c.n.split(' ')[0]} <span style="color:var(--a-ink3); font-weight:500">${c.n.split(' ')[1]}</span></span>
-          ${c.tag?`<span><span class="ctag" style="font-size:10px; padding:3px 9px">${c.tag}</span></span>`:''}</span>
-        <span class="crval"><b style="font-size:15px">$${(c.v*d.mult).toFixed(2)}</b><small>${c.p}%</small></span>
-      </button>`).join('')}
-      <div style="text-align:center; margin-top:8px"><span class="icbtn" style="width:auto; border-radius:999px; padding:6px 16px; font-size:12px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.06)">‹&emsp;${d.sub}&emsp;›</span></div>`}
+    ${donutSvg(P)}
+    <div class="h4" style="margin-top:6px">Circuits</div>
+    ${P.rows.map((r,ix)=>{
+      const meta=CMETA[r[0]], zero=r[1]<=0;
+      return `<button class="crowB${ix===0?' hot':''}" data-icirc="${r[0]}" style="position:relative${zero?'; opacity:.5':''}">
+        ${ix===0?bub('Tap for its story','top:-10px; right:2px'):''}
+        <span class="cicon" style="background:${meta.col}; width:40px; height:40px; border-radius:13px; margin:0${r[0]==='Spare 02'?'; color:#9C9CA0':''}">${r[0]==='Spare 02'?'▫':I[meta.ic]}</span>
+        <span class="crmainB"><span class="crnB">${r[0].split(' ').slice(0,-1).join(' ')} <span style="color:var(--a-ink3); font-weight:500">${r[0].split(' ').pop()}</span></span>
+          ${meta.tag?`<span><span class="ctag" style="font-size:10px; padding:3px 9px">${meta.tag}</span></span>`:''}</span>
+        <span class="crval"><b style="font-size:15px">$${r[1].toFixed(2)}</b><small>${pctTxt(r[1],r[2])}</small></span>
+      </button>`;}).join('')}
+    <div style="text-align:center; margin-top:8px"><span class="icbtn" style="width:auto; border-radius:999px; padding:6px 16px; font-size:12px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.06)">‹&emsp;${P.sub}&emsp;›</span></div>
   </div>`;
 }
 scrIns.addEventListener('click',e=>{
   const seg=e.target.closest('[data-iseg]');
   if(seg){ insSeg=seg.dataset.iseg; renderIns(); return; }
   const row=e.target.closest('[data-icirc]');
-  if(row){ insCirc=+row.dataset.icirc; renderIns(); return; }
+  if(row){ if(PERIODS[insSeg].rows.find(x=>x[0]===row.dataset.icirc)[1]<=0){ toast(scrIns,'Nothing on this circuit '+PERIODS[insSeg].sub.toLowerCase()); return; }
+    insCirc=row.dataset.icirc; renderIns(); return; }
   const act=e.target.closest('[data-iact]');
   if(act&&act.dataset.iact==='back'){ insCirc=null; renderIns(); }
 });
@@ -713,7 +741,7 @@ renderIns();
 
 /* ============ phone 4 — plans ============ */
 const scrPlans=$('#scr-plans');
-let planIx=null, switching=false, planScroll=0;
+let planIx=null, planScroll=0;
 function planCard(o,ix,band,extra){
   return `<button class="plan${extra&&extra.hot?' hot':''}" data-popen="${ix}" style="position:relative">
     ${extra&&extra.hot?bub(extra.bub,'top:-11px; right:4px'):''}
@@ -730,25 +758,6 @@ function planCard(o,ix,band,extra){
   </button>`;
 }
 function renderPlans(){
-  if(switching){
-    const o=PLANS[planIx];
-    scrPlans.innerHTML=`<div class="appwrap" style="padding-top:12px">
-      <button class="xcircle" data-pact="swclose" aria-label="Close">${I.close}</button>
-      <div class="sheettitle" style="font-size:20px">Ready to switch plans?</div>
-      <div class="sheetsub" style="margin-bottom:10px">Follow the steps below</div>
-      <div class="card">
-        <span class="logo" style="${LG[o.lg]}; position:static; display:inline-flex; width:28px; height:28px; border-radius:50%; align-items:center; justify-content:center; color:#fff">${o.g}</span>
-        <div style="font-size:15px; font-weight:650; color:var(--a-ink); margin-top:7px">${o.n}</div>
-        <div style="font-size:12px; color:var(--a-ink2)">${o.r}</div>
-      </div>
-      <div class="card">
-        <div class="rowline" style="align-items:flex-start"><span class="k" style="flex:1"><b style="color:var(--a-ink)">1.</b>&ensp;Apply for your new plan on the provider's website.</span></div>
-        <div class="rowline" style="align-items:flex-start"><span class="k" style="flex:1"><b style="color:var(--a-ink)">2.</b>&ensp;Update your plan in the app to get accurate estimates.</span></div>
-      </div>
-      <button class="abtn primary hot" data-pact="swgo" style="position:relative">${bub('Off to the provider','top:-13px; right:6px')}Continue&ensp;↗</button>
-    </div>`;
-    return;
-  }
   if(planIx!==null){
     const cur=planIx===-1;
     const o=cur?{n:'ecoSOLAR',r:'Ecotricity',lg:'lg-eco',g:'❋',price:'429.71'}:PLANS[planIx];
@@ -787,7 +796,7 @@ function renderPlans(){
         <div class="axis"><span>12AM</span><span>6AM</span><span>12PM</span><span>6PM</span></div>
         <div class="rowline"><span class="k">Anytime <span style="color:#2BB673">●</span> 22.38¢ / kWh</span><span class="ttag">All day</span></div>
       </div>
-      <button class="abtn primary hot" data-pact="switch" style="position:relative">${bub('See the switch flow','top:-13px; right:6px')}Switch to this plan</button>`}
+      <button class="abtn primary hot" data-pact="switch" style="position:relative">${bub('Straight to the provider','top:-13px; right:6px')}Switch to this plan</button>`}
     </div>`;
     return;
   }
@@ -802,13 +811,11 @@ function renderPlans(){
 }
 scrPlans.addEventListener('click',e=>{
   const open=e.target.closest('[data-popen]');
-  if(open){ planScroll=scrPlans.scrollTop; planIx=+open.dataset.popen; switching=false; renderPlans(); scrPlans.scrollTop=0; return; }
+  if(open){ planScroll=scrPlans.scrollTop; planIx=+open.dataset.popen; renderPlans(); scrPlans.scrollTop=0; return; }
   const act=e.target.closest('[data-pact]'); if(!act) return;
   switch(act.dataset.pact){
-    case 'back': planIx=null; switching=false; renderPlans(); break;
-    case 'switch': switching=true; renderPlans(); scrPlans.scrollTop=0; break;
-    case 'swclose': switching=false; renderPlans(); break;
-    case 'swgo': switching=false; planIx=null; renderPlans(); toast(scrPlans,'In the real app this opens the provider\'s website'); break;
+    case 'back': planIx=null; renderPlans(); break;
+    case 'switch': toast(scrPlans,'In the real app this takes you to the provider to apply'); break;
   }
 });
 renderPlans();
