@@ -31,10 +31,10 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 .cellhead .ct{font-size:15.5px; font-weight:600; letter-spacing:-.01em}
 .cellhead .cc{font-size:12.5px; color:var(--ink2); line-height:1.4; margin-top:2px}
 .cellhead .cc b{color:var(--ink)}
-.phonebox{width:calc(390px * var(--s)); height:calc(660px * var(--s))}
+.phonebox{width:calc(390px * var(--s)); height:calc(820px * var(--s))}
 .phone{position:relative; width:390px; background:#000; border-radius:44px; padding:10px;
   box-shadow:0 16px 44px rgba(33,38,41,.26); transform:scale(var(--s)); transform-origin:top left}
-.bezel{position:relative; background:var(--a-bg); border-radius:34px; overflow:hidden; height:620px;
+.bezel{position:relative; background:var(--a-bg); border-radius:34px; overflow:hidden; height:780px;
   display:flex; flex-direction:column}
 .notch{position:absolute; top:10px; left:50%; transform:translateX(-50%); width:118px; height:26px;
   background:#000; border-radius:999px; z-index:40}
@@ -160,6 +160,12 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 .crow .crval{text-align:right}
 .crow .crval b{font-size:13px; font-weight:650; color:var(--a-ink); display:block}
 .crow .crval small{font-size:10.5px; color:var(--a-ink3)}
+.crowB{display:flex; align-items:center; gap:12px; padding:9px 2px; width:100%; border-radius:12px}
+.crowB .crmainB{flex:1; min-width:0; display:flex; flex-direction:column; gap:4px}
+.crowB .crnB{font-size:15px; font-weight:650; color:var(--a-ink)}
+.crowB .crval{text-align:right}
+.crowB .crval b{display:block; font-weight:650; color:var(--a-ink)}
+.crowB .crval small{font-size:11px; color:var(--a-ink3)}
 .bigbars{display:flex; align-items:flex-end; gap:2.5px; height:96px; margin:10px 0 4px}
 .bigbars i{flex:1; background:#8E44D8; border-radius:2.5px 2.5px 1px 1px; min-height:2px}
 .bigbars i.dk{background:#3A1F52}
@@ -300,7 +306,7 @@ function tabsHtml(active,ph){
 
 /* ============ this panel, straight from the recording ============ */
 const CIRC=[
- {num:'01',label:'HWC',   tags:['Water Heater'],   ic:'drop', col:'var(--t-blue)',   w:0,   onW:3000, standby:true},
+ {num:'01',label:'HWC',   tags:['Water Heater'],   ic:'drop', col:'var(--t-blue)',   w:0,   onW:3200, standby:true},
  {num:'02',label:'Spare', tags:[],                 ic:null,   col:'',                w:0,   spare:true},
  {num:'03',label:'Hob',   tags:['Hob'],            ic:'plug', col:'var(--t-purple)', w:0,   onW:2200},
  {num:'04',label:'Septic Pump',tags:['Septic Pump'],ic:'drop',col:'var(--t-teal)',   w:3,   onW:3},
@@ -387,8 +393,10 @@ function renderLive(){
         <span class="cicon" style="background:${c.col}; width:58px; height:58px; border-radius:18px; margin:0 auto">${I[c.ic]}</span>
         <div style="font-size:23px; font-weight:650; color:var(--a-ink); margin-top:10px">${c.label}</div>
         <div style="font-size:13px; color:var(--a-ink2)">Circuit ${c.num}</div>
-        <div style="font-size:14px; margin-top:9px; font-weight:600; color:${c.solar?'var(--a-green)':on?(c.w>0?'var(--a-green)':'var(--a-ink)'):'var(--a-ink2)'}">
-          ${c.solar?'● On · ∿ +'+wString(-c.w):on?('● On · <span data-livew="'+liveIx+'">'+wString(Math.max(0,c.w))+'</span>'):'❚❚ Standby · 0'+NB+'W'}</div>
+        <div style="font-size:14px; margin-top:9px; font-weight:600; color:${c.solar?'var(--a-green)':on?'var(--a-ink)':'var(--a-ink2)'}">
+          ${c.solar?'● On · ∿ +'+wString(-c.w)
+            :on?('<span style="color:#1DB954">●</span> On · <span style="color:var(--a-red)">∿ <span data-livew="'+liveIx+'">'+wString(Math.max(0,c.w))+'</span></span>')
+            :'❚❚ Standby · 0'+NB+'W'}</div>
         <div style="display:flex; gap:9px; justify-content:center; margin-top:13px">
           <button class="abtn ${on?'primary':'green'}${c.solar?'':' hot'}" data-lact="power" style="width:auto; padding:10px 24px; position:relative">
             ${c.solar?'':bub(on?'Set it to Standby':'Turn it back on','top:-13px; right:-8px')}
@@ -471,10 +479,12 @@ setInterval(()=>{
   scrLive.querySelectorAll('[data-livew]').forEach(el=>{
     const c=CIRC[+el.dataset.livew];
     if(!c||c.w<=0) return;
-    el.textContent=wString(Math.max(1,c.w*(1+0.05*Math.sin(jig*1.7+(+el.dataset.livew)))));
+    const amp=Math.min(c.w*0.05,16);   /* appliances hold steady — a few watts of ripple */
+    el.textContent=wString(Math.max(1,c.w+amp*Math.sin(jig*1.7+(+el.dataset.livew))));
   });
   const t=scrLive.querySelector('[data-live="tot"]');
-  if(t) t.textContent=wString(liveTotal()*(1+0.02*Math.sin(jig*1.3)));
+  if(t){ const tot=liveTotal(), amp=Math.min(tot*0.02,22);
+    t.textContent=wString(Math.max(0,tot+amp*Math.sin(jig*1.3))); }
 },1000);
 
 /* ============ phone 2 — routine (real creation flow) ============ */
@@ -604,33 +614,51 @@ renderRout();
 /* ============ phone 3 — insights ============ */
 const scrIns=$('#scr-ins');
 let insSeg='M', insCirc=null;
-const IDATA={D:{tot:'$3.60',cap:'TODAY',mult:0.0171},W:{tot:'$48.72',cap:'THIS WEEK',mult:0.232},
-             M:{tot:'$209.94',cap:'THIS MONTH',mult:1},Y:{tot:'$2,410',cap:'THIS YEAR',mult:11.48}};
-function donutGrad(){
-  let deg=0, parts=[];
-  COST.slice(0,8).forEach(c=>{ const d=c.p/100*360*1.28; parts.push(`${c.col} ${deg}deg ${deg+d}deg`); deg+=d; });
-  parts.push(`#D9D9DC ${deg}deg 360deg`);
-  return `conic-gradient(${parts.join(',')})`;
+const IDATA={D:{tot:'$3.60',sub:'Today',mult:0.0171},W:{tot:'$48.72',sub:'This week',mult:0.232},
+             M:{tot:'$209.94',sub:'This month',mult:1},Y:{tot:'$2,410',sub:'This year',mult:11.48}};
+function donutSvg(centreTop,centreSub){
+  const R=46, C=2*Math.PI*R, total=209.94, gap=3.4;
+  let acc=0, segs='';
+  COST.forEach(c=>{
+    const frac=c.v/total, len=Math.max(1.6, frac*C-gap);
+    segs+=`<circle r="${R}" cx="60" cy="60" fill="none" stroke="${c.col}" stroke-width="10.5"
+      stroke-linecap="round" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-acc*C}"></circle>`;
+    acc+=frac;
+  });
+  return `<div style="display:flex; justify-content:center; margin:10px 0 6px">
+    <div style="position:relative; width:196px; height:196px">
+      <svg viewBox="0 0 120 120" style="width:100%; height:100%; transform:rotate(-90deg)">${segs}</svg>
+      <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center">
+        <div style="font-size:23px; font-weight:700; color:var(--a-ink); letter-spacing:-.02em">${centreTop}</div>
+        <div style="font-size:12px; color:var(--a-ink2); margin-top:2px">${centreSub}</div>
+      </div>
+    </div>
+  </div>`;
 }
+const CAL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>';
+const FUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
 function renderIns(){
   if(insCirc!==null){
     const c=COST[insCirc], m=IDATA[insSeg].mult;
     const bars=[62,20,14,18,26,30,44,58,40,22,34,66,88,54,38,28,46,72,94,60,42,30,52,80];
     scrIns.innerHTML=`<div class="appwrap">
       <button class="backcircle" data-iact="back" aria-label="Back">${I.back}</button>
-      <div style="text-align:center; margin:12px 0 8px">
-        <span class="cicon" style="background:${c.col}; width:44px; height:44px; border-radius:14px; margin:0 auto">${I[c.ic]}</span>
-        <div style="font-size:18px; font-weight:650; color:var(--a-ink); margin-top:7px">${c.n}</div>
-        ${c.tag?`<div style="margin-top:4px"><span class="ctag" style="font-size:10px; padding:3px 9px">${c.tag}</span></div>`:''}
+      <div style="text-align:center; padding-top:6px; font-size:17px; font-weight:650; color:var(--a-ink); margin-bottom:12px">Cost</div>
+      <div style="display:flex; align-items:center; gap:9px; margin:6px 0 4px">
+        <span class="cicon" style="background:${c.col}; width:34px; height:34px; border-radius:11px; margin:0">${I[c.ic]}</span>
+        <b style="font-size:15px">${c.n.split(' ')[0]} <span style="color:var(--a-ink3)">${c.n.split(' ')[1]}</span></b>
+        <span style="margin-left:auto" class="icbtn">${FUN}</span>
+        <span class="icbtn" style="width:auto; border-radius:999px; padding:0 12px; font-weight:700; font-size:12px">$ ⇅</span>
       </div>
-      <div style="font-size:26px; font-weight:700; color:var(--a-ink)">$${(c.v*m).toFixed(2)}</div>
-      <div style="font-size:11.5px; color:var(--a-ink2); margin-bottom:8px">${IDATA[insSeg].cap.toLowerCase()} · ${c.p}% of the home's spend</div>
+      <div style="font-size:27px; font-weight:700; color:var(--a-ink); margin-top:8px">$${(c.v*m).toFixed(2)}</div>
+      <div style="font-size:12px; color:var(--a-ink2); margin-bottom:8px">${IDATA[insSeg].sub} · ${c.p}% of the home's spend</div>
       <div class="card">
         <div class="bigbars">${bars.map((h,i2)=>`<i class="${i2%2?'dk':''}" style="height:${h}%"></i>`).join('')}</div>
         <div class="axis"><span>1</span><span>8</span><span>15</span><span>22</span><span>30</span></div>
       </div>
       <div class="statline"><span>Daily average this month</span><b>$${(c.v/16).toFixed(2)}</b></div>
-      ${insCirc===0?`<div class="card" style="background:#FEF9EC; border-color:#F0D9A8">
+      <div style="text-align:center; margin-top:4px"><span class="icbtn" style="width:auto; border-radius:999px; padding:6px 16px; font-size:12px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.06)">‹&emsp;This month&emsp;›</span></div>
+      ${insCirc===0?`<div class="card" style="background:#FEF9EC; border-color:#F0D9A8; margin-top:10px">
         <div style="font-size:12.5px; font-weight:650; color:var(--a-ink)">A quarter of the whole bill</div>
         <div style="font-size:11.5px; color:#5C5C5E; line-height:1.5; margin-top:3px">Hot water is the biggest controllable load in almost every home — the routine on the phone beside this one fixes it.</div>
       </div>`:''}
@@ -639,40 +667,38 @@ function renderIns(){
   }
   const d=IDATA[insSeg];
   scrIns.innerHTML=`<div class="appwrap">
-    <div class="shead"><span style="width:32px"></span><span class="ttl">Cost</span><span class="icbtn">?</span></div>
-    <div class="seg hot" style="position:relative">${bub('Day · week · month · year','top:-13px; right:0')}
-      ${['D','W','M','Y'].map(k=>`<button class="${insSeg===k?'on':''}" data-iseg="${k}">${k}</button>`).join('')}</div>
-    <div style="display:flex; align-items:center; gap:8px; margin:0 0 12px; color:var(--a-ink2)">
-      <span class="tag neutral" style="background:#fff; padding:4px 11px; font-size:11px">All circuits</span>
-      <span style="margin-left:auto; font-weight:700; font-size:12px">$ ⇅</span>
+    <button class="backcircle" data-iact="none" aria-label="Back" style="opacity:.9">${I.back}</button>
+    <span class="icbtn" style="position:absolute; top:10px; right:12px; background:#101314; color:#fff; z-index:8">?</span>
+    <div style="text-align:center; padding-top:6px; font-size:17px; font-weight:650; color:var(--a-ink); margin-bottom:12px">Cost</div>
+    <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px">
+      <div class="seg hot" style="position:relative; flex:1; margin:0">${bub('Day · week · month · year','top:-13px; right:0')}
+        ${['D','W','M','Y'].map(k=>`<button class="${insSeg===k?'on':''}" data-iseg="${k}">${k}</button>`).join('')}</div>
+      <span class="icbtn" style="background:#fff; width:38px; height:38px; box-shadow:0 2px 8px rgba(0,0,0,.05)">${CAL}</span>
+    </div>
+    <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:2px">
+      <span class="icbtn" style="background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.05)">${FUN}</span>
+      <span class="icbtn" style="width:auto; border-radius:999px; padding:0 13px; font-weight:700; font-size:12.5px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.05)">$ ⇅</span>
     </div>
     ${insSeg==='D'
-      ?`<div style="font-size:26px; font-weight:700; color:var(--a-ink)">$3.60</div>
+      ?`<div style="font-size:26px; font-weight:700; color:var(--a-ink); margin-top:6px">$3.60</div>
         <div style="font-size:11.5px; color:var(--a-ink2); margin-bottom:6px">Today, hour by hour</div>
         <div class="card">
           <div class="bigbars">${[88,26,18,20,24,30,42,58,36,20,28,28,32,26,22,24,30,38,52,64,48,34,26,20].map((h,i2)=>`<i class="${(i2>=7&&i2<=10)||(i2>=17&&i2<=20)?'':'dk'}" style="height:${h}%"></i>`).join('')}</div>
           <div class="axis"><span>12AM</span><span>6AM</span><span>12PM</span><span>6PM</span><span>12AM</span></div>
           <div class="legend"><span><i style="background:#8E44D8"></i>Peak</span><span><i style="background:#3A1F52"></i>Off Peak</span></div>
         </div>
-        <div class="statline"><span>Hourly average today</span><b>$0.15</b></div>`
-      :`<div class="donutrow">
-        <div class="donut" style="background:${donutGrad()}">
-          <div class="ctr"><div class="dv">${d.tot}</div><div class="dd">${d.cap}</div></div>
-        </div>
-        <div class="dside">
-          <div class="dh">Hot water leads — a quarter of the bill.</div>
-          <div class="db">Every circuit in dollars, ${d.cap.toLowerCase()}. Tap one for its story.</div>
-        </div>
-      </div>
-      <div class="card" style="padding:3px 10px">
-        ${COST.map((c,ix)=>`<button class="crow${ix===0?' hot':''}" data-icirc="${ix}" ${ix===0?'style="margin:6px 0"':''}>
-          ${ix===0?bub('Tap for its month','top:-11px; right:2px'):''}
-          <span class="cicon" style="background:${c.col}; width:28px; height:28px; border-radius:9px; margin:0">${I[c.ic]}</span>
-          <span class="crmain"><span class="crn">${c.n}</span>
-            ${c.tag?`<span class="ctag" style="margin-left:6px">${c.tag}</span>`:''}</span>
-          <span class="crval"><b>$${(c.v*d.mult).toFixed(2)}</b><small>${c.p}%</small></span>
-        </button>`).join('')}
-      </div>`}
+        <div class="statline"><span>Hourly average today</span><b>$0.15</b></div>
+        <div style="text-align:center; margin-top:4px"><span class="icbtn" style="width:auto; border-radius:999px; padding:6px 16px; font-size:12px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.06)">‹&emsp;Today&emsp;›</span></div>`
+      :donutSvg(d.tot,d.sub)+`
+      <div class="h4" style="margin-top:6px">Circuits</div>
+      ${COST.map((c,ix)=>`<button class="crowB${ix===0?' hot':''}" data-icirc="${ix}" style="position:relative">
+        ${ix===0?bub('Tap for its month','top:-10px; right:2px'):''}
+        <span class="cicon" style="background:${c.col}; width:40px; height:40px; border-radius:13px; margin:0">${I[c.ic]}</span>
+        <span class="crmainB"><span class="crnB">${c.n.split(' ')[0]} <span style="color:var(--a-ink3); font-weight:500">${c.n.split(' ')[1]}</span></span>
+          ${c.tag?`<span><span class="ctag" style="font-size:10px; padding:3px 9px">${c.tag}</span></span>`:''}</span>
+        <span class="crval"><b style="font-size:15px">$${(c.v*d.mult).toFixed(2)}</b><small>${c.p}%</small></span>
+      </button>`).join('')}
+      <div style="text-align:center; margin-top:8px"><span class="icbtn" style="width:auto; border-radius:999px; padding:6px 16px; font-size:12px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.06)">‹&emsp;${d.sub}&emsp;›</span></div>`}
   </div>`;
 }
 scrIns.addEventListener('click',e=>{
