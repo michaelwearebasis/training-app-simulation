@@ -15,7 +15,7 @@
   --s:.82;
 }
 *{box-sizing:border-box; margin:0; padding:0}
-body{background:var(--sand); color:var(--ink);
+body{background:#fff; color:var(--ink);
   font-family:'Oracle','Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
   -webkit-font-smoothing:antialiased; overflow-x:hidden}
 button{font:inherit; color:inherit; background:none; border:none; cursor:pointer; -webkit-tap-highlight-color:transparent; text-align:left}
@@ -51,6 +51,12 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 .tabbar button svg{width:20px; height:20px}
 
 /* lime hints */
+.scrollhint{position:absolute; left:50%; bottom:76px; transform:translateX(-50%); z-index:26;
+  background:var(--lime); color:#16301F; font-size:12px; font-weight:700; padding:7px 15px;
+  border-radius:999px; box-shadow:0 6px 16px rgba(33,38,41,.3); white-space:nowrap; border:none;
+  cursor:default; animation:hintbob 1.4s ease-in-out infinite}
+.scrollhint.low{bottom:18px}
+@keyframes hintbob{0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)}}
 .hot{box-shadow:0 0 0 2.5px var(--lime), 0 0 16px rgba(152,255,171,.5)!important; position:relative; z-index:4;
   animation:hotp 1.7s ease-in-out infinite}
 @keyframes hotp{0%,100%{box-shadow:0 0 0 2.5px var(--lime),0 0 10px rgba(152,255,171,.35)}
@@ -211,11 +217,6 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 </head>
 <body>
 
-<header class="hdr">
-  <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI3LjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxMzY2IDc2OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTM2NiA3Njg7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7fQo8L3N0eWxlPgo8Zz4KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNzEuODIsMzY1LjQxaDIwMy40NmMxNC40MiwwLDI2LjEtMTEuNjYsMjYuMS0yNi4wM2MwLTE0LjM3LTExLjY5LTI2LjAzLTI2LjEtMjYuMDNIMTcxLjgyCgkJYy0yLjg3LDAtNS4yMiwyLjM0LTUuMjIsNS4ydjQxLjY3YzAsMi44NiwyLjM1LDUuMjEsNS4yMiw1LjIxVjM2NS40MXoiLz4KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNzEuODEsNDU4LjE1aDIwMy4wN2MxNC4zOSwwLDI2LjA1LTExLjcxLDI2LjA1LTI2LjE0YzAtMTQuNDMtMTEuNjctMjYuMTQtMjYuMDUtMjYuMTRIMTcxLjgxCgkJYy0yLjg2LDAtNS4yMSwyLjM1LTUuMjEsNS4yMnY0MS44NWMwLDIuODcsMi4zNCw1LjIzLDUuMjEsNS4yM1Y0NTguMTV6Ii8+Cgk8cGF0aCBkPSJNODM0LjY2LDMzOC44NWwtMjUuMzgsMC4wM2MtMS40MywwLTIuNjYsMS4wMy0yLjkxLDIuNDVMODA0LDM1NS4wNWMtNC4yNi00LjczLTkuMzctOC42My0xNS4yNS0xMS42NAoJCWMtNy45NS00LjA2LTE3LjQyLTYuMS0yOC4wOS02LjFjLTEyLjksMC0yNC42OCwzLjEyLTM0Ljk3LDkuMjNjLTEwLjMzLDYuMTItMTguNTQsMTQuODgtMjQuNDQsMjYuMDMKCQljLTUuODUsMTEuMS04LjgyLDI0LjA2LTguODEsMzguNTRjMC4wMiwxNC44MiwyLjk3LDI3Ljk1LDguNzUsMzkuMDRjNS44NCwxMS4xNywxNC4wNSwxOS44MywyNC40MSwyNS43NQoJCWMxMC4yOCw1Ljg4LDIyLjEsOC44NSwzNS4xNCw4Ljg1aDAuMWMxMC41MywwLDE5LjkyLTIuMjMsMjcuODgtNi42YzUuODUtMy4yMSwxMC45Ni03LjI0LDE1LjI5LTEyLjAxbDIuMjUsMTQuNDQKCQljMC4yMiwxLjQzLDEuNDYsMi41LDIuOTMsMi41bDI1LjY2LTAuMDNjMC43OCwwLDEuNTQtMC4zMSwyLjA4LTAuODdjMC41Ni0wLjU2LDAuODYtMS4zLDAuODYtMi4wOGwtMC4xNi0xMzguMjgKCQljMC0xLjYzLTEuMzMtMi45Ni0yLjk2LTIuOTZIODM0LjY2eiBNODAyLjg5LDQxMS41MWMwLDEyLjcxLTMuNDYsMjMuMTQtMTAuMzEsMzEuMDFjLTYuODQsNy44OC0xNS42NSwxMS43LTI2LjkyLDExLjcyaC0wLjA2CgkJYy0xMS4yNCwwLTIwLjA0LTMuODYtMjYuODktMTEuNzhjLTYuODktNy45NS0xMC4zNy0xOC41MS0xMC4zOS0zMS40MWMwLTEyLjcxLDMuNDYtMjMuMiwxMC4zMS0zMS4xNgoJCWM2Ljg0LTcuOTUsMTUuNjUtMTEuODIsMjYuOTItMTEuODRoMC4wNmMxMS4yMywwLDIwLjAyLDMuODksMjYuODgsMTEuODlDNzk5LjM4LDM4Ny45OSw4MDIuODgsMzk4LjYxLDgwMi44OSw0MTEuNTF6Ii8+Cgk8cGF0aCBkPSJNOTYwLjI4LDQwMC4wMmMtOC4yNi0yLjY1LTE4LjU0LTQuNjQtMzAuNTQtNS45Yy04LjctMS4wNS0xNS4wNy0xLjk4LTE4Ljk0LTIuNzhjLTMuNDktMC43MS02LjM4LTEuOTYtOC42MS0zLjc0CgkJYy0xLjg5LTEuNDktMi44MS0zLjc4LTIuODEtN2MwLTQuNTIsMi4xLTguMDQsNi40My0xMC43M2M0LjcxLTIuOTQsMTEuMS00LjQzLDE4Ljk2LTQuNDNoMC4wNmM3Ljc2LDAsMTQuMjQsMS44NSwxOS4yOCw1LjUKCQljNC45MywzLjU4LDcuNjQsNy45OCw4LjI3LDEzLjQ2YzAuMTgsMS40OSwxLjQzLDIuNjIsMi45NCwyLjYybDI4LjM1LTAuMDNjMC44MSwwLDEuNi0wLjM0LDIuMTYtMC45MwoJCWMwLjU2LTAuNTksMC44NC0xLjQsMC44LTIuMjJjLTAuOTgtMTQuOTEtNy4zNi0yNi42NC0xOC45Ny0zNC44N2MtMTEuMzMtOC4wNC0yNi4xOC0xMi4xLTQ0LjEyLTEyLjFoLTAuMTUKCQljLTEwLjk4LDAtMjAuOTUsMS45Mi0yOS42NSw1LjY3Yy04LjgyLDMuODEtMTUuODUsOS4yOC0yMC45MiwxNi4yN2MtNS4xMSw3LjA2LTcuNywxNS4yMy03LjcsMjQuMjkKCQljMCw5LjcxLDIuNjksMTcuNiw3Ljk1LDIzLjQzYzUuMTEsNS42OSwxMS45Miw5Ljg3LDIwLjI0LDEyLjQ0YzcuOTYsMi40NywxOC4xOSw0LjQ1LDMwLjM2LDUuODgKCQljOC42OSwxLjA1LDE1LjE2LDIuMDcsMTkuMjcsMy4wM2MzLjcxLDAuODYsNi42NiwyLjMsOC43OSw0LjI3YzEuOTEsMS43NywyLjg0LDQuNTEsMi44NSw4LjM2YzAsNC41MS0yLjIyLDguMDctNi44LDEwLjg1CgkJYy00Ljk5LDMuMDQtMTEuNyw0LjU4LTE5LjkzLDQuNmgtMC4wN2MtOS4xOCwwLTE2LjctMi4xMS0yMi4zNi02LjI4Yy01LjU0LTQuMDgtOC40Ny05LjE2LTguOTUtMTUuNTMKCQljLTAuMTItMS41NC0xLjQtMi43My0yLjk0LTIuNzNsLTI4LjA5LDAuMDNjLTAuOCwwLTEuNTUsMC4zMy0yLjExLDAuODljLTAuNTYsMC41OC0wLjg2LDEuMzQtMC44NCwyLjE0CgkJYzAuNCwxNS42Niw2Ljc3LDI4LjEsMTguOTQsMzdjMTEuODgsOC42NywyNy41NCwxMy4wOCw0Ni41OSwxMy4wOGgwLjE1YzExLjMsMCwyMS42Ny0xLjg2LDMwLjc5LTUuNTEKCQljOS4yOC0zLjcxLDE2LjctOS4xMiwyMi4wMy0xNi4wOWM1LjQyLTcuMDgsOC4xNi0xNS4zNyw4LjE0LTI0LjYzYzAtMTAuNC0yLjcyLTE4LjgyLTguMDQtMjUKCQljLTUuMi02LjA2LTEyLjItMTAuNTMtMjAuOC0xMy4yOFY0MDAuMDJ6Ii8+Cgk8cGF0aCBkPSJNMTAzMS4yMiwyODMuMjVoLTAuMDNjLTUuODEsMC0xMC43NywxLjk4LTE0Ljc0LDUuODVjLTMuOTksMy45LTYuMDEsOC44NC02LjAxLDE0LjY5czIuMDQsMTAuNzksNi4wNCwxNC42NwoJCWMzLjk3LDMuODYsOC45Miw1LjgyLDE0LjczLDUuODJoMC4wM2M1LjgxLDAsMTAuNzctMS45OCwxNC43NC01Ljg1YzMuOTktMy45LDYuMDEtOC44NCw2LjAxLTE0LjY5cy0yLjA0LTEwLjc3LTYuMDUtMTQuNjcKCQlDMTA0MS45NywyODUuMjEsMTAzNy4wMiwyODMuMjUsMTAzMS4yMiwyODMuMjV6Ii8+Cgk8cGF0aCBkPSJNMTA0NS44NSwzMzguNTlsLTI5LjE3LDAuMDNjLTAuNzgsMC0xLjU0LDAuMzEtMi4wOCwwLjg3Yy0wLjU1LDAuNTYtMC44NiwxLjMtMC44NiwyLjA4bDAuMTYsMTM4LjI4CgkJYzAsMS42MywxLjMzLDIuOTUsMi45NSwyLjk1bDI5LjE2LTAuMDNjMC43OSwwLDEuNTQtMC4zMSwyLjA4LTAuODdjMC41NS0wLjU2LDAuODYtMS4zLDAuODYtMi4wOGwtMC4xNi0xMzguMjgKCQlDMTA0OC44LDMzOS45MiwxMDQ3LjQ3LDMzOC41OSwxMDQ1Ljg1LDMzOC41OXoiLz4KCTxwYXRoIGQ9Ik0xMTkxLjM1LDQxMy4wNWMtNS4yLTYuMDYtMTIuMi0xMC41Mi0yMC44LTEzLjI4Yy04LjI2LTIuNjUtMTguNTQtNC42NC0zMC41NC01LjljLTguNjktMS4wNS0xNS4wNi0xLjk4LTE4Ljk1LTIuNzgKCQljLTMuNDgtMC43MS02LjM4LTEuOTYtOC42MS0zLjc0Yy0xLjktMS40OS0yLjgtMy43OC0yLjgtN2MwLTQuNTIsMi4wOS04LjA0LDYuNDItMTAuNzNjNC43MS0yLjk0LDExLjEtNC40MywxOC45NS00LjQzaDAuMDYKCQljNy43NiwwLDE0LjI1LDEuODUsMTkuMjgsNS41YzQuOTQsMy41OCw3LjY0LDcuOTgsOC4yOCwxMy40NmMwLjE4LDEuNDksMS40MywyLjYyLDIuOTQsMi42MmwyOC4zNS0wLjAzYzAuODEsMCwxLjYtMC4zNCwyLjE1LTAuOTMKCQljMC41Ny0wLjU5LDAuODUtMS40LDAuOC0yLjIyYy0wLjk3LTE0LjkxLTcuMzYtMjYuNjQtMTguOTctMzQuODdjLTExLjMzLTguMDQtMjYuMTgtMTIuMS00NC4xMi0xMi4xaC0wLjEzCgkJYy0xMC45OCwwLTIwLjk1LDEuOTItMjkuNjYsNS42N2MtOC44MiwzLjgxLTE1Ljg1LDkuMjgtMjAuOTIsMTYuMjdjLTUuMTEsNy4wNi03LjcsMTUuMjMtNy43LDI0LjI5YzAsOS43MSwyLjY5LDE3LjYsNy45NSwyMy40MwoJCWM1LjExLDUuNjksMTEuOTIsOS44NywyMC4yNCwxMi40NGM3Ljk4LDIuNDcsMTguMTksNC40NSwzMC4zNiw1Ljg4YzguNjgsMS4wNSwxNS4xNiwyLjA3LDE5LjI3LDMuMDNjMy43MSwwLjg2LDYuNjYsMi4zLDguNzksNC4yNwoJCWMxLjkxLDEuNzcsMi44NCw0LjUxLDIuODUsOC4zNmMwLDQuNTEtMi4yMSw4LjA3LTYuNzksMTAuODVjLTQuOTksMy4wNC0xMS43LDQuNTgtMTkuOTMsNC42aC0wLjA4Yy05LjE3LDAtMTYuNjktMi4xMS0yMi4zNS02LjI4CgkJYy01LjU0LTQuMDktOC40Ny05LjE2LTguOTUtMTUuNTNjLTAuMTItMS41NC0xLjQxLTIuNzMtMi45NC0yLjczbC0yOC4wOSwwLjAzYy0wLjgsMC0xLjU1LDAuMzMtMi4xMSwwLjg5CgkJYy0wLjU3LDAuNTgtMC44NiwxLjM0LTAuODQsMi4xNGMwLjM5LDE1LjY2LDYuNzcsMjguMSwxOC45NCwzN2MxMS44OCw4LjY3LDI3LjU0LDEzLjA4LDQ2LjU3LDEzLjA4aDAuMTUKCQljMTEuMywwLDIxLjY4LTEuODYsMzAuOC01LjUxYzkuMjgtMy43MSwxNi42OS05LjEyLDIyLjAyLTE2LjA5YzUuNDMtNy4wOCw4LjE2LTE1LjM3LDguMTUtMjQuNjNjMC0xMC40LTIuNzItMTguODItOC4wNC0yNQoJCVY0MTMuMDV6Ii8+Cgk8cGF0aCBkPSJNNjM2LjA5LDM4Mi42N2gwLjAzYzctMi45NiwxMi43NS03LjExLDE3LjE0LTEyLjQ0YzYuNDQtNy44Miw5LjcxLTE3Ljg1LDkuNjktMjkuODUKCQljLTAuMDItMTYuMzktNi4yMS0yOS4zNi0xOC4zNy0zOC41MmMtMTEuODgtOC45NS0yOC42NS0xMy41LTQ5Ljg0LTEzLjVoLTAuMThsLTY5LjQyLDAuMDljLTAuNzgsMC0xLjU0LDAuMzEtMi4wOCwwLjg3CgkJYy0wLjU2LDAuNTYtMC44NiwxLjMtMC44NiwyLjA4bDAuMjIsMTg5LjA1YzAsMS42MywxLjMzLDIuOTUsMi45NiwyLjk1bDcxLjg0LTAuMDljMjMuMDctMC4wMyw0MS4xNi00Ljk4LDUzLjc3LTE0LjcyCgkJYzEyLjg1LTkuOTMsMTkuMzYtMjMuNzEsMTkuMzMtNDAuOTlDNjcwLjMsNDA0LjYsNjU4LjgsMzg5LjUzLDYzNi4wOSwzODIuNjd6IE01NTkuMjQsMzIwLjI0bDQzLjAxLDAKCQljMTMuMjksMCwyNC4wNywxMC44MiwyNC4wNywyNC4xNWMwLDEzLjMzLTEwLjc3LDI0LjE1LTI0LjA3LDI0LjE1aC00My4wMVYzMjAuMjR6IE02MDcuMzIsNDUxLjM1bC00OC4wNywwdi01MS4wN2g0OC4wNwoJCWMxNC4wNSwwLDI1LjQ1LDExLjQ0LDI1LjQ1LDI1LjUzQzYzMi43Niw0MzkuOTEsNjIxLjM4LDQ1MS4zNSw2MDcuMzIsNDUxLjM1eiIvPgo8L2c+Cjwvc3ZnPg==" alt="Basis">
-  <span class="sub">Home app — what the customer gets, on a real Basis home</span>
-</header>
-
 <div class="wall">
   <div class="cell" data-cell="live">
     <div class="cellhead">
@@ -226,6 +227,7 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
       <div class="notch"></div>
       <div class="sbar"><span>11:17</span><span class="r"><span>▲▲▲</span><span>Wi-Fi</span><span>54%</span></span></div>
       <div class="scr" id="scr-live"></div>
+      <button class="scrollhint" data-hint="scr-live" hidden>↓&ensp;Scroll for more circuits</button>
       <div class="tabwrap"><div class="tabbar" data-ph="live"></div></div>
     </div></div></div>
   </div>
@@ -252,6 +254,7 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
       <div class="notch"></div>
       <div class="sbar"><span>11:17</span><span class="r"><span>▲▲▲</span><span>Wi-Fi</span><span>54%</span></span></div>
       <div class="scr" id="scr-ins"></div>
+      <button class="scrollhint" data-hint="scr-ins" hidden>↓&ensp;Scroll for every circuit</button>
       <div class="tabwrap"><div class="tabbar" data-ph="ins"></div></div>
     </div></div></div>
   </div>
@@ -265,11 +268,10 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
       <div class="notch"></div>
       <div class="sbar"><span>11:17</span><span class="r"><span>▲▲▲</span><span>Wi-Fi</span><span>54%</span></span></div>
       <div class="scr" id="scr-plans"></div>
+      <button class="scrollhint low" data-hint="scr-plans" hidden>↓&ensp;Scroll the full list</button>
     </div></div></div>
   </div>
 </div>
-
-<div class="footnote">Real usage data from a Basis home · indicative pricing, not a quote · Basis, for trade partners</div>
 
 <script>
 'use strict';
@@ -827,6 +829,15 @@ renderPlans();
   const show={ '1':['live','rout'], '2':['ins','plans'] }[pair];
   if(show) document.querySelectorAll('[data-cell]').forEach(c=>{ c.hidden=!show.includes(c.dataset.cell); });
 }
+
+/* lime "you can scroll" hints — show while a screen is scrollable and at the top */
+document.querySelectorAll('.scrollhint').forEach(hint=>{
+  const scr=document.getElementById(hint.dataset.hint);
+  const refresh=()=>{ hint.hidden=!(scr.scrollHeight>scr.clientHeight+8 && scr.scrollTop<24); };
+  scr.addEventListener('scroll',refresh,{passive:true});
+  new MutationObserver(refresh).observe(scr,{childList:true,subtree:true});
+  setTimeout(refresh,60);
+});
 </script>
 </body>
 </html>
