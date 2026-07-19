@@ -245,10 +245,17 @@ cheapest plan"), and values update live.
 | The month, in dollars | Cost screen: D/W/M/Y segments, donut, all 15 circuits priced ($209.94 real month) → tap a circuit for its daily chart + monthly average |
 | The right plan, proven | Real comparison list vs ecoSOLAR $429.71 (Freedom $330.65 ↓23% "$99 saved" → plans costing $116 MORE) → plan detail with rate windows (the current plan shows the real TOU peak bands) → "Switch to this plan" → Ready-to-switch steps |
 
+`?pair=1` shows just the live + routines phones, `?pair=2` the insights + plans phones —
+for one two-phone block per course page. No parameter shows all four.
+
 ```html
-<iframe src="https://michaelwearebasis.github.io/training-app-simulation/home.html"
-        width="100%" height="1400" style="border:0" allowfullscreen
-        title="Basis Home app — what the customer gets"></iframe>
+<iframe src="https://michaelwearebasis.github.io/training-app-simulation/home.html?pair=1"
+        width="100%" height="860" style="border:0" allowfullscreen
+        title="Basis Home app — live power and routines"></iframe>
+
+<iframe src="https://michaelwearebasis.github.io/training-app-simulation/home.html?pair=2"
+        width="100%" height="860" style="border:0" allowfullscreen
+        title="Basis Home app — insights and energy plans"></iframe>
 ```
 
 The phones wrap responsively: 4-up above ~1420px (height ≈ 760), 2×2 on a typical course

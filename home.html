@@ -20,6 +20,7 @@ body{background:var(--sand); color:var(--ink);
   -webkit-font-smoothing:antialiased; overflow-x:hidden}
 button{font:inherit; color:inherit; background:none; border:none; cursor:pointer; -webkit-tap-highlight-color:transparent; text-align:left}
 ::selection{background:var(--lime); color:var(--coal)}
+[hidden]{display:none!important}
 
 .hdr{display:flex; align-items:center; justify-content:center; gap:10px; padding:16px 16px 6px}
 .hdr img{height:18px; display:block}
@@ -216,7 +217,7 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 </header>
 
 <div class="wall">
-  <div class="cell">
+  <div class="cell" data-cell="live">
     <div class="cellhead">
       <div class="ct">Live, circuit by circuit</div>
       <div class="cc">Straight off the switchboard, every second. Open a circuit, flick it, <b>watch the total</b>.</div>
@@ -229,7 +230,7 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
     </div></div></div>
   </div>
 
-  <div class="cell">
+  <div class="cell" data-cell="rout">
     <div class="cellhead">
       <div class="ct">Set-and-forget routines</div>
       <div class="cc">Hot water is a quarter of this bill. Build the routine the way the customer would — <b>about five taps</b>.</div>
@@ -242,7 +243,7 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
     </div></div></div>
   </div>
 
-  <div class="cell">
+  <div class="cell" data-cell="ins">
     <div class="cellhead">
       <div class="ct">The month, in dollars</div>
       <div class="cc">$212.02 this month — every circuit priced, day to year. Flick the period, <b>open a circuit</b>.</div>
@@ -255,7 +256,7 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
     </div></div></div>
   </div>
 
-  <div class="cell">
+  <div class="cell" data-cell="plans">
     <div class="cellhead">
       <div class="ct">The right plan, proven</div>
       <div class="cc">Every retailer, re-priced on this home's actual usage — <b>$99 a month on the table</b>. Open one and switch.</div>
@@ -819,6 +820,13 @@ scrPlans.addEventListener('click',e=>{
   }
 });
 renderPlans();
+
+/* ?pair=1 shows live+routines, ?pair=2 shows insights+plans, no param shows all four */
+{
+  const pair=new URLSearchParams(location.search).get('pair');
+  const show={ '1':['live','rout'], '2':['ins','plans'] }[pair];
+  if(show) document.querySelectorAll('[data-cell]').forEach(c=>{ c.hidden=!show.includes(c.dataset.cell); });
+}
 </script>
 </body>
 </html>
