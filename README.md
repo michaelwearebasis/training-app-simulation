@@ -7,6 +7,7 @@ every `.html` file in the repo root gets its own GitHub Pages URL:
 | Page | URL | What it teaches |
 |---|---|---|
 | `index.html` | https://michaelwearebasis.github.io/training-app-simulation/ | **Trade app** — commissioning a Smart Panel end to end (app + interactive switchboard) |
+| `leds.html` | https://michaelwearebasis.github.io/training-app-simulation/leds.html | **LED guide** — animated legend of every Sub-Circuit and System Manager light and what it means (real firmware colours + timings) |
 | `home.html` | https://michaelwearebasis.github.io/training-app-simulation/home.html | **Home app** — four-phone showcase of what the customer gets (live power, routine, insights, plans) |
 
 To add another demo, drop `whatever.html` in the repo root and push — it's live at
