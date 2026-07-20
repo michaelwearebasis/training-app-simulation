@@ -6,48 +6,43 @@
 <title>Basis — what the lights mean</title>
 <style>
 :root{
-  --ink:#1E1E1F; --ink2:#5B5E60; --ink3:#8A8D8F; --line:#EAEAEB; --lime:#98FFAB;
-  --led-red:#FF3B2E; --led-yellow:#FFC400; --led-blue:#2F6BFF; --led-white:#FFFFFF;
+  --ink:#1E1E1F; --ink2:#5B5E60; --ink3:#8A8D8F; --line:#EAEAEB;
+  --led-red:#FF3B2E; --led-yellow:#FFC400; --led-blue:#2F6BFF;
 }
 *{box-sizing:border-box; margin:0; padding:0}
 body{background:#fff; color:var(--ink);
   font-family:'Oracle','Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
-  -webkit-font-smoothing:antialiased; line-height:1.5; padding:22px 16px 40px}
-.wrap{max-width:640px; margin:0 auto}
-h2{font-size:19px; font-weight:650; letter-spacing:-.01em; margin:26px 0 3px}
+  -webkit-font-smoothing:antialiased; line-height:1.45; padding:20px 16px 34px}
+.wrap{max-width:560px; margin:0 auto}
+h2{font-size:18px; font-weight:650; letter-spacing:-.01em; margin:24px 0 8px}
 h2:first-child{margin-top:0}
-.sub{font-size:13px; color:var(--ink2); margin-bottom:14px}
 .grouplab{font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
-  color:var(--ink3); margin:16px 0 8px}
-.card{border:1px solid var(--line); border-radius:16px; padding:6px 16px; margin-bottom:8px}
-.row{display:flex; align-items:center; gap:15px; padding:13px 2px; border-bottom:1px solid var(--line)}
+  color:var(--ink3); margin:14px 0 6px}
+.card{border:1px solid var(--line); border-radius:14px; padding:4px 16px}
+.row{display:flex; align-items:center; gap:16px; padding:12px 2px; border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
-/* the dark module face the LED sits on */
-.face{flex:0 0 auto; width:46px; height:46px; border-radius:12px; background:#22272B;
-  display:flex; align-items:center; justify-content:center; box-shadow:inset 0 1px 2px rgba(0,0,0,.5)}
-.led{width:17px; height:17px; border-radius:50%; background:#3a4045}
+.face{flex:0 0 44px; height:44px; border-radius:11px; background:#22272B;
+  display:flex; align-items:center; justify-content:center}
 .beh{font-size:14.5px; font-weight:650}
-.mean{font-size:13px; color:var(--ink2); margin-top:1px}
-.foot{font-size:11.5px; color:var(--ink3); margin-top:18px; text-align:center; line-height:1.5}
+.mean{font-size:13px; color:var(--ink2)}
 
-/* ---- LED colours + glow ---- */
-.led.red{background:radial-gradient(circle at 38% 35%,#ff6a5e,var(--led-red)); box-shadow:0 0 12px 2px rgba(255,59,46,.65)}
-.led.yellow{background:radial-gradient(circle at 38% 35%,#ffe07a,var(--led-yellow)); box-shadow:0 0 12px 2px rgba(255,196,0,.6)}
-.led.blue{background:radial-gradient(circle at 38% 35%,#7aa0ff,var(--led-blue)); box-shadow:0 0 12px 2px rgba(47,107,255,.7)}
-.led.white{background:radial-gradient(circle at 38% 35%,#fff,#e6e9ec); box-shadow:0 0 12px 2px rgba(255,255,255,.85)}
+/* LED shapes: vertical pill = circuit LED, horizontal pill = System Manager LED */
+.led{background:#3a4045; border-radius:999px}
+.led.v{width:9px; height:28px}
+.led.h{width:32px; height:10px}
+.led.red{background:linear-gradient(var(--led-red),#d92417); box-shadow:0 0 11px 1px rgba(255,59,46,.65)}
+.led.yellow{background:linear-gradient(#ffd23a,var(--led-yellow)); box-shadow:0 0 11px 1px rgba(255,196,0,.6)}
+.led.blue{background:linear-gradient(#5a86ff,var(--led-blue)); box-shadow:0 0 11px 1px rgba(47,107,255,.7)}
+.led.white{background:linear-gradient(#fff,#e6e9ec); box-shadow:0 0 11px 1px rgba(255,255,255,.85)}
 .led.off{background:#3a4045; box-shadow:none}
 
-/* ---- motion (exact firmware timings) ---- */
-/* square blink: 1s on / 1s off */
+/* motion — real firmware timings */
 @keyframes blink1{0%,49.9%{opacity:1}50%,100%{opacity:.10}}
 .blink1{animation:blink1 2s steps(1,end) infinite}
-/* fast blink: 250ms on / 250ms off */
 @keyframes blinkfast{0%,49.9%{opacity:1}50%,100%{opacity:.10}}
 .blinkfast{animation:blinkfast .5s steps(1,end) infinite}
-/* sub-circuit standby: red fades out (1.5s), stays off (1.5s), fades back in (0.5s) = 3.5s */
 @keyframes breatheRed{0%{opacity:1}43%{opacity:.06}86%{opacity:.06}100%{opacity:1}}
 .breatheRed{animation:breatheRed 3.5s ease-in-out infinite}
-/* system-manager idle: gentle white breathe ~6.5s (rise 1.5 / on 1.5 / fall 1.5 / off 2) */
 @keyframes breatheWhite{0%{opacity:.08}23%{opacity:1}46%{opacity:1}69%{opacity:.08}100%{opacity:.08}}
 .breatheWhite{animation:breatheWhite 6.5s ease-in-out infinite}
 </style>
@@ -55,56 +50,52 @@ h2:first-child{margin-top:0}
 <body>
 <div class="wrap">
 
-  <h2>On each circuit</h2>
-  <div class="sub">Every circuit has one small light on the switchboard. Here's what it's telling you.</div>
+  <h2>Each circuit</h2>
   <div class="card">
-    <div class="row"><span class="face"><i class="led red"></i></span>
-      <div><div class="beh">Solid red</div><div class="mean">Live — the circuit is on and power is available.</div></div></div>
-    <div class="row"><span class="face"><i class="led red breatheRed"></i></span>
-      <div><div class="beh">Slowly pulsing red</div><div class="mean">Standby — switched off from the app, ready to come back on.</div></div></div>
-    <div class="row"><span class="face"><i class="led off"></i></span>
-      <div><div class="beh">Off</div><div class="mean">Safe — the circuit is off, or locked out. Nothing live.</div></div></div>
-    <div class="row"><span class="face"><i class="led yellow"></i></span>
-      <div><div class="beh">Solid yellow</div><div class="mean">Electrical fault — the circuit has tripped (RCD, MCB or overcurrent).</div></div></div>
-    <div class="row"><span class="face"><i class="led blue blink1"></i></span>
-      <div><div class="beh">Blinking blue</div><div class="mean">Change pending — a new setting or update is waiting to be applied.</div></div></div>
-    <div class="row"><span class="face"><i class="led yellow blink1"></i></span>
-      <div><div class="beh">Blinking yellow</div><div class="mean">System fault — the circuit module needs attention.</div></div></div>
+    <div class="row"><span class="face"><i class="led v red"></i></span>
+      <div><div class="beh">Solid red</div><div class="mean">Live — power is on.</div></div></div>
+    <div class="row"><span class="face"><i class="led v red breatheRed"></i></span>
+      <div><div class="beh">Pulsing red</div><div class="mean">Standby — switched off from the app.</div></div></div>
+    <div class="row"><span class="face"><i class="led v off"></i></span>
+      <div><div class="beh">Off</div><div class="mean">Safe — nothing live.</div></div></div>
+    <div class="row"><span class="face"><i class="led v yellow"></i></span>
+      <div><div class="beh">Solid yellow</div><div class="mean">Tripped — electrical fault.</div></div></div>
+    <div class="row"><span class="face"><i class="led v blue blink1"></i></span>
+      <div><div class="beh">Blinking blue</div><div class="mean">A change is waiting to apply.</div></div></div>
+    <div class="row"><span class="face"><i class="led v yellow blink1"></i></span>
+      <div><div class="beh">Blinking yellow</div><div class="mean">Module needs attention.</div></div></div>
   </div>
-  <div class="sub" style="margin-top:6px; font-size:12px">On a circuit, <b>red is normal</b> — it just means the power is on. Yellow is the colour to watch.</div>
 
-  <h2>On the panel's brain</h2>
-  <div class="sub">The System Manager — the module that runs the panel — has two lights.</div>
+  <h2>The panel's brain</h2>
 
   <div class="grouplab">Status light</div>
   <div class="card">
-    <div class="row"><span class="face"><i class="led white breatheWhite"></i></span>
-      <div><div class="beh">Gently breathing white</div><div class="mean">All good — the panel is running normally.</div></div></div>
-    <div class="row"><span class="face"><i class="led blue blink1"></i></span>
-      <div><div class="beh">Blinking blue</div><div class="mean">Press the Basis Button — to confirm a new panel or apply your changes.</div></div></div>
-    <div class="row"><span class="face"><i class="led white blink1"></i></span>
+    <div class="row"><span class="face"><i class="led h white breatheWhite"></i></span>
+      <div><div class="beh">Breathing white</div><div class="mean">Running normally.</div></div></div>
+    <div class="row"><span class="face"><i class="led h blue blink1"></i></span>
+      <div><div class="beh">Blinking blue</div><div class="mean">Press the Basis Button.</div></div></div>
+    <div class="row"><span class="face"><i class="led h white blink1"></i></span>
       <div><div class="beh">Blinking white</div><div class="mean">Starting up.</div></div></div>
-    <div class="row"><span class="face"><i class="led yellow blinkfast"></i></span>
-      <div><div class="beh">Fast blinking yellow</div><div class="mean">Updating the panel's software — leave it be for a minute.</div></div></div>
+    <div class="row"><span class="face"><i class="led h yellow blinkfast"></i></span>
+      <div><div class="beh">Fast blinking yellow</div><div class="mean">Updating software.</div></div></div>
   </div>
 
   <div class="grouplab">Comms light</div>
   <div class="card">
-    <div class="row"><span class="face"><i class="led white"></i></span>
-      <div><div class="beh">Solid white</div><div class="mean">Online — connected to the internet.</div></div></div>
-    <div class="row"><span class="face"><i class="led white blink1"></i></span>
-      <div><div class="beh">Blinking white</div><div class="mean">Connecting to the network…</div></div></div>
-    <div class="row"><span class="face"><i class="led blue"></i></span>
-      <div><div class="beh">Solid blue</div><div class="mean">A phone is connected to the panel directly.</div></div></div>
-    <div class="row"><span class="face"><i class="led blue blink1"></i></span>
-      <div><div class="beh">Blinking blue</div><div class="mean">The panel's hotspot is on, waiting for a phone to join.</div></div></div>
-    <div class="row"><span class="face"><i class="led yellow blink1"></i></span>
-      <div><div class="beh">Blinking yellow</div><div class="mean">Couldn't connect to the network.</div></div></div>
-    <div class="row"><span class="face"><i class="led off"></i></span>
-      <div><div class="beh">Off</div><div class="mean">No network set up, or the panel is off.</div></div></div>
+    <div class="row"><span class="face"><i class="led h white"></i></span>
+      <div><div class="beh">Solid white</div><div class="mean">Online.</div></div></div>
+    <div class="row"><span class="face"><i class="led h white blink1"></i></span>
+      <div><div class="beh">Blinking white</div><div class="mean">Connecting…</div></div></div>
+    <div class="row"><span class="face"><i class="led h blue"></i></span>
+      <div><div class="beh">Solid blue</div><div class="mean">Phone connected to the panel.</div></div></div>
+    <div class="row"><span class="face"><i class="led h blue blink1"></i></span>
+      <div><div class="beh">Blinking blue</div><div class="mean">Hotspot on, waiting for a phone.</div></div></div>
+    <div class="row"><span class="face"><i class="led h yellow blink1"></i></span>
+      <div><div class="beh">Blinking yellow</div><div class="mean">Can't connect.</div></div></div>
+    <div class="row"><span class="face"><i class="led h off"></i></span>
+      <div><div class="beh">Off</div><div class="mean">No network.</div></div></div>
   </div>
 
-  <div class="foot">Blue = a change or a phone · Yellow = something to check · White = healthy · Red = a circuit's power (normal) · Off = nothing live</div>
 </div>
 </body>
 </html>
