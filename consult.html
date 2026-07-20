@@ -1,0 +1,131 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Basis — the pre-quote conversation</title>
+<style>
+:root{
+ --coal:#15171B; --ink:#3B4048; --ink2:#697079; --faint:#AEB4BB;
+ --lime:#98FFAB; --limeEdge:#2FA35F; --limeBg:#EFFDF3; --limeInk:#0E5A2E;
+ --amberBg:#FFF6E6; --amberInk:#8A5200; --amberEdge:#E0A21E;
+ --line:#E8EAED;
+}
+*{box-sizing:border-box}
+.pg{font:16px/1.5 -apple-system,"Segoe UI",system-ui,Roboto,sans-serif;color:var(--ink);
+ max-width:1000px;margin:0 auto;padding:6px 6px 30px;-webkit-font-smoothing:antialiased}
+
+/* hero */
+.hero{border-left:4px solid var(--lime);padding:2px 0 2px 20px;margin:8px 0 32px}
+.hero h1{font-size:24px;line-height:1.28;color:var(--coal);font-weight:750;margin:0 0 9px;letter-spacing:-.015em}
+.hero p{margin:0;font-size:15px;color:var(--ink2);max-width:70ch}
+.hero b{color:var(--ink);font-weight:650}
+
+/* groups */
+.grp{margin:0 0 24px}
+.kick{display:flex;align-items:center;gap:12px;margin:0 0 13px}
+.kick .n{width:24px;height:24px;border-radius:50%;background:var(--coal);color:#fff;font-size:12px;font-weight:700;
+ display:flex;align-items:center;justify-content:center;flex:none}
+.kick .t{font-size:12.5px;font-weight:700;color:var(--coal);letter-spacing:.13em;text-transform:uppercase}
+.kick .ln{flex:1;height:1px;background:var(--line)}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+/* cards */
+.card{border:1px solid var(--line);border-radius:16px;padding:16px 17px 15px;background:#fff}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ic{width:40px;height:40px;border-radius:12px;background:var(--limeBg);color:var(--limeEdge);
+ display:flex;align-items:center;justify-content:center;flex:none}
+.ic svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card h3{margin:0;font-size:16.5px;font-weight:700;color:var(--coal);line-height:1.25}
+.card p{margin:0 0 13px;font-size:13.5px;line-height:1.5;color:var(--ink2)}
+.card p b{color:var(--ink);font-weight:650}
+
+.note{font-size:12.5px;line-height:1.45;border-radius:10px;padding:9px 12px}
+.note b{font-weight:750;letter-spacing:.02em}
+.note.do{background:var(--limeBg);color:var(--limeInk);border-left:3px solid var(--limeEdge)}
+.note.warn{background:var(--amberBg);color:var(--amberInk);border-left:3px solid var(--amberEdge)}
+</style></head>
+<body><div class="pg">
+
+ <div class="hero">
+  <h1>A Basis Panel is only as good as the conversation you have first.</h1>
+  <p>Before you quote, sit down with the customer and work through these six questions. <b>Each answer changes how you set up the board — and the wiring.</b></p>
+ </div>
+
+ <!-- GROUP 1 -->
+ <div class="grp">
+  <div class="kick"><span class="n">1</span><span class="t">What they want</span><span class="ln"></span></div>
+  <div class="grid">
+
+   <div class="card">
+    <div class="top">
+     <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg></span>
+     <h3>What are they chasing?</h3>
+    </div>
+    <p>Insights only, or <b>control and automation</b> too? Lower bills, solar optimisation, safety — or all three?</p>
+    <div class="note do"><b>Remember —</b> their answer shapes the whole board layout.</div>
+   </div>
+
+   <div class="card">
+    <div class="top">
+     <span class="ic"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><line x1="10.5" y1="18.3" x2="13.5" y2="18.3"/></svg></span>
+     <h3>How will they live with it?</h3>
+    </div>
+    <p>Remote control from the app, routines that shift load off-peak, standby on circuits they rarely use.</p>
+    <div class="note do"><b>Remember —</b> match the layout to how they live, not just code minimums.</div>
+   </div>
+
+  </div>
+ </div>
+
+ <!-- GROUP 2 -->
+ <div class="grp">
+  <div class="kick"><span class="n">2</span><span class="t">Planning the circuits</span><span class="ln"></span></div>
+  <div class="grid">
+
+   <div class="card">
+    <div class="top">
+     <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg></span>
+     <h3>What gets its own circuit?</h3>
+    </div>
+    <p>Anything they want to <b>see, control, or automate</b>: HWC, EV charger, pool or spa pump, oven, heat pumps.</p>
+    <div class="note warn"><b>Watch out —</b> group these onto shared circuits and you take those options away.</div>
+   </div>
+
+   <div class="card">
+    <div class="top">
+     <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></span>
+     <h3>What must stay on 24/7?</h3>
+    </div>
+    <p>Fridges, freezers, security, medical equipment, and the router or ONT — <b>never switchable off</b>.</p>
+    <div class="note do"><b>Remember —</b> agree it up front and lock it in. Everything else can be controllable.</div>
+   </div>
+
+  </div>
+ </div>
+
+ <!-- GROUP 3 -->
+ <div class="grp">
+  <div class="kick"><span class="n">3</span><span class="t">Before install day</span><span class="ln"></span></div>
+  <div class="grid">
+
+   <div class="card">
+    <div class="top">
+     <span class="ic"><svg viewBox="0 0 24 24"><path d="M4.5 10.5a11 11 0 0 1 15 0"/><path d="M1.8 7.4a15.5 15.5 0 0 1 20.4 0"/><path d="M7.6 13.8a6.5 6.5 0 0 1 8.8 0"/><line x1="12" y1="17.6" x2="12.02" y2="17.6"/></svg></span>
+     <h3>Ethernet or Wi-Fi?</h3>
+    </div>
+    <p>Hardwire Ethernet to the board if you can. Wi-Fi works — but check the signal actually reaches the board first.</p>
+    <div class="note warn"><b>Watch out —</b> Wi-Fi is our customers' most common problem.</div>
+   </div>
+
+   <div class="card">
+    <div class="top">
+     <span class="ic"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7"/><line x1="20.5" y1="20.5" x2="15.5" y2="15.5"/></svg></span>
+     <h3>Is the existing wiring up to it?</h3>
+    </div>
+    <p>Check condition, capacity, and supply limits before you commit.</p>
+    <div class="note do"><b>Remember —</b> flag anything below standard now, so there are no surprises on install day.</div>
+   </div>
+
+  </div>
+ </div>
+
+</div></body></html>
