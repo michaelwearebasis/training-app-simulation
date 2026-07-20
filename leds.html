@@ -6,7 +6,7 @@
 <title>Basis — what the lights mean</title>
 <style>
 :root{
-  --ink:#1E1E1F; --ink2:#5B5E60; --ink3:#8A8D8F; --line:#EAEAEB;
+  --ink:#1E1E1F; --ink2:#5B5E60; --ink3:#8A8D8F; --line:#EAEAEB; --lime:#98FFAB;
   --led-red:#FF3B2E; --led-yellow:#FFC400; --led-blue:#2F6BFF;
 }
 *{box-sizing:border-box; margin:0; padding:0}
@@ -30,7 +30,7 @@ body{background:#fff; color:var(--ink);
 @keyframes breatheWhite{0%{opacity:.14}23%{opacity:1}46%{opacity:1}69%{opacity:.14}100%{opacity:.14}}
 .breatheWhite{animation:breatheWhite 6.5s ease-in-out infinite}
 
-.viewer{position:relative; width:100%; max-width:320px}
+.viewer{position:relative; width:100%; max-width:320px; margin:0 auto}
 .viewer svg{display:block; width:100%; height:auto; border-radius:10px}
 .ov{position:absolute; border-radius:999px}
 .ovC{left:80.1%; top:34.8%; width:4.2%; height:53.6%}
@@ -43,16 +43,18 @@ body{background:#fff; color:var(--ink);
 .dot.v{width:7px; height:16px}
 .pip{border-radius:999px; width:18px; height:6px}
 .mbtn{display:inline-flex; align-items:center; gap:9px; border:1px solid var(--line); background:#fff;
-  border-radius:12px; padding:8px 13px 8px 10px; font:inherit; font-size:13px; font-weight:600; color:var(--ink); cursor:pointer}
+  border-radius:12px; padding:8px 13px 8px 10px; font:inherit; font-size:13px; font-weight:600; color:var(--ink);
+  cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,.05); transition:border-color .12s, box-shadow .12s}
 .mbtn .hold{display:inline-flex; align-items:center; justify-content:center; background:#22272B; border-radius:6px; padding:4px 5px}
-.mbtn:hover{border-color:#c7cacc}
-.mbtn.sel{border-color:var(--ink); box-shadow:0 0 0 1px var(--ink)}
+.mbtn:hover{border-color:#bfc3c5; box-shadow:0 2px 6px rgba(0,0,0,.09)}
+.mbtn.sel{border-color:var(--lime); box-shadow:0 0 0 2.5px var(--lime); background:#F2FFF5}
 .list{display:flex; flex-direction:column; gap:8px; align-items:stretch}
 .list .mbtn{width:100%; justify-content:flex-start}
-.pips{display:inline-flex; flex-direction:column; gap:3px; margin-left:auto; padding-left:12px; align-items:flex-end}
+.pips{display:inline-flex; flex-direction:column; gap:3px; margin-left:auto; align-items:center;
+  background:#22272B; border-radius:7px; padding:5px 7px}
 .cap{font-size:13px; color:var(--ink2); margin-top:12px; min-height:34px}
 .cap b{color:var(--ink)}
-.colhead{font-size:15px; font-weight:700; margin:0 0 8px}
+.colhead{font-size:15px; font-weight:700; margin:0 0 8px; text-align:center}
 
 .two{display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:start}
 .einktxt{font-family:'DM Mono',ui-monospace,'Cascadia Mono','Roboto Mono',Consolas,monospace; fill:#EDEDEA}
@@ -94,7 +96,7 @@ body{background:#fff; color:var(--ink);
 </svg>
 
 <div class="wrap">
-  <div class="tip">Tap a mode or a situation — the light on the picture shows it.</div>
+  <div class="tip">Tap a mode or a situation — the LEDs will update to reflect it.</div>
   <div class="two">
     <div>
       <div class="colhead">Each circuit</div>
