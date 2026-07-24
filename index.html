@@ -1937,7 +1937,7 @@ function showStart(){
   $('#pop-why').textContent="Interact with the app on the left, and the switchboard on the right will respond like the real thing. Lime highlights show where to tap, and a coach bubble explains each step.";
   $('#pop-actions').innerHTML='<button class="pop-go" data-pop="start">Start commissioning</button>';
   popov.hidden=false;
-  $('.pop-go').focus();
+  $('.pop-go').focus({preventScroll:true});
 }
 function showDone(){
   $('#pop-kicker').textContent=POP_DONE.k;
@@ -1947,7 +1947,7 @@ function showDone(){
   $('#pop-why').textContent=POP_DONE.why;
   $('#pop-actions').innerHTML='<button class="pop-go" data-pop="free">Explore freely</button><button class="pop-alt" data-pop="restart">Restart demo</button>';
   popov.hidden=false;
-  $('.pop-go').focus();
+  $('.pop-go').focus({preventScroll:true});
 }
 popov.addEventListener('click',e=>{
   const b=e.target.closest('[data-pop]');
