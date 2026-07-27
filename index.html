@@ -1421,11 +1421,11 @@ const POP={
  15:{k:'Circuit 01 · MCB',t:'MCB'},
  17:{k:'Circuit 01 · RCD',t:'RCD'},
  19:{k:'Circuit 01 · Locations',t:'Locations'},
- 21:{k:'Part 5 of 10',t:'How to sync & test'},
- 24:{k:'Part 5 · At the board',t:'Confirm with TEST'},
- 25:{k:'Part 5 · At the board',t:'Energise the circuit'},
- 27:{k:'Part 5 · Trips',t:'How to deal with a trip'},
- 28:{k:'Part 5 · Reset',t:'Flick it back on'},
+ 21:{k:'Part 5 of 10',t:'Sync config to the board'},
+ 24:{k:'',t:'Press TEST to confirm'},
+ 25:{k:'',t:'Turn on the circuit'},
+ 27:{k:'',t:'Test the RCD'},
+ 28:{k:'',t:'Turn it on to clear the fault'},
  29:{k:'Part 6 of 10',t:'Configure more circuits'},
  31:{k:'Circuit 02 · Label',t:'Pick HWC'},
  32:{k:'Circuit 02 · MCB',t:'Protection for a cylinder'},
@@ -1455,19 +1455,19 @@ const POP={
  74:{k:'Part 10 of 10',t:'Report bugs & share feedback'}
 };
 const SHORT={
- 0:"Panels self-discover out of the box. <b>Match the serial in the app to the panel, then Connect.</b>",
- 4:"<b>Two parts: download to the phone, install at the panel.</b> Always commission on the latest firmware.",
- 8:"<b>Confirm the address, pick the ICP.</b> It ties the board to the right meter, retailer and tariffs.",
- 11:"One piece of hardware, software-defined circuits — reconfigure any time. <b>4 taps: Label → MCB → RCD → Locations.</b>",
- 13:"<b>Label</b> — what the circuit supplies. Shows on the e-ink and the owner's app.",
- 15:"<b>MCB</b> — trip curve + current rating, in software. Any combo to match the load.",
- 17:"<b>RCD.</b> A30mA is standard — but <b>B10mA is better protection, free.</b>",
- 19:"<b>Locations</b> — tag the rooms it feeds. Helps on callouts and in the owner's app.",
+ 0:"Match the serial number, then Connect.",
+ 4:"Two parts: download to the phone, install on the panel.",
+ 8:"Confirm the address, pick the ICP. It ties the board to the right meter, retailer and tariffs.",
+ 11:"4 taps: Label → MCB → RCD → Locations.",
+ 13:"What the circuit supplies. <b>Pick any label you like.</b>",
+ 15:"Trip curve + current rating, in software. <b>Pick any you like.</b>",
+ 17:"Type A or B, 10/30mA, any circuit.",
+ 19:"Tag the rooms it feeds. Helps on callouts and in the owner's app.",
  21:"<b>Nothing hits the board until you Sync.</b> The circuit flashes blue: CONFIG PENDING.",
- 24:"It's flashing blue — CONFIG PENDING. <b>Short-press TEST to keep the config.</b>",
- 25:"Config's on. <b>Flick the breaker to energise circuit 01</b> — LED solid red, app shows it live.",
- 27:"<b>Press TEST to trip it on purpose.</b> Screen shows ELEC-FAULT · RCD; the owner's app gets a fault alert.",
- 28:"Breaker threw to OFF, LED solid yellow. <b>Flick it back on</b> to clear the fault and go live.",
+ 24:"",
+ 25:"",
+ 27:"",
+ 28:"",
  29:"Build out the board: <b>HWC on 02, office on 03, solar on 19.</b> Open circuit 02.",
  31:"This is the hot water cylinder. <b>Pick HWC, then Confirm.</b>",
  32:"Cylinders draw hard on startup. <b>Set a curve + rating to suit, then the RCD.</b>",
@@ -1885,7 +1885,7 @@ function renderBubble(){
     k=cur; while(k>0&&!POP[k])k--;
     kk=POP[k].k; t=POP[k].t; body=SHORT[k]||'';
   }
-  $('#c-kicker').textContent=kk;
+  $('#c-kicker').textContent=kk; $('#c-kicker').style.display=kk?'':'none';
   $('#c-title').textContent=t;
   $('#c-what').innerHTML=body;
   /* toggle steps advance from here, not from the toggle itself */
@@ -1934,7 +1934,7 @@ function showStart(){
   $('#pop-title').textContent='Configure a Basis Panel';
   $('#pop-what').textContent="Commission a panel end to end. The app is on the left; the switchboard on the right responds like the real thing. Lime highlights show where to tap.";
   $('#pop-whylab').textContent='The guided demo covers';
-  $('#pop-why').textContent="Connect · Firmware · Site details · Configure a circuit · Sync & test · More circuits · Sync all · Logs, offline & feedback";
+  $('#pop-why').textContent="Connecting · Setup · Configuring circuits · Logs";
   $('#pop-actions').innerHTML='<button class="pop-go" data-pop="start">▶&ensp;Take the guided demo</button><button class="pop-alt" data-pop="free">Explore on your own</button>';
   popov.hidden=false;
   $('.pop-go').focus({preventScroll:true});
