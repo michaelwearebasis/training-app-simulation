@@ -91,6 +91,9 @@ header.page{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
   filter:drop-shadow(0 18px 34px rgba(10,14,12,.35)); transition:filter .35s}
 .punit.blurred > img{filter:blur(3px) brightness(.88) drop-shadow(0 18px 34px rgba(10,14,12,.35))}
 #connector{position:absolute; inset:0; pointer-events:none; z-index:90; overflow:visible}
+#arrows{position:fixed; inset:0; width:100vw; height:100vh; z-index:119; pointer-events:none; overflow:visible}
+#arrows path{fill:none; stroke:var(--a-lime,#2FA35F); stroke-width:2.5; stroke-linecap:round}
+#arrows .ah{fill:var(--a-lime,#2FA35F); stroke:none}
 #connector path{fill:none; stroke:var(--a-lime); stroke-width:2.5; stroke-linecap:round;
   filter:drop-shadow(0 1px 4px rgba(20,60,30,.35))}
 #connector .dot{fill:var(--a-lime)}
@@ -600,7 +603,6 @@ button.avatar{cursor:pointer}
   <div class="steps-hdr">
     <div class="steps-row" id="partsrow"></div>
     <div class="subchips" id="subrow" hidden></div>
-    <div class="partdesc" id="partdesc" hidden></div>
   </div>
 
   <div id="stagewrap">
@@ -644,6 +646,7 @@ button.avatar{cursor:pointer}
     <p id="c-what"></p>
     <button class="cnext" id="c-next" hidden>Next ›</button>
   </div>
+  <svg id="arrows" aria-hidden="true"></svg>
   </div>
 </div>
 
@@ -1361,36 +1364,28 @@ const steps=[
  {screen:'rcdSheet',hotKey:'rcdok',advanceOn:'rcd-confirm',circ:1},    //18
  {screen:'circuitDetail',hotKey:'loc',advanceOn:'openloc',circ:1},     //19
  {screen:'locSheet',hotKey:()=>((fx.selLocs||[]).includes('Office')?'locok':'locoffice'),advanceOn:'loc-confirm',circ:1,require:['locs','Office']}, //20
- {screen:'circuitDetail',hotKey:'gosync',advanceOn:'gosync',circ:1},   //21
- {screen:'syncSelect',hotKey:'syncsel',advanceOn:'syncsel'},           //22
- {screen:'syncUpload',auto:2300},                                      //23
- {screen:'syncApply',sim:'sctest',circ:1,scView:'single'},             //24
- {screen:'syncApply',sim:'sclever',circ:1,scView:'single'},            //25
- {screen:'syncApply',hotKey:'finish',advanceOn:'finish',circ:1,scView:'single'}, //26
- {screen:'circuits',hotKey:'circ2',advanceOn:'opencirc',circ:2},       //27 open the hot water circuit
- {screen:'circuitDetail',hotKey:'label',advanceOn:'openlabel',circ:2}, //28
- {screen:'labelSheet',hotKey:()=>fx.selLabel==='HWC'?'labelok':'optreq',advanceOn:'label-confirm',circ:2,require:['label','HWC']}, //29
- {screen:'circuitDetail',hotKey:'mcb',advanceOn:'openmcb',circ:2},     //30
- {screen:'mcbSheet',hotKey:'mcbok',advanceOn:'mcb-confirm',circ:2},    //31
- {screen:'circuitDetail',hotKey:'rcd',advanceOn:'openrcd',circ:2},     //32
- {screen:'rcdSheet',hotKey:'rcdok',advanceOn:'rcd-confirm',circ:2},    //33
- {screen:'circuitDetail',hotKey:()=>((CIRCS[2]||{}).afdd?null:'afdd'),advanceOn:'tg-afd',circ:2,requireOn:'afdd'}, //34
- {screen:'circuitDetail',hotKey:()=>((CIRCS[2]||{}).mlc?null:'mlc'),advanceOn:'tg-ml',circ:2,requireOn:'mlc'},    //35
- {screen:'circuitDetail',hotKey:'gosync',advanceOn:'gosync',circ:2},   //36 sync the hot water
- {screen:'syncSelect',hotKey:'syncsel',advanceOn:'syncsel'},           //37
- {screen:'syncUpload',auto:2300},                                      //38
- {screen:'syncApply',sim:'sctest',circ:2,scView:'single'},             //39 press TEST
- {screen:'syncApply',sim:'sclever',circ:2,scView:'single'},            //40 turn it on
- {screen:'syncApply',hotKey:'finish',advanceOn:'finish',circ:2,scView:'single'}, //41 finish
- {screen:'circuits',sim:'sctest',circ:1,scView:'single'},              //42 trip-test the office
- {screen:'circuits',sim:'sclever',circ:1,scView:'single'},             //43 reset after the trip
- {screen:'circuits',hotKey:'tabevents',advanceOn:'tab-events'},        //44
- {screen:'events',hotKey:'evrow',advanceOn:'openevent'},               //45
- {screen:'eventDetail',hotKey:'tabhome',advanceOn:'tab-home'},         //46
- {screen:'homeConnected',hotKey:'scanicon',advanceOn:'scanicon'},      //47
- {screen:'scanCamera',auto:3200},                                      //48
- {screen:'downloadPanelData',hotKey:'dlok',advanceOn:'dlok'},          //49
- {screen:'downloadedPanels',hotKey:'dpback',advanceOn:'dpback'}        //50 (last — ends the walkthrough)
+ {screen:'circuitDetail',hotKey:'nextcirc',advanceOn:'nextcirc',circ:1}, //21 press "Circuit 02" to configure the next one
+ {screen:'circuitDetail',hotKey:'label',advanceOn:'openlabel',circ:2}, //22
+ {screen:'labelSheet',hotKey:()=>fx.selLabel==='HWC'?'labelok':'optreq',advanceOn:'label-confirm',circ:2,require:['label','HWC']}, //23
+ {screen:'circuitDetail',hotKey:'mcb',advanceOn:'openmcb',circ:2},     //24
+ {screen:'mcbSheet',hotKey:'mcbok',advanceOn:'mcb-confirm',circ:2},    //25
+ {screen:'circuitDetail',hotKey:'rcd',advanceOn:'openrcd',circ:2},     //26
+ {screen:'rcdSheet',hotKey:'rcdok',advanceOn:'rcd-confirm',circ:2},    //27
+ {screen:'circuitDetail',hotKey:()=>((CIRCS[2]||{}).afdd?null:'afdd'),advanceOn:'tg-afd',circ:2,requireOn:'afdd'}, //28
+ {screen:'circuitDetail',hotKey:()=>((CIRCS[2]||{}).mlc?null:'mlc'),advanceOn:'tg-ml',circ:2,requireOn:'mlc'},    //29
+ {screen:'circuitDetail',hotKey:'gosync',advanceOn:'gosync',circ:2},   //30 sync — both circuits are still pending
+ {screen:'syncSelect',hotKey:'syncsel',advanceOn:'syncsel'},           //31 both 01 & 02 selected
+ {screen:'syncUpload',auto:2300},                                      //32
+ {screen:'syncApply',hotKey:'finish',advanceOn:'finish',applyBoth:true}, //33 apply both: per-circuit buttons OR Basis Button
+ {screen:'circuits',sim:'sctest',circ:1,scView:'single'},              //34 trip-test the office
+ {screen:'circuits',sim:'sclever',circ:1,scView:'single'},             //35 reset after the trip
+ {screen:'circuits',hotKey:'tabevents',advanceOn:'tab-events'},        //36
+ {screen:'events',hotKey:'evrow',advanceOn:'openevent'},               //37
+ {screen:'eventDetail',hotKey:'tabhome',advanceOn:'tab-home'},         //38
+ {screen:'homeConnected',hotKey:'scanicon',advanceOn:'scanicon'},      //39
+ {screen:'scanCamera',auto:3200},                                      //40
+ {screen:'downloadPanelData',hotKey:'dlok',advanceOn:'dlok'},          //41
+ {screen:'downloadedPanels',hotKey:'dpback',advanceOn:'dpback'}        //42 (last — ends the walkthrough)
 ];
 function hotKeyNow(){if(freePlay) return null; const h=steps[cur].hotKey; return typeof h==='function'?h():h;}
 
@@ -1404,21 +1399,18 @@ const POP={
  15:{k:'Office · MCB',t:'MCB'},
  17:{k:'Office · RCD',t:'RCD'},
  19:{k:'Office · Locations',t:'Locations'},
- 21:{k:'Office',t:'Sync config to the board'},
- 24:{k:'',t:'Press TEST to confirm'},
- 25:{k:'',t:'Turn on the circuit'},
- 27:{k:'Hot water',t:'Configure the hot water'},
- 29:{k:'HWC · Label',t:'Pick HWC'},
- 30:{k:'HWC · MCB',t:'Protection for a cylinder'},
- 34:{k:'HWC · AFDD',t:'Arc-fault detection'},
- 35:{k:'HWC · Load control',t:'Meter load control'},
- 36:{k:'Hot water',t:'Sync config to the board'},
- 39:{k:'',t:'Press TEST to confirm'},
- 40:{k:'',t:'Turn on the circuit'},
- 42:{k:'',t:'Test the RCD'},
- 43:{k:'',t:'Turn it on to clear the fault'},
- 44:{k:'Logs',t:'Event logs'},
- 47:{k:'Offline',t:'Offline mode'}
+ 21:{k:'Next circuit',t:'On to the hot water'},
+ 22:{k:'Hot water',t:'Configure the hot water'},
+ 24:{k:'HWC · MCB',t:'Protection for a cylinder'},
+ 28:{k:'HWC · AFDD',t:'Arc-fault detection'},
+ 29:{k:'HWC · Load control',t:'Meter load control'},
+ 30:{k:'Sync',t:'Sync both circuits'},
+ 31:{k:'Sync',t:'Select both circuits'},
+ 33:{k:'Apply',t:'Apply the changes at the board'},
+ 34:{k:'',t:'Test the RCD'},
+ 35:{k:'',t:'Turn it on to clear the fault'},
+ 36:{k:'Logs',t:'Event logs'},
+ 39:{k:'Offline',t:'Offline mode'}
 };
 const SHORT={
  1:"Match the serial number, then Connect.",
@@ -1426,24 +1418,21 @@ const SHORT={
  8:"Confirm the address, pick the ICP. It ties the board to the right meter, retailer and tariffs.",
  11:"4 taps: Label → MCB → RCD → Locations.",
  13:"What the circuit supplies. This one's the office — <b>pick Power.</b>",
- 15:"Trip curve + current rating, in software. <b>Pick any you like.</b>",
+ 15:"Trip curve + current rating, in software. <b>Pick what you'd normally choose for this type of circuit.</b>",
  17:"Type A or B, 10/30mA, any circuit.",
  19:"Tag the rooms it feeds. <b>Pick Office.</b>",
- 21:"<b>Nothing hits the board until you Sync.</b> The circuit flashes blue: CONFIG PENDING.",
- 24:"",
- 25:"",
- 27:"Now the hot water cylinder on circuit 02. Open it.",
- 29:"This is the hot water cylinder. <b>Pick HWC.</b>",
- 30:"Cylinders draw hard on startup. Set a curve + rating to suit, then the RCD.",
- 34:"<b>AFDD</b> catches dangerous arcing MCBs and RCDs can't see. In trial now. <b>Switch it on.</b>",
- 35:"Lets the network manage this circuit at peaks.<span style=\"display:block;margin-top:7px;font-size:14px;font-weight:700;color:var(--ink)\">Use on HWC circuits.</span>",
- 36:"Same as before — <b>sync the cylinder to the board.</b>",
- 39:"",
- 40:"",
- 42:"",
- 43:"",
- 44:"<b>Every trip, boot and config change is logged</b> and filterable — including those RCD tests.",
- 47:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 48 hours."
+ 21:"Office is staged but not on the board yet. <b>Tap Circuit 02</b> to set up the hot-water cylinder before syncing.",
+ 22:"Now the hot-water cylinder — same four taps. <b>Label it HWC</b> first.",
+ 24:"Cylinders draw hard on startup. Set a curve + rating to suit, then the RCD.",
+ 28:"<b>AFDD</b> catches dangerous arcing MCBs and RCDs can't see. In trial now. <b>Switch it on.</b>",
+ 29:"Lets the network manage this circuit at peaks.<span style=\"display:block;margin-top:7px;font-size:14px;font-weight:700;color:var(--ink)\">Use on HWC circuits.</span>",
+ 30:"<b>Nothing hits the board until you Sync.</b> Both circuits are still pending — push them together.",
+ 31:"Both <b>01</b> and <b>02</b> are staged. Leave both ticked and Sync Selected.",
+ 33:"Apply at the board. Press <b>each circuit's own button</b>, or press the <b>Basis Button</b> once to apply both at once.",
+ 34:"",
+ 35:"",
+ 36:"<b>Every trip, boot and config change is logged</b> and filterable — including those RCD tests.",
+ 39:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 48 hours."
 };
 const POP_DONE={k:'Done',t:'Panel commissioned. Nice work.',
  what:"That's the flow: connected, updated, tied to the site, the office and hot water configured, synced and trip-tested — plus event logs and offline installs.",
@@ -1461,30 +1450,23 @@ function stateFor(i){
   if(i>=17) setF(1,'mcb');
   if(i>=19) setF(1,'rcd');
   if(i>=21){setF(1,'locs'); setF(1,'afdd'); setF(1,'mlc'); setF(1,'stby');}
-  if(i>=22&&i<=26) f.selSet=new Set([1]);
-  if(i>=24&&i<=25) f.applyDeadline=Date.now()+1785*1000;
-  if(i===24) cst(1).devPending=true;
-  if(i>=25) DEV[1]=clone(CIRCS[1]);
-  if(i>=26) cst(1).live=true;
-  if(i===27) f.snack='Changes applied';
   /* circuit 02 = HWC with AFDD + meter load control */
-  if(i>=30) setF(2,'label');
-  if(i>=32) setF(2,'mcb');
-  if(i>=34){setF(2,'rcd'); setF(2,'locs'); setF(2,'stby');}
-  if(i>=35) setF(2,'afdd');
-  if(i>=36) setF(2,'mlc');
+  if(i>=24) setF(2,'label');
+  if(i>=26) setF(2,'mcb');
+  if(i>=28){setF(2,'rcd'); setF(2,'locs'); setF(2,'stby');}
+  if(i>=29) setF(2,'afdd');
+  if(i>=30) setF(2,'mlc');
   /* keep any toggles the learner flipped early */
   [1,2].forEach(n=>{ if(CIRCS[n]&&userCfgs[n]) Object.keys(userCfgs[n]).forEach(fld=>{CIRCS[n][fld]=userCfgs[n][fld];}); });
-  /* circuit 02 individual sync (steps 37-41) */
-  if(i>=37&&i<=41) f.selSet=new Set([2]);
-  if(i>=39&&i<=40) f.applyDeadline=Date.now()+1785*1000;
-  if(i===39) cst(2).devPending=true;
-  if(i>=40) DEV[2]=clone(CIRCS[2]);
-  if(i>=41) cst(2).live=true;
-  if(i===42) f.snack='Changes applied';
+  /* both circuits sync together — office stays pending until the combined apply */
+  if(i>=31&&i<=33) f.selSet=new Set([1,2]);
+  if(i>=32&&i<=33){ cst(1).devPending=true; cst(2).devPending=true; }
+  if(i===33) f.applyDeadline=Date.now()+1785*1000;
+  if(i>=34){ DEV[1]=clone(CIRCS[1]); DEV[2]=clone(CIRCS[2]); cst(1).live=true; cst(2).live=true; }
+  if(i===34) f.snack='Changes applied';
   /* trip-test the office (circuit 01) after both circuits are live */
-  if(i===43){cst(1).fault='RCD'; cst(1).live=false;}
-  if(i===50) f.expiry=Date.now()+43140*1000;
+  if(i===35){cst(1).fault='RCD'; cst(1).live=false;}
+  if(i===42) f.expiry=Date.now()+43140*1000;
   f.selSet=f.selSet||new Set();
   return f;
 }
@@ -1575,6 +1557,9 @@ function onEnter(){
   if(s.screen==='downloadedPanels'){
     TI(()=>{const el=$('#expcd'); if(el&&fx.expiry) el.textContent=hm((fx.expiry-Date.now())/1000);},1000);
   }
+  /* section intro: pop a card the first time each section (bar Connect, covered by the start card) is reached */
+  const pi=partOf(cur);
+  if(pi>=1 && cur===PARTS[pi].s && !shownSecs.has(pi)){ shownSecs.add(pi); showSection(pi); }
 }
 function goto(i){
   cur=Math.max(0,Math.min(steps.length-1,i));
@@ -1611,6 +1596,7 @@ document.addEventListener('scroll',connSoon,{capture:true,passive:true});
 function drawConnector(){   /* positions the floating coach bubble above/below its target */
   const coach=$('#coach'); if(!coach) return;
   const svg=$('#connector'); if(svg) svg.innerHTML='';   /* the bubble has its own arrow now — no line */
+  const arr=$('#arrows'); if(arr) arr.innerHTML='';      /* multi-arrow layer, only used on the apply-both step */
   const hint=$('#scrollhint'); if(hint) hint.hidden=true;
   /* one bubble per section: surface it only when a new labelled step is reached,
      stay hidden through the in-between taps until the next section pops up */
@@ -1622,7 +1608,31 @@ function drawConnector(){   /* positions the floating coach bubble above/below i
     coach.style.left=Math.round(sr.right-cw-6)+'px'; coach.style.top=Math.round(sr.top+4)+'px';
     coach.style.setProperty('--arrow-x','50%'); };
   if(freePlay){ dock(); return; }   /* free play: dock top-right, no arrow */
-  let target=screenEl.querySelector('.hot');
+  /* ===== apply-both: park the popup above the panel and fan an arrow to every pushable button ===== */
+  if(steps[cur]&&steps[cur].applyBoth){
+    const btns=[...document.querySelectorAll('#sczoom .sc-testbtn.need, #pz-btn.need')];
+    coach.classList.add('notarget'); coach.classList.remove('below');
+    if(!btns.length){ dock(); return; }
+    const rects=btns.map(b=>b.getBoundingClientRect());
+    const cx=rects.reduce((a,r)=>a+r.left+r.width/2,0)/rects.length;
+    const minY=Math.min(...rects.map(r=>r.top));
+    const left=Math.max(sr.left+4, Math.min(cx-cw/2, sr.right-cw-4));
+    const top=Math.max(sr.top+4, minY-ch-40);   /* sit clear above the highest button */
+    coach.style.left=Math.round(left)+'px'; coach.style.top=Math.round(top)+'px';
+    coach.style.setProperty('--arrow-x','50%');
+    if(arr){
+      const cr=coach.getBoundingClientRect();
+      const sx=cr.left+cr.width/2, sy=cr.bottom-2;
+      arr.innerHTML=rects.map(r=>{
+        const ex=r.left+r.width/2, ey=r.top-3;
+        return `<path d="M ${sx} ${sy} C ${sx} ${sy+46}, ${ex} ${ey-46}, ${ex} ${ey-6}"/>`
+          +`<path class="ah" d="M ${ex-5} ${ey-6} L ${ex+5} ${ey-6} L ${ex} ${ey+3} Z"/>`;
+      }).join('');
+    }
+    return;
+  }
+  const simStep=steps[cur]&&steps[cur].sim;   /* sim steps act on the panel — skip the phone, point at the board */
+  let target=simStep?null:screenEl.querySelector('.hot');
   if(target){ /* clipped by its scroll container (sheet body or screen)? prompt a scroll instead */
     const scr=target.closest('.sbody')||screenEl.querySelector('.scr');
     if(scr){
@@ -1632,8 +1642,11 @@ function drawConnector(){   /* positions the floating coach bubble above/below i
     }
   }
   if(!target) target=document.querySelector('#pz-btn.need')
+    ||document.querySelector('#sc-tag-test:not([hidden])')
+    ||document.querySelector('#sc-tag-lever:not([hidden])')
     ||document.querySelector('#sczoom .sc-testbtn.need')
     ||document.querySelector('#sczoom .sc-lever.need');
+  if(target){ const tr=target.getBoundingClientRect(); if(!tr.width&&!tr.height) target=null; }  /* ignore collapsed/hidden targets */
   if(!target){ dock(); return; }
   coach.classList.remove('notarget');
   const t=target.getBoundingClientRect();
@@ -1660,9 +1673,11 @@ function panelNeeds(){
   }
   return null;
 }
+function applyCirc(n){ const s=cst(n); if(s.devPending){DEV[n]=clone(CIRCS[n]); s.devPending=false; s.live=true;} }
 function simPress(){ /* Basis Button */
-  if(freePlay){toast('The Basis Button is used during pairing and bulk applies'); return;}
   const s=steps[cur];
+  if(!freePlay&&s.applyBoth){ [...fx.selSet].forEach(applyCirc); render(); return; }   /* bulk: one press applies every selected circuit */
+  if(freePlay){toast('The Basis Button is used during pairing and bulk applies'); return;}
   if(s.charge&&fx.bulkCharge){toast('The panel is switching over — wait for the ring'); return;}
   if(panelNeeds()!=='button'){toast('Nothing to press on the panel right now — follow the lime highlight'); return;}
   if(s.screen==='fwInstall'&&fx.fwPhase==='press'){fx.fwPhase='installing'; render(); return;}
@@ -1671,6 +1686,7 @@ function simPress(){ /* Basis Button */
 function scTestPress(n){
   const s=cst(n);
   if(fx.scTesting) return;
+  if(!freePlay&&steps[cur].applyBoth){ if(fx.selSet.has(n)) applyCirc(n); render(); return; }   /* apply this one circuit */
   const hasRcd=c=>!!(c&&c.rcd!=null);   /* no RCD configured → TEST has nothing to trip */
   if(!freePlay&&panelNeeds()==='sctest'&&n===activeCirc){
     if(s.devPending){next(); return;}                       /* confirm pending config */
@@ -1687,6 +1703,7 @@ function scTestPress(n){
 }
 function scLeverClick(n){
   const s=cst(n);
+  if(!freePlay&&steps[cur].applyBoth){ if(fx.selSet.has(n)) applyCirc(n); render(); return; }   /* breaker-on also applies */
   if(!freePlay&&panelNeeds()==='sclever'&&n===activeCirc){next(); return;}
   if(s.fault){s.fault=null; s.live=true; render(); return;}
   if(s.devPending&&!s.live){DEV[n]=clone(CIRCS[n]); s.devPending=false; s.live=true; render(); return;} /* breaker-on confirms too */
@@ -1745,6 +1762,7 @@ function renderSC(){
   sc.hidden=!scShow;
   if(!scShow){lastEinkMap={}; lastLever={}; return;}
   const need=panelNeeds();
+  const applyBoth=!freePlay&&steps[cur]&&steps[cur].applyBoth;
   const single=!freePlay&&steps[cur].scView==='single';
   sc.classList.toggle('single',single);
   const base=Math.floor((activeCirc-1)/4)*4;
@@ -1771,19 +1789,21 @@ function renderSC(){
       +((need==='sclever'&&n===activeCirc)?' need':'');
     lastLever[key]=st;
     const tb=document.querySelector(`.sc-testbtn[data-n="${n}"]`);
-    tb.classList.toggle('need',need==='sctest'&&n===activeCirc);
+    tb.classList.toggle('need',(need==='sctest'&&n===activeCirc)||(applyBoth&&fx.selSet.has(n)&&s.devPending));
   });
   $('#sc-tag-test').hidden=!(single&&need==='sctest');
   $('#sc-tag-lever').hidden=!(single&&need==='sclever');
 }
 function renderPanel(){
   const need=panelNeeds();
+  const applyBoth=!freePlay&&steps[cur]&&steps[cur].applyBoth;
   const scShow=freePlay||(cur>=12&&cur<=54)||(cur>=62&&cur<=66);
-  const pzShow=!scShow&&((cur===1&&fx.connecting)||cur===2||cur===3||cur===7||cur===60||cur===61);
+  const pzShow=applyBoth||(!scShow&&((cur===1&&fx.connecting)||cur===2||cur===3||cur===7||cur===60||cur===61));
   $('#pz-press').hidden=!pzShow;
   $('#punit').classList.toggle('blurred',pzShow||scShow);
-  $('#pz-tag').hidden=need!=='button'||!pzShow;
-  $('#pz-btn').classList.toggle('need',need==='button');
+  $('#punit').classList.toggle('dual',applyBoth);   /* stack SM + circuit module so both fit without overlap */
+  $('#pz-tag').hidden=!(pzShow&&(need==='button'||applyBoth));
+  $('#pz-btn').classList.toggle('need',need==='button'||applyBoth);
   renderSC();
   const serial=!freePlay&&cur<=1&&!fx.connecting;
   $('#serialping').hidden=!serial;
@@ -1845,7 +1865,6 @@ function renderStepper(){
       `<button class="pchip done" data-part="${i}" title="${p.t}"><span class="n">✓</span>${p.short}</button>`).join('')
       +'<span class="pchip cur"><span class="n">✦</span>Free play</span>';
     $('#subrow').hidden=true;
-    $('#partdesc').hidden=true;
     return;
   }
   const pi=partOf(cur);
@@ -1854,9 +1873,7 @@ function renderStepper(){
     return `<button class="pchip ${state}" data-part="${i}" title="${p.t}">
       <span class="n">${i<pi?'✓':i+1}</span>${p.short}</button>`;
   }).join('');
-  const pp=PARTS[pi], subrow=$('#subrow'), pdesc=$('#partdesc');
-  if(pp&&pp.desc){ pdesc.hidden=false; pdesc.innerHTML=`<b>${pp.short}</b> — ${pp.desc}`; }
-  else pdesc.hidden=true;
+  const pp=PARTS[pi], subrow=$('#subrow');
   if(pp&&pp.subs){
     subrow.hidden=false;
     subrow.innerHTML=pp.subs.map(([t,si],k2)=>{
@@ -1874,6 +1891,16 @@ function showStart(){
   $('#pop-whylab').textContent='The guided demo covers';
   $('#pop-why').textContent="Connecting · Setup · Configuring circuits · Logs";
   $('#pop-actions').innerHTML='<button class="pop-go" data-pop="start">▶&ensp;Take the guided demo</button><button class="pop-alt" data-pop="free">Explore on your own</button>';
+  popov.hidden=false;
+  $('.pop-go').focus({preventScroll:true});
+}
+function showSection(pi){
+  const p=PARTS[pi];
+  $('#pop-kicker').textContent='Section '+(pi+1)+' of '+PARTS.length+' · '+p.short;
+  $('#pop-title').textContent=p.t;
+  $('#pop-what').textContent=p.desc||'';
+  $('#pop-whylab').textContent=''; $('#pop-why').textContent='';
+  $('#pop-actions').innerHTML='<button class="pop-go" data-pop="sec">Continue ▶</button>';
   popov.hidden=false;
   $('.pop-go').focus({preventScroll:true});
 }
@@ -1897,10 +1924,11 @@ popov.addEventListener('click',e=>{
   }
 });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!popov.hidden&&!document.querySelector('[data-pop="start"]')) popov.hidden=true; });
-function restart(){ userCfgs={}; freePlay=false; lastBubbleKey=''; goto(0); showStart(); }
+let shownSecs=new Set();
+function restart(){ userCfgs={}; freePlay=false; lastBubbleKey=''; shownSecs=new Set(); goto(0); showStart(); }
 function freeInit(){
   freePlay=true; freeScr='circuits'; activeCirc=1;
-  fx=stateFor(41); fx.snack=null;
+  fx=stateFor(34); fx.snack=null;
   render();
   toast('Free play — configure, sync, trip and reset anything');
 }
