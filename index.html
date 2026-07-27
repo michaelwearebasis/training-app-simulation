@@ -1335,12 +1335,12 @@ const PARTS=[
    subs:[['Pair',0],['Firmware',4]]},
  {t:'Set the site details',short:'Site setup',s:8,e:10,
    desc:"Tie the board to the property's address and meter (ICP), so its data lands on the right account."},
- {t:'Configure the circuits',short:'Circuit config',s:11,e:43,
+ {t:'Configure the circuits',short:'Circuit config',s:11,e:35,
    desc:"Let's set up a power circuit for an office, and a hot-water cylinder on ripple control.",
-   subs:[['Office',11],['Hot water',27],['Sync',37],['Trip test',42]]},
- {t:'Logs & offline',short:'Extras',s:44,e:50,
+   subs:[['Office',12],['Hot water',22],['Sync',30],['Trip test',34]]},
+ {t:'Logs & offline',short:'Extras',s:36,e:42,
    desc:"Read the event log, then see how to work when there's no signal on site.",
-   subs:[['Logs',44],['Offline',47]]}
+   subs:[['Logs',36],['Offline',39]]}
 ];
 const steps=[
  {screen:'homeSearching',auto:2400},                                   //0
@@ -1401,7 +1401,6 @@ const POP={
  19:{k:'Office · Locations',t:'Locations'},
  21:{k:'Next circuit',t:'On to the hot water'},
  22:{k:'Hot water',t:'Configure the hot water'},
- 24:{k:'HWC · MCB',t:'Protection for a cylinder'},
  28:{k:'HWC · AFDD',t:'Arc-fault detection'},
  29:{k:'HWC · Load control',t:'Meter load control'},
  30:{k:'Sync',t:'Sync both circuits'},
@@ -1423,9 +1422,8 @@ const SHORT={
  19:"Tag the rooms it feeds. <b>Pick Office.</b>",
  21:"Office is staged but not on the board yet. <b>Tap Circuit 02</b> to set up the hot-water cylinder before syncing.",
  22:"Now the hot-water cylinder — same four taps. <b>Label it HWC</b> first.",
- 24:"Cylinders draw hard on startup. Set a curve + rating to suit, then the RCD.",
  28:"<b>AFDD</b> catches dangerous arcing MCBs and RCDs can't see. In trial now. <b>Switch it on.</b>",
- 29:"Lets the network manage this circuit at peaks.<span style=\"display:block;margin-top:7px;font-size:14px;font-weight:700;color:var(--ink)\">Use on HWC circuits.</span>",
+ 29:"Let the network manage this circuit at peaks. Enable if applicable.",
  30:"<b>Nothing hits the board until you Sync.</b> Both circuits are still pending — push them together.",
  31:"Both <b>01</b> and <b>02</b> are staged. Leave both ticked and Sync Selected.",
  33:"Apply at the board. Press <b>each circuit's own button</b>, or press the <b>Basis Button</b> once to apply both at once.",
@@ -1632,12 +1630,16 @@ function drawConnector(){   /* positions the floating coach bubble above/below i
     return;
   }
   const simStep=steps[cur]&&steps[cur].sim;   /* sim steps act on the panel — skip the phone, point at the board */
-  let target=simStep?null:screenEl.querySelector('.hot');
+  const scrKey=freePlay?freeScr:(steps[cur]&&steps[cur].screen);
+  const reqOn=!freePlay&&steps[cur]&&steps[cur].requireOn;   /* toggle steps: stay anchored to the switch even after it's flipped on */
+  const tgSel={afdd:'tg-afd',mlc:'tg-ml',stby:'tg-sl'}[reqOn];
+  let target=reqOn?screenEl.querySelector('[data-act="'+tgSel+'"]')
+    :(simStep?null:screenEl.querySelector('.hot'));
   if(target){ /* clipped by its scroll container (sheet body or screen)? prompt a scroll instead */
     const scr=target.closest('.sbody')||screenEl.querySelector('.scr');
     if(scr){
       const a=target.getBoundingClientRect(), b=scr.getBoundingClientRect();
-      if(a.top>b.bottom-8){ if(hint) hint.hidden=false; target=null; }
+      if(a.top>b.bottom-8){ if(hint&&scrKey!=='circuits') hint.hidden=false; target=null; }
       else if(a.bottom<b.top+8) target=null;
     }
   }
@@ -1676,7 +1678,18 @@ function panelNeeds(){
 function applyCirc(n){ const s=cst(n); if(s.devPending){DEV[n]=clone(CIRCS[n]); s.devPending=false; s.live=true;} }
 function simPress(){ /* Basis Button */
   const s=steps[cur];
-  if(!freePlay&&s.applyBoth){ [...fx.selSet].forEach(applyCirc); render(); return; }   /* bulk: one press applies every selected circuit */
+  if(!freePlay&&s.applyBoth){                          /* bulk apply = two presses with a switch-over delay */
+    if(fx.bulkCharge){ toast('The panel is switching over — wait for the ring'); return; }
+    if(!fx.bulkArmed){                                 /* 1st press: cut power to all, load the new config */
+      fx.bulkArmed=true; fx.bulkCharge=true;
+      [...fx.selSet].forEach(n=>{ cst(n).live=false; });
+      render();
+      const ring=$('#pz-ring'); if(ring){ ring.classList.remove('go'); void ring.offsetWidth; ring.classList.add('go'); }
+      T(()=>{ fx.bulkCharge=false; render(); }, 2000);
+      return;
+    }
+    [...fx.selSet].forEach(applyCirc); render(); return;   /* 2nd press: power circuits back up, changes applied */
+  }
   if(freePlay){toast('The Basis Button is used during pairing and bulk applies'); return;}
   if(s.charge&&fx.bulkCharge){toast('The panel is switching over — wait for the ring'); return;}
   if(panelNeeds()!=='button'){toast('Nothing to press on the panel right now — follow the lime highlight'); return;}
@@ -1804,6 +1817,7 @@ function renderPanel(){
   $('#punit').classList.toggle('dual',applyBoth);   /* stack SM + circuit module so both fit without overlap */
   $('#pz-tag').hidden=!(pzShow&&(need==='button'||applyBoth));
   $('#pz-btn').classList.toggle('need',need==='button'||applyBoth);
+  if(applyBoth&&!fx.bulkArmed&&!fx.bulkCharge){ const r=$('#pz-ring'); if(r) r.classList.remove('go'); }  /* reset ring on fresh entry */
   renderSC();
   const serial=!freePlay&&cur<=1&&!fx.connecting;
   $('#serialping').hidden=!serial;
