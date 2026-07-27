@@ -225,9 +225,6 @@ button.avatar{cursor:pointer}
 .hcard{background:var(--a-homecard); border-radius:16px; padding:14px 14px 16px; position:relative;
   display:flex; flex-direction:column}
 .hcard .serial{font-size:13.5px; font-weight:500; letter-spacing:.04em; color:#E4E7E8; margin-bottom:4px}
-.hcard .serial.serialhi{display:inline-block; color:#fff; border:2px solid var(--a-lime); border-radius:999px;
-  padding:3px 14px; margin-bottom:9px; animation:serialglow 2.2s ease-in-out infinite}
-@keyframes serialglow{0%,100%{box-shadow:0 0 0 3px rgba(152,255,171,.18)} 50%{box-shadow:0 0 0 7px rgba(152,255,171,.32)}}
 .hcard .imgwrap{display:flex; justify-content:center; position:relative; margin:0 -4px}
 .hcard .imgwrap img{width:64%; border-radius:6px}
 .hcard .overlays{position:absolute; left:0; right:0; bottom:10px; display:flex; flex-direction:column;
@@ -780,7 +777,7 @@ function boardCard(state){
       <button class="abtn white${hot('connect')}" data-act="connect" style="width:92%">
         ${state==='connecting'?'<span class="dots3 dark"><i></i><i></i><i></i></span>':'Connect'}</button>`;
   return `<div class="hcard" ${state==='connected'?'data-act="viewpanel" style="cursor:pointer"':''}>
-    <div class="serial${state==='found'?' serialhi':''}">${SERIAL}</div>
+    <div class="serial">${SERIAL}</div>
     <div class="imgwrap">
       <img src="${IMG_PANEL}" alt="Basis Smart Panel">
       <div class="overlays">${foot}</div>
@@ -1343,7 +1340,7 @@ const PARTS=[
    desc:"Let's set up a power circuit for an office, and a hot-water cylinder on ripple control.",
    subs:[['Office',12],['Hot water',23],['Sync',32],['Trip test',35]]},
  {t:'Logs & offline',short:'Extras',s:37,e:43,
-   desc:"Read the event log, then see how to work when there's no signal on site.",
+   desc:"Let's have a look at the event log from that RCD trip. Then, we'll see how to work when there's no internet or reception on site.",
    subs:[['Logs',37],['Offline',40]]}
 ];
 const steps=[
@@ -1409,9 +1406,10 @@ const POP={
  30:{k:'HWC · Load control',t:'Meter load control'},
  31:{k:'Sync',t:'Sync both circuits'},
  34:{k:'Apply',t:'Apply the changes at the board'},
- 35:{k:'',t:'Test the RCD'},
- 36:{k:'',t:'Turn it on to clear the fault'},
+ 35:{k:'',t:"Let's test the RCD"},
+ 36:{k:'',t:'The circuit has tripped'},
  37:{k:'Logs',t:'Event logs'},
+ 39:{k:'Logs',t:'What the log shows'},
  40:{k:'Offline',t:'Offline mode'}
 };
 const SHORT={
@@ -1428,7 +1426,9 @@ const SHORT={
  30:"Let the network manage this circuit at peaks. Enable if applicable.",
  31:"Both circuits are still pending.",
  34:"Press <b>each circuit's TEST button</b>, or press the <b>Basis Button</b> to apply all changes.",
+ 36:"It shows some relevant information on the screen and in the app. <b>Turn it back on to clear the fault.</b>",
  37:"<b>Every trip, boot and config change is logged</b> and filterable — including those RCD tests.",
+ 39:"This is the RCD trip you just did — logged with its time, the circuit and the cause. Every event is recorded, so faults can be diagnosed remotely without a site visit.",
  40:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 48 hours."
 };
 const POP_DONE={k:'Done',t:'Panel commissioned. Nice work.',
@@ -1648,7 +1648,7 @@ function drawConnector(){   /* positions the floating coach bubble above/below i
   let target=reqOn?screenEl.querySelector('[data-act="'+tgSel+'"]')
     :(simStep?null:screenEl.querySelector('.hot'));
   if(target){ /* clipped by its scroll container? hide the bubble + prompt a scroll — it anchors above the target once scrolled into view */
-    const scr=target.closest('.sbody')||screenEl.querySelector('.scr');
+    const scr=target.closest('.sbody')||target.closest('.scr');   /* only clip-check targets inside a scroll area — not the fixed tab bar */
     if(scr){
       const a=target.getBoundingClientRect(), b=scr.getBoundingClientRect();
       if(a.top>b.bottom-8){ if(hint&&scrKey!=='circuits') hint.hidden=false; coach.hidden=true; return; }
@@ -1816,9 +1816,9 @@ function renderSC(){
     led.className='scled '+(s.devPending?'l-pending':s.fault?'l-fault':s.live?'l-live':'');
     const lever=document.querySelector(`.sc-lever[data-n="${n}"]`);
     const st=s.fault?'fault':s.live?'live':'off';
-    if(lastLever[key]==='live'&&st==='fault') lever.className='sc-lever trip'+(single?'':'');
-    else lever.className='sc-lever'+(s.live?'':' off')
-      +((need==='sclever'&&n===activeCirc)?' need':'');
+    const leverNeed=(need==='sclever'&&n===activeCirc)?' need':'';   /* let the coach anchor to it even mid-trip */
+    if(lastLever[key]==='live'&&st==='fault') lever.className='sc-lever trip'+leverNeed;
+    else lever.className='sc-lever'+(s.live?'':' off')+leverNeed;
     lastLever[key]=st;
     const tb=document.querySelector(`.sc-testbtn[data-n="${n}"]`);
     tb.classList.toggle('need',(need==='sctest'&&n===activeCirc)||(applyBoth&&fx.selSet.has(n)&&s.devPending&&fx.applyPath!=='bulk'));
