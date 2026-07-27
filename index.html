@@ -121,9 +121,13 @@ header.page{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
 
 /* ---------- modal (start + completion only) ---------- */
 .pop-ov{position:fixed; inset:0; background:rgba(18,22,20,.55); z-index:200; display:flex;
-  align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(2px)}
+  align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(2px);
+  animation:popovin .28s ease both}
+@keyframes popovin{from{opacity:0} to{opacity:1}}
 .pop{background:var(--card); color:var(--ink); border-radius:18px; max-width:430px; width:100%;
-  padding:24px 24px 20px; box-shadow:0 30px 80px rgba(10,14,12,.4); border:1px solid var(--line)}
+  padding:24px 24px 20px; box-shadow:0 30px 80px rgba(10,14,12,.4); border:1px solid var(--line);
+  animation:popin .34s cubic-bezier(.2,.85,.3,1) both}
+@keyframes popin{from{opacity:0; transform:translateY(10px) scale(.97)} to{opacity:1; transform:none}}
 .pop .pill{margin-bottom:12px}
 .pop h3{font-size:21px; font-weight:500; letter-spacing:-.01em; margin-bottom:10px; text-wrap:balance}
 .pop p{font-size:14px; line-height:1.55; color:var(--ink2)}
@@ -1553,11 +1557,15 @@ function onEnter(){
   if(s.screen==='downloadedPanels'){
     TI(()=>{const el=$('#expcd'); if(el&&fx.expiry) el.textContent=hm((fx.expiry-Date.now())/1000);},1000);
   }
-  /* section intro: pop a card the first time each section (bar Connect, covered by the start card) is reached */
+  /* section intro: let the new screen land first, then pop the card ~0.9s later (softer than an instant cut) */
   const pi=partOf(cur);
-  if(pi>=1 && cur===PARTS[pi].s && !shownSecs.has(pi)){ shownSecs.add(pi); showSection(pi); }
+  if(pi>=1 && cur===PARTS[pi].s && !shownSecs.has(pi)){
+    shownSecs.add(pi); secLock=true; const at=cur;   /* lock taps so the intro can't be skipped in the gap */
+    setTimeout(()=>{ secLock=false; if(cur===at) showSection(pi); }, 900);   /* raw timeout — survives interim renders */
+  }
 }
 function goto(i){
+  secLock=false;   /* any navigation clears a pending section-intro lock */
   cur=Math.max(0,Math.min(steps.length-1,i));
   fx=stateFor(cur);
   render();
@@ -1725,7 +1733,10 @@ function scLeverClick(n){
   if(!freePlay&&steps[cur].applyBoth){                       /* breaker-on also applies — individual path */
     if(fx.applyPath==='bulk'){ toast('The Basis Button is applying all circuits at once'); return; }
     if(fx.selSet.has(n)){ fx.applyPath='indiv'; applyCirc(n); } render(); return; }
-  if(!freePlay&&panelNeeds()==='sclever'&&n===activeCirc){next(); return;}
+  if(!freePlay&&panelNeeds()==='sclever'&&n===activeCirc){
+    if(s.fault){ s.fault=null; s.live=true; render(); secLock=true; T(()=>{secLock=false; next();},650); return; }   /* clear the trip, let it recover, then advance */
+    next(); return;
+  }
   if(s.fault){s.fault=null; s.live=true; render(); return;}
   if(s.devPending&&!s.live){DEV[n]=clone(CIRCS[n]); s.devPending=false; s.live=true; render(); return;} /* breaker-on confirms too */
   if(!DEV[n]||!DEV[n].label){
@@ -1847,8 +1858,9 @@ function renderPanel(){
   document.querySelectorAll('.sm-status').forEach(el=>el.className='led sm-status '+smStatus);
   document.querySelectorAll('.sm-comms').forEach(el=>el.className='led sm-comms '+smComms);
 }
-$('#pz-btn').addEventListener('click',simPress);
+$('#pz-btn').addEventListener('click',()=>{ if(!secLock) simPress(); });
 $('#cmgrid').addEventListener('click',e=>{
+  if(secLock) return;   /* section intro settling — ignore panel taps for a beat */
   const lv=e.target.closest('.sc-lever'); if(lv){scLeverClick(+lv.dataset.n); return;}
   const tb=e.target.closest('.sc-testbtn'); if(tb){scTestPress(+tb.dataset.n); return;}
 });
@@ -1948,8 +1960,8 @@ popov.addEventListener('click',e=>{
   }
 });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!popov.hidden&&!document.querySelector('[data-pop="start"]')) popov.hidden=true; });
-let shownSecs=new Set();
-function restart(){ userCfgs={}; freePlay=false; lastBubbleKey=''; shownSecs=new Set(); goto(0); showStart(); }
+let shownSecs=new Set(), secLock=false;
+function restart(){ userCfgs={}; freePlay=false; lastBubbleKey=''; shownSecs=new Set(); secLock=false; goto(0); showStart(); }
 function freeInit(){
   freePlay=true; freeScr='circuits'; activeCirc=1;
   fx=stateFor(35); fx.snack=null;
@@ -2070,6 +2082,7 @@ function freeAct(act,el){
   }
 }
 screenEl.addEventListener('click',e=>{
+  if(secLock) return;   /* section intro settling — ignore taps for a beat */
   const el=e.target.closest('[data-act]'); if(!el) return;
   const act=el.dataset.act;
   if(act==='activeload'||act==='loadback'){pickHandlers(act,el); return;}
