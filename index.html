@@ -67,6 +67,8 @@ header.page{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
 }
 .pchip.done .n{background:var(--lime); color:#212629}
 .subchips{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
+.partdesc{margin-top:9px; font-size:12.5px; line-height:1.45; color:var(--ink2); max-width:780px}
+.partdesc b{color:var(--ink); font-weight:700}
 .schip{background:var(--chip); color:var(--ink3); border-radius:999px; padding:4px 10px;
   font-size:11px; font-weight:500; display:inline-flex; gap:5px; align-items:center}
 .schip.cur{background:#212629; color:var(--lime)}
@@ -598,6 +600,7 @@ button.avatar{cursor:pointer}
   <div class="steps-hdr">
     <div class="steps-row" id="partsrow"></div>
     <div class="subchips" id="subrow" hidden></div>
+    <div class="partdesc" id="partdesc" hidden></div>
   </div>
 
   <div id="stagewrap">
@@ -1325,11 +1328,15 @@ SCREENS.downloadedPanels=()=>{
 /* ============ parts & steps ============ */
 const PARTS=[
  {t:'Connect to the panel',short:'Connect',s:0,e:7,
+   desc:"Find the panel, pair with it over Bluetooth, then bring its firmware up to date.",
    subs:[['Pair',0],['Firmware',4]]},
- {t:'Set the site details',short:'Site setup',s:8,e:10},
+ {t:'Set the site details',short:'Site setup',s:8,e:10,
+   desc:"Tie the board to the property's address and meter (ICP), so its data lands on the right account."},
  {t:'Configure the circuits',short:'Circuit config',s:11,e:43,
+   desc:"Let's set up a power circuit for an office, and a hot-water cylinder on ripple control.",
    subs:[['Office',11],['Hot water',27],['Sync',37],['Trip test',42]]},
  {t:'Logs & offline',short:'Extras',s:44,e:50,
+   desc:"Read the event log, then see how to work when there's no signal on site.",
    subs:[['Logs',44],['Offline',47]]}
 ];
 const steps=[
@@ -1838,6 +1845,7 @@ function renderStepper(){
       `<button class="pchip done" data-part="${i}" title="${p.t}"><span class="n">✓</span>${p.short}</button>`).join('')
       +'<span class="pchip cur"><span class="n">✦</span>Free play</span>';
     $('#subrow').hidden=true;
+    $('#partdesc').hidden=true;
     return;
   }
   const pi=partOf(cur);
@@ -1846,7 +1854,9 @@ function renderStepper(){
     return `<button class="pchip ${state}" data-part="${i}" title="${p.t}">
       <span class="n">${i<pi?'✓':i+1}</span>${p.short}</button>`;
   }).join('');
-  const pp=PARTS[pi], subrow=$('#subrow');
+  const pp=PARTS[pi], subrow=$('#subrow'), pdesc=$('#partdesc');
+  if(pp&&pp.desc){ pdesc.hidden=false; pdesc.innerHTML=`<b>${pp.short}</b> — ${pp.desc}`; }
+  else pdesc.hidden=true;
   if(pp&&pp.subs){
     subrow.hidden=false;
     subrow.innerHTML=pp.subs.map(([t,si],k2)=>{
