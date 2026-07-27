@@ -51,8 +51,8 @@ header.page{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
   padding:7px 13px; font-size:12px; font-weight:500}
 
 .steps-hdr{z-index:80; width:100%; padding:2px 0 4px}   /* now sits above the panel in the right column */
-.steps-row{display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:center}
-.parrow{color:var(--ink3); font-size:13px; margin:0 1px; flex:0 0 auto; user-select:none}
+.steps-row{display:flex; flex-direction:column; gap:3px; align-items:center; justify-content:center}
+.parrow{color:var(--ink3); font-size:12px; line-height:1; margin:0; flex:0 0 auto; user-select:none}
 .subchips{justify-content:center}
 .pchip{display:inline-flex; align-items:center; gap:5px; background:var(--chip); color:var(--ink2);
   border-radius:999px; padding:5px 10px; font-size:11px; font-weight:500}
@@ -1339,12 +1339,12 @@ const PARTS=[
    subs:[['Pair',0],['Firmware',4]]},
  {t:'Set the site details',short:'Site setup',s:8,e:10,
    desc:"Tie the board to the property's address and meter (ICP), so we can link their retailer and tariffs."},
- {t:'Configure the circuits',short:'Circuit config',s:11,e:36,
+ {t:'Configure the circuits',short:'Circuit config',s:11,e:37,
    desc:"Let's set up a power circuit for an office, and a hot-water cylinder on ripple control.",
-   subs:[['Office',12],['Hot water',23],['Sync',32],['Trip test',35]]},
- {t:'Logs & offline',short:'Extras',s:37,e:43,
+   subs:[['Office',12],['Hot water',23],['Sync',32],['Trip test',36]]},
+ {t:'Logs & offline',short:'Extras',s:38,e:44,
    desc:"Let's have a look at the event log from that RCD trip. Then, we'll see how to work when there's no internet or reception on site.",
-   subs:[['Logs',37],['Offline',40]]}
+   subs:[['Logs',38],['Offline',41]]}
 ];
 const steps=[
  {screen:'homeSearching',auto:2400},                                   //0
@@ -1382,15 +1382,16 @@ const steps=[
  {screen:'syncSelect',hotKey:'syncsel',advanceOn:'syncsel'},           //32 both 01 & 02 selected
  {screen:'syncUpload',auto:2300},                                      //33
  {screen:'syncApply',hotKey:'finish',advanceOn:'finish',applyBoth:true}, //34 apply both: per-circuit buttons OR Basis Button
- {screen:'circuits',sim:'sctest',circ:1,scView:'single'},              //35 trip-test the office
- {screen:'circuits',sim:'sclever',circ:1,scView:'single'},             //36 reset after the trip
- {screen:'circuits',hotKey:'tabevents',advanceOn:'tab-events'},        //37
- {screen:'events',hotKey:'evrow',advanceOn:'openevent'},               //38
- {screen:'eventDetail',hotKey:'tabhome',advanceOn:'tab-home'},         //39
- {screen:'homeConnected',hotKey:'scanicon',advanceOn:'scanicon'},      //40
- {screen:'scanCamera',auto:3200},                                      //41
- {screen:'downloadPanelData',hotKey:'dlok',advanceOn:'dlok'},          //42
- {screen:'downloadedPanels',hotKey:'dpback',advanceOn:'dpback'}        //43 (last — ends the walkthrough)
+ {screen:'circuits',turnOn:true},                                      //35 synced but off — flick the breakers on
+ {screen:'circuits',sim:'sctest',circ:1,scView:'single'},              //36 trip-test the office
+ {screen:'circuits',sim:'sclever',circ:1,scView:'single'},             //37 reset after the trip
+ {screen:'circuits',hotKey:'tabevents',advanceOn:'tab-events'},        //38
+ {screen:'events',hotKey:'evrow',advanceOn:'openevent'},               //39
+ {screen:'eventDetail',hotKey:'tabhome',advanceOn:'tab-home'},         //40
+ {screen:'homeConnected',hotKey:'scanicon',advanceOn:'scanicon'},      //41
+ {screen:'scanCamera',auto:3200},                                      //42
+ {screen:'downloadPanelData',hotKey:'dlok',advanceOn:'dlok'},          //43
+ {screen:'downloadedPanels',hotKey:'dpback',advanceOn:'dpback'}        //44 (last — ends the walkthrough)
 ];
 function hotKeyNow(){if(freePlay) return null; const h=steps[cur].hotKey; return typeof h==='function'?h():h;}
 
@@ -1409,12 +1410,13 @@ const POP={
  30:{k:'HWC · Load control',t:'Meter load control'},
  31:{k:'Sync',t:'Sync both circuits'},
  34:{k:'Apply',t:'Apply the changes at the board'},
- 35:{k:'',t:"Let's test the RCD"},
- 36:{k:'',t:'The circuit has tripped'},
- 37:{k:'Logs',t:'Event logs'},
- 39:{k:'Logs',t:'What the log shows'},
- 40:{k:'Offline',t:'Offline mode'},
- 42:{k:'Offline',t:'Panel data saved to your phone'}
+ 35:{k:'',t:'Turn the circuits on'},
+ 36:{k:'',t:"Let's test the RCD"},
+ 37:{k:'',t:'The circuit has tripped'},
+ 38:{k:'Logs',t:'Event logs'},
+ 40:{k:'Logs',t:'What the log shows'},
+ 41:{k:'Offline',t:'Offline mode'},
+ 43:{k:'Offline',t:'Panel data saved to your phone'}
 };
 const SHORT={
  1:"Match the serial number, then Connect.",
@@ -1430,11 +1432,12 @@ const SHORT={
  30:"Let the network manage this circuit at peaks. Enable if applicable.",
  31:"Both circuits are still pending.",
  34:"Press <b>each circuit's TEST button</b>, or press the <b>Basis Button</b> to apply all changes.",
- 36:"It shows some relevant information on the screen and in the app. <b>Turn it back on to clear the fault.</b>",
- 37:"<b>Every trip, boot and config change is logged</b> and filterable — including those RCD tests.",
- 39:"This is the RCD trip you just did — logged with its time, the circuit and the cause. Every event is recorded.",
- 40:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 12 hours.",
- 42:"The firmware and settings for this panel are now on your phone — kept for <b>12 hours</b>, so you can commission on site with no internet or reception."
+ 35:"Both circuits are synced but still off. <b>Flick each breaker on</b> to energise them.",
+ 37:"It shows some relevant information on the screen and in the app. <b>Turn it back on to clear the fault.</b>",
+ 38:"<b>Every trip, boot and config change is logged</b> and filterable — including those RCD tests.",
+ 40:"This is the RCD trip you just did — logged with its time, the circuit and the cause. Every event is recorded.",
+ 41:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 12 hours.",
+ 43:"The firmware and settings for this panel are now on your phone — kept for <b>12 hours</b>, so you can commission on site with no internet or reception."
 };
 const POP_DONE={k:'Done',t:'Panel commissioned. Nice work.',
  what:"That's the flow: connected, updated, tied to the site, the office and hot water configured, synced and trip-tested — plus event logs and offline installs.",
@@ -1466,11 +1469,12 @@ function stateFor(i){
   if(i>=32&&i<=34) f.selSet=new Set([1,2]);
   if(i===34){ cst(1).devPending=true; cst(2).devPending=true; }   /* panel only reacts once the upload lands (step 34), ~2s after Sync */
   if(i===34) f.applyDeadline=Date.now()+1785*1000;
-  if(i>=35){ DEV[1]=clone(CIRCS[1]); DEV[2]=clone(CIRCS[2]); cst(1).live=true; cst(2).live=true; }
+  if(i>=35){ DEV[1]=clone(CIRCS[1]); DEV[2]=clone(CIRCS[2]); }   /* synced/applied — still off until the user turns them on */
+  if(i>=36){ cst(1).live=true; cst(2).live=true; }              /* energised after the turn-on step (35) */
   if(i===35) f.snack='Changes applied';
-  /* trip-test the office (circuit 01) after both circuits are live */
-  if(i===36){cst(1).fault='RCD'; cst(1).live=false; f.holdPopUntil=Date.now()+1100;}   /* let the trip land before the popup */
-  if(i===43) f.expiry=Date.now()+43140*1000;
+  /* trip-test the office (circuit 01) */
+  if(i===37){cst(1).fault='RCD'; cst(1).live=false; f.holdPopUntil=Date.now()+1100;}   /* let the trip land before the popup */
+  if(i===44) f.expiry=Date.now()+43140*1000;
   f.selSet=f.selSet||new Set();
   return f;
 }
@@ -1724,7 +1728,7 @@ function simPress(){ /* Basis Button */
       return;
     }
     const rd=$('#pz-ring'); if(rd) rd.classList.remove('go');
-    [...fx.selSet].forEach(applyCirc); render(); return;   /* 2nd press: power back up, changes applied */
+    [...fx.selSet].forEach(applyCirc); render(); return;   /* 2nd press: config written; circuits stay off until the turn-on step */
   }
   if(freePlay){toast('The Basis Button is used during pairing and bulk applies'); return;}
   if(s.charge&&fx.bulkCharge){toast('The panel is switching over — wait for the ring'); return;}
@@ -1754,6 +1758,9 @@ function scTestPress(n){
 }
 function scLeverClick(n){
   const s=cst(n);
+  if(!freePlay&&steps[cur].turnOn){                          /* energise the freshly-synced circuits */
+    if(DEV[n]&&DEV[n].label&&!s.live){ s.live=true; render(); if([1,2].every(c=>cst(c).live)) T(()=>next(),520); }
+    return; }
   if(!freePlay&&steps[cur].applyBoth){                       /* breaker-on also applies — individual path */
     if(fx.applyPath==='bulk'){ toast('The Basis Button is applying all circuits at once'); return; }
     if(fx.selSet.has(n)){ fx.applyPath='indiv'; applyCirc(n); } render(); return; }
@@ -1840,7 +1847,8 @@ function renderSC(){
     led.className='scled '+(s.devPending?'l-pending':s.fault?'l-fault':s.live?'l-live':'');
     const lever=document.querySelector(`.sc-lever[data-n="${n}"]`);
     const st=s.fault?'fault':s.live?'live':'off';
-    const leverNeed=(need==='sclever'&&n===activeCirc)?' need':'';   /* let the coach anchor to it even mid-trip */
+    const turnOnStep=!freePlay&&steps[cur]&&steps[cur].turnOn;
+    const leverNeed=((need==='sclever'&&n===activeCirc)||(turnOnStep&&DEV[n]&&DEV[n].label&&!s.live))?' need':'';   /* let the coach anchor to it even mid-trip */
     if(lastLever[key]==='live'&&st==='fault') lever.className='sc-lever trip'+leverNeed;
     else lever.className='sc-lever'+(s.live?'':' off')+leverNeed;
     lastLever[key]=st;
@@ -1900,7 +1908,7 @@ function renderBubble(){
     if(!POP[k]){ lastBubbleKey=k; return; }   /* no instruction yet (e.g. the Searching screen) — coach stays hidden */
     kk=POP[k].k; t=POP[k].t; body=SHORT[k]||'';
     if(steps[cur].applyBoth&&fx.bulkArmed){   /* after the 1st Basis-Button press, swap to the two-press explainer */
-      t='Press it again to apply'; body='<b>1st press</b> removes power from all circuits, <b>2nd press</b> adds power back.'; k='bulk2';
+      t='Press it again to apply'; body='<b>1st press</b> removes power from all circuits, <b>2nd press</b> writes the new config to the board.'; k='bulk2';
     }
   }
   $('#c-title').textContent=t;
@@ -1922,7 +1930,7 @@ function renderBubble(){
 $('#c-next').addEventListener('click',()=>{ if(!freePlay&&steps[cur].requireOn) next(); });
 function partOf(i){return PARTS.findIndex(p=>i>=p.s&&i<=p.e);}
 function renderStepper(){
-  const ARR='<span class="parrow" aria-hidden="true">→</span>';
+  const ARR='<span class="parrow" aria-hidden="true">↓</span>';
   if(freePlay){
     $('#partsrow').innerHTML=PARTS.map((p,i)=>
       `<button class="pchip done" data-part="${i}" title="${p.t}"><span class="n">✓</span>${p.short}</button>`).join(ARR)
@@ -1991,7 +1999,7 @@ let shownSecs=new Set(), secLock=false;
 function restart(){ userCfgs={}; freePlay=false; lastBubbleKey=''; shownSecs=new Set(); secLock=false; goto(0); showStart(); }
 function freeInit(){
   freePlay=true; freeScr='circuits'; activeCirc=1;
-  fx=stateFor(35); fx.snack=null;
+  fx=stateFor(36); fx.snack=null;
   render();
   toast('Free play — configure, sync, trip and reset anything');
 }
