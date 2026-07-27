@@ -1810,6 +1810,7 @@ function renderBubble(){
     body="Configure any circuit, sync one or many (SYNC ALL for the lot), TEST when it flashes blue — or flick a live breaker and run the RCD test. Restart any time.";
   } else {
     k=cur; while(k>0&&!POP[k])k--;
+    if(!POP[k]){ lastBubbleKey=k; return; }   /* no instruction yet (e.g. the Searching screen) — coach stays hidden */
     kk=POP[k].k; t=POP[k].t; body=SHORT[k]||'';
   }
   $('#c-kicker').textContent=kk; $('#c-kicker').style.display=kk?'':'none';
