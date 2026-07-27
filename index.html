@@ -710,10 +710,8 @@ const appPending=n=>!!CIRCS[n]&&!cfgEq(CIRCS[n],DEV[n]);
 const pendingList=()=>Object.keys(CIRCS).map(Number).filter(appPending);
 /* defaults used when the learner jumps ahead without making their own choices */
 const DFLT={
- 1:{label:'Lights', mcb:'C 16A', rcd:'A 30mA', locs:['Bedroom 1','Ensuite 1'], afdd:false, mlc:false, stby:false},
- 2:{label:'HWC',    mcb:'B 20A', rcd:'A 30mA', locs:[], afdd:true,  mlc:true,  stby:false},
- 19:{label:'Solar', mcb:'C 32A', rcd:undefined, locs:[], afdd:false, mlc:false, stby:false},
- 3:{label:'Power',  mcb:'B 20A', rcd:'A 30mA', locs:['Office'], afdd:false, mlc:false, stby:true}
+ 1:{label:'Power',  mcb:'C 16A', rcd:'A 30mA', locs:['Office'], afdd:false, mlc:false, stby:true},
+ 2:{label:'HWC',    mcb:'B 20A', rcd:'A 30mA', locs:[], afdd:true,  mlc:true,  stby:false}
 };
 const freshCfg=()=>({label:null,mcb:null,rcd:undefined,locs:[],afdd:false,mlc:false,stby:false});
 function setF(n,f){ /* apply one config field: the learner's choice, else the storyline default */
@@ -1200,8 +1198,8 @@ SCREENS.fwInstall=()=>{
 
 /* ---- events / settings / offline ---- */
 const EVENTS=[
- {cls:'lilac',svg:I.wave,t:'Circuit set to live',s:'Lights · Circuit 01: set to live',tm:'15:05',cat:'Activity'},
- {cls:'orange',svg:I.alerto,t:'Earth Leakage Fault',s:'Lights · Circuit 01: Trip threshold - 30mA',tm:'15:04',cat:'Fault',act:'openevent',hk:'evrow'},
+ {cls:'lilac',svg:I.wave,t:'Circuit set to live',s:'Power · Circuit 01: set to live',tm:'15:05',cat:'Activity'},
+ {cls:'orange',svg:I.alerto,t:'Earth Leakage Fault',s:'Power · Circuit 01: Trip threshold - 30mA',tm:'15:04',cat:'Fault',act:'openevent',hk:'evrow'},
  {cls:'lilac',svg:I.wave,t:'Configuration committed',s:'A configuration change has completed.',tm:'15:02',cat:'Activity'},
  {cls:'lilac',svg:I.wave,t:'Configuration update',s:'A configuration change has been made to the panel.',tm:'15:02',cat:'Activity'},
  {cls:'lilac',svg:I.wave,t:'Boot',s:'Panel restarted after firmware install.',tm:'14:48',cat:'Activity'}
@@ -1229,11 +1227,11 @@ SCREENS.eventDetail=()=>({tab:'events',html:`
       font-size:14.5px;font-weight:500;margin:18px 0 14px">${I.alerto} Fault</div>
     <h3 style="font-size:31px;font-weight:600;letter-spacing:-.01em;text-align:center;margin-bottom:14px">Earth Leakage Fault</h3>
     <p style="font-size:13.5px;color:var(--a-t2);line-height:1.55;text-align:center;margin-bottom:30px">Attention: An RCD trip
-    has been detected in Lights · Circuit 01. Please verify ground fault conditions and assess for any
+    has been detected in Power · Circuit 01. Please verify ground fault conditions and assess for any
     potential leakage currents.</p>
     <div style="font-size:20px;font-weight:600;margin-bottom:4px">Details</div>
     <div class="drow"><span>When</span><b>15/07/26&ensp;15:04</b></div>
-    <div class="drow"><span>Circuit</span><b>Lights · Circuit 01</b></div>
+    <div class="drow"><span>Circuit</span><b>Power · Circuit 01</b></div>
     <div class="drow"><span>Category</span><b>RCD</b></div>
     <div class="drow"><span>Trip threshold</span><b>30mA</b></div>
     <div class="drow" style="border-bottom:0"><span>Type</span><b>A</b></div>
@@ -1320,15 +1318,16 @@ const PARTS=[
  {t:'Connect to the Smart Panel',short:'Connect',s:0,e:3},
  {t:'Update the firmware',short:'Firmware',s:4,e:7},
  {t:'Set the site details',short:'Site',s:8,e:10},
- {t:'Configure a circuit',short:'Configure',s:11,e:20,
+ {t:'Configure the office',short:'Office',s:11,e:20,
    subs:[['Label',13],['MCB',15],['RCD',17],['Locations',19]]},
- {t:'Sync & test the RCD',short:'Sync',s:21,e:28},
- {t:'Configure more circuits',short:'More circuits',s:29,e:56,
-   subs:[['HWC',29],['Office',39],['Solar',49],['Reset options',55]]},
- {t:'Sync all',short:'Sync all',s:57,e:66},
- {t:'Event logs',short:'Events',s:67,e:69},
- {t:'Offline mode',short:'Offline',s:70,e:73},
- {t:'Bugs & feedback',short:'Feedback',s:74,e:76}
+ {t:'Sync the office',short:'Sync',s:21,e:26},
+ {t:'Configure the hot water',short:'HWC',s:27,e:36,
+   subs:[['Label',28],['MCB',30],['RCD',32],['AFDD',34]]},
+ {t:'Sync the hot water',short:'Sync',s:37,e:41},
+ {t:'Test the RCD',short:'Trip test',s:42,e:43},
+ {t:'Event logs',short:'Events',s:44,e:46},
+ {t:'Offline mode',short:'Offline',s:47,e:50},
+ {t:'Bugs & feedback',short:'Feedback',s:51,e:53}
 ];
 const steps=[
  {screen:'homeSearching',auto:2400},                                   //0
@@ -1345,161 +1344,105 @@ const steps=[
  {screen:'dashboard',hotKey:'circuits',advanceOn:'circuits'},          //11
  {screen:'circuits',hotKey:'circ1',advanceOn:'opencirc',circ:1},       //12
  {screen:'circuitDetail',hotKey:'label',advanceOn:'openlabel',circ:1}, //13
- {screen:'labelSheet',hotKey:'labelok',advanceOn:'label-confirm',circ:1}, //14
+ {screen:'labelSheet',hotKey:()=>fx.selLabel==='Power'?'labelok':'optreq',advanceOn:'label-confirm',circ:1,require:['label','Power']}, //14
  {screen:'circuitDetail',hotKey:'mcb',advanceOn:'openmcb',circ:1},     //15
  {screen:'mcbSheet',hotKey:'mcbok',advanceOn:'mcb-confirm',circ:1},    //16
  {screen:'circuitDetail',hotKey:'rcd',advanceOn:'openrcd',circ:1},     //17
  {screen:'rcdSheet',hotKey:'rcdok',advanceOn:'rcd-confirm',circ:1},    //18
  {screen:'circuitDetail',hotKey:'loc',advanceOn:'openloc',circ:1},     //19
- {screen:'locSheet',hotKey:'locok',advanceOn:'loc-confirm',circ:1},    //20
+ {screen:'locSheet',hotKey:()=>((fx.selLocs||[]).includes('Office')?'locok':'locoffice'),advanceOn:'loc-confirm',circ:1,require:['locs','Office']}, //20
  {screen:'circuitDetail',hotKey:'gosync',advanceOn:'gosync',circ:1},   //21
  {screen:'syncSelect',hotKey:'syncsel',advanceOn:'syncsel'},           //22
  {screen:'syncUpload',auto:2300},                                      //23
  {screen:'syncApply',sim:'sctest',circ:1,scView:'single'},             //24
  {screen:'syncApply',sim:'sclever',circ:1,scView:'single'},            //25
  {screen:'syncApply',hotKey:'finish',advanceOn:'finish',circ:1,scView:'single'}, //26
- {screen:'circuits',sim:'sctest',circ:1,scView:'single'},              //27 RCD test
- {screen:'circuits',sim:'sclever',circ:1,scView:'single'},             //28 reset
- {screen:'circuits',hotKey:'circ2',advanceOn:'opencirc',circ:2},       //29
- {screen:'circuitDetail',hotKey:'label',advanceOn:'openlabel',circ:2}, //30
- {screen:'labelSheet',hotKey:()=>fx.selLabel==='HWC'?'labelok':'optreq',advanceOn:'label-confirm',circ:2,require:['label','HWC']}, //31
- {screen:'circuitDetail',hotKey:'mcb',advanceOn:'openmcb',circ:2},     //32
- {screen:'mcbSheet',hotKey:'mcbok',advanceOn:'mcb-confirm',circ:2},    //33
- {screen:'circuitDetail',hotKey:'rcd',advanceOn:'openrcd',circ:2},     //34
- {screen:'rcdSheet',hotKey:'rcdok',advanceOn:'rcd-confirm',circ:2},    //35
- {screen:'circuitDetail',hotKey:()=>((CIRCS[2]||{}).afdd?null:'afdd'),advanceOn:'tg-afd',circ:2,requireOn:'afdd'}, //36
- {screen:'circuitDetail',hotKey:()=>((CIRCS[2]||{}).mlc?null:'mlc'),advanceOn:'tg-ml',circ:2,requireOn:'mlc'},    //37
- {screen:'circuitDetail',hotKey:'nextcirc',advanceOn:'nextcirc',circ:2}, //38
- {screen:'circuitDetail',hotKey:'label',advanceOn:'openlabel',circ:3}, //39
- {screen:'labelSheet',hotKey:()=>fx.selLabel==='Power'?'labelok':'optreq',advanceOn:'label-confirm',circ:3,require:['label','Power']}, //40
- {screen:'circuitDetail',hotKey:'mcb',advanceOn:'openmcb',circ:3},     //41
- {screen:'mcbSheet',hotKey:'mcbok',advanceOn:'mcb-confirm',circ:3},    //42
- {screen:'circuitDetail',hotKey:'rcd',advanceOn:'openrcd',circ:3},     //43
- {screen:'rcdSheet',hotKey:'rcdok',advanceOn:'rcd-confirm',circ:3},    //44
- {screen:'circuitDetail',hotKey:'loc',advanceOn:'openloc',circ:3},     //45
- {screen:'locSheet',hotKey:()=>((fx.selLocs||[]).includes('Office')?'locok':'locoffice'),advanceOn:'loc-confirm',circ:3,require:['locs','Office']}, //46
- {screen:'circuitDetail',hotKey:()=>((CIRCS[3]||{}).stby?null:'stby'),advanceOn:'tg-sl',circ:3,requireOn:'stby'}, //47
- {screen:'circuitDetail',hotKey:'detback',advanceOn:'detback',circ:3}, //48
- {screen:'circuits',hotKey:'circ19',advanceOn:'opencirc',circ:19},     //49
- {screen:'circuitDetail',hotKey:'label',advanceOn:'openlabel',circ:19},//50
- {screen:'labelSheet',hotKey:()=>fx.selLabel==='Solar'?'labelok':'optreq',advanceOn:'label-confirm',circ:19,require:['label','Solar']}, //51
- {screen:'circuitDetail',hotKey:'mcb',advanceOn:'openmcb',circ:19},    //52
- {screen:'mcbSheet',hotKey:'mcbok',advanceOn:'mcb-confirm',circ:19},   //53
- {screen:'circuitDetail',hotKey:'detback',advanceOn:'detback',circ:19},//54
- {screen:'circuits',hotKey:'kebab',advanceOn:'circmenu'},              //55 the escape hatch lives here
- {screen:'circGlobalMenu',hotKey:'gmok',advanceOn:'menuclose'},        //56
- {screen:'circuits',hotKey:'syncall',advanceOn:'syncall'},             //57
- {screen:'syncSelect',hotKey:'syncsel',advanceOn:'syncsel'},           //58
- {screen:'syncUpload',auto:2300},                                      //59
- {screen:'syncApply',sim:'button',circ:2},                             //60 bulk press 1: power down
- {screen:'syncApply',sim:'button',circ:2,charge:true},                 //61 panel switches over, then press 2
- {screen:'syncApply',hotKey:'finish',advanceOn:'finish',circ:2},       //62
- {screen:'circuits',sim:'sclever',circ:2},                             //63 energise HWC
- {screen:'circuits',sim:'sclever',circ:3},                             //64 energise office
- {screen:'circuits',sim:'sctest',circ:2},                              //65 RCD-test the new circuit
- {screen:'circuits',sim:'sclever',circ:2},                             //66 reset after the trip
- {screen:'circuits',hotKey:'tabevents',advanceOn:'tab-events'},        //67
- {screen:'events',hotKey:'evrow',advanceOn:'openevent'},               //68
- {screen:'eventDetail',hotKey:'tabhome',advanceOn:'tab-home'},         //69
- {screen:'homeConnected',hotKey:'scanicon',advanceOn:'scanicon'},      //70
- {screen:'scanCamera',auto:3200},                                      //71
- {screen:'downloadPanelData',hotKey:'dlok',advanceOn:'dlok'},          //72
- {screen:'downloadedPanels',hotKey:'dpback',advanceOn:'dpback'},       //73
- {screen:'homeConnected',hotKey:'avatar',advanceOn:'avatar'},          //74
- {screen:'settings',hotKey:'setsupport',advanceOn:'setsupport'},       //75
- {screen:'support',hotKey:'reportbug',advanceOn:['reportbug','sharefb']} //76
+ {screen:'circuits',hotKey:'circ2',advanceOn:'opencirc',circ:2},       //27 open the hot water circuit
+ {screen:'circuitDetail',hotKey:'label',advanceOn:'openlabel',circ:2}, //28
+ {screen:'labelSheet',hotKey:()=>fx.selLabel==='HWC'?'labelok':'optreq',advanceOn:'label-confirm',circ:2,require:['label','HWC']}, //29
+ {screen:'circuitDetail',hotKey:'mcb',advanceOn:'openmcb',circ:2},     //30
+ {screen:'mcbSheet',hotKey:'mcbok',advanceOn:'mcb-confirm',circ:2},    //31
+ {screen:'circuitDetail',hotKey:'rcd',advanceOn:'openrcd',circ:2},     //32
+ {screen:'rcdSheet',hotKey:'rcdok',advanceOn:'rcd-confirm',circ:2},    //33
+ {screen:'circuitDetail',hotKey:()=>((CIRCS[2]||{}).afdd?null:'afdd'),advanceOn:'tg-afd',circ:2,requireOn:'afdd'}, //34
+ {screen:'circuitDetail',hotKey:()=>((CIRCS[2]||{}).mlc?null:'mlc'),advanceOn:'tg-ml',circ:2,requireOn:'mlc'},    //35
+ {screen:'circuitDetail',hotKey:'gosync',advanceOn:'gosync',circ:2},   //36 sync the hot water
+ {screen:'syncSelect',hotKey:'syncsel',advanceOn:'syncsel'},           //37
+ {screen:'syncUpload',auto:2300},                                      //38
+ {screen:'syncApply',sim:'sctest',circ:2,scView:'single'},             //39 press TEST
+ {screen:'syncApply',sim:'sclever',circ:2,scView:'single'},            //40 turn it on
+ {screen:'syncApply',hotKey:'finish',advanceOn:'finish',circ:2,scView:'single'}, //41 finish
+ {screen:'circuits',sim:'sctest',circ:1,scView:'single'},              //42 trip-test the office
+ {screen:'circuits',sim:'sclever',circ:1,scView:'single'},             //43 reset after the trip
+ {screen:'circuits',hotKey:'tabevents',advanceOn:'tab-events'},        //44
+ {screen:'events',hotKey:'evrow',advanceOn:'openevent'},               //45
+ {screen:'eventDetail',hotKey:'tabhome',advanceOn:'tab-home'},         //46
+ {screen:'homeConnected',hotKey:'scanicon',advanceOn:'scanicon'},      //47
+ {screen:'scanCamera',auto:3200},                                      //48
+ {screen:'downloadPanelData',hotKey:'dlok',advanceOn:'dlok'},          //49
+ {screen:'downloadedPanels',hotKey:'dpback',advanceOn:'dpback'},       //50
+ {screen:'homeConnected',hotKey:'avatar',advanceOn:'avatar'},          //51
+ {screen:'settings',hotKey:'setsupport',advanceOn:'setsupport'},       //52
+ {screen:'support',hotKey:'reportbug',advanceOn:['reportbug','sharefb']} //53
 ];
 function hotKeyNow(){if(freePlay) return null; const h=steps[cur].hotKey; return typeof h==='function'?h():h;}
 
 /* per-step guidance (kicker+title in POP, body in SHORT — SHORT may contain <b>) */
 const POP={
- 0:{k:'Part 1 of 10',t:'Connect to the Smart Panel'},
- 4:{k:'Part 2 of 10',t:'Update the firmware'},
- 8:{k:'Part 3 of 10',t:'Set the site details'},
- 11:{k:'Part 4 of 10',t:'How to configure a circuit'},
- 13:{k:'Circuit 01 · Label',t:'Label'},
- 15:{k:'Circuit 01 · MCB',t:'MCB'},
- 17:{k:'Circuit 01 · RCD',t:'RCD'},
- 19:{k:'Circuit 01 · Locations',t:'Locations'},
- 21:{k:'Part 5 of 10',t:'Sync config to the board'},
+ 0:{k:'Connect',t:'Connect to the Smart Panel'},
+ 4:{k:'Firmware',t:'Update the firmware'},
+ 8:{k:'Setup',t:'Set the site details'},
+ 11:{k:'Office',t:'Configure the office circuit'},
+ 13:{k:'Office · Label',t:'Label'},
+ 15:{k:'Office · MCB',t:'MCB'},
+ 17:{k:'Office · RCD',t:'RCD'},
+ 19:{k:'Office · Locations',t:'Locations'},
+ 21:{k:'Office',t:'Sync config to the board'},
  24:{k:'',t:'Press TEST to confirm'},
  25:{k:'',t:'Turn on the circuit'},
- 27:{k:'',t:'Test the RCD'},
- 28:{k:'',t:'Turn it on to clear the fault'},
- 29:{k:'Part 6 of 10',t:'Configure more circuits'},
- 31:{k:'Circuit 02 · Label',t:'Pick HWC'},
- 32:{k:'Circuit 02 · MCB',t:'Protection for a cylinder'},
- 36:{k:'Circuit 02 · AFDD',t:'AFDD — Arc Fault Detection'},
- 37:{k:'Circuit 02 · Load control',t:'Meter load control (ripple)'},
- 38:{k:'Circuit 02 · Done',t:'Straight to the next circuit'},
- 39:{k:'Circuit 03 · Office',t:'The office circuit'},
- 40:{k:'Circuit 03 · Label',t:'Pick Power'},
- 45:{k:'Circuit 03 · Locations',t:'Tag it to the office'},
- 47:{k:'Circuit 03 · Lockout',t:'Standby lockout'},
- 48:{k:'Circuit 03 · Done',t:'Back to the board'},
- 49:{k:'Circuit 19 · Solar',t:'A solar circuit'},
- 51:{k:'Circuit 19 · Label',t:'Pick Solar'},
- 52:{k:'Circuit 19 · MCB',t:'MCB only — no RCD'},
- 54:{k:'Circuit 19 · Done',t:'That’s solar sorted'},
- 55:{k:'Part 6 · If you mess up',t:'Spare & pending — the escape hatch'},
- 56:{k:'Part 6 · If you mess up',t:'Reset from here'},
- 57:{k:'Part 7 of 10',t:'Sync all'},
- 60:{k:'Part 7 · At the board',t:'Two presses of the Basis Button'},
- 61:{k:'Part 7 · At the board',t:'The panel is switching over'},
- 63:{k:'Part 7 · Energise',t:'Turn on the new circuits'},
- 64:{k:'Part 7 · Energise',t:'And the office'},
- 65:{k:'Part 7 · Trips',t:'How to deal with a trip'},
- 66:{k:'Part 7 · Reset',t:'Flick it back on'},
- 67:{k:'Part 8 of 10',t:'Event logs'},
- 70:{k:'Part 9 of 10',t:'Offline mode'},
- 74:{k:'Part 10 of 10',t:'Report bugs & share feedback'}
+ 27:{k:'Hot water',t:'Configure the hot water'},
+ 29:{k:'HWC · Label',t:'Pick HWC'},
+ 30:{k:'HWC · MCB',t:'Protection for a cylinder'},
+ 34:{k:'HWC · AFDD',t:'Arc-fault detection'},
+ 35:{k:'HWC · Load control',t:'Meter load control'},
+ 36:{k:'Hot water',t:'Sync config to the board'},
+ 39:{k:'',t:'Press TEST to confirm'},
+ 40:{k:'',t:'Turn on the circuit'},
+ 42:{k:'',t:'Test the RCD'},
+ 43:{k:'',t:'Turn it on to clear the fault'},
+ 44:{k:'Logs',t:'Event logs'},
+ 47:{k:'Offline',t:'Offline mode'},
+ 51:{k:'Feedback',t:'Report bugs & share feedback'}
 };
 const SHORT={
  0:"Match the serial number, then Connect.",
  4:"Two parts: download to the phone, install on the panel.",
  8:"Confirm the address, pick the ICP. It ties the board to the right meter, retailer and tariffs.",
  11:"4 taps: Label → MCB → RCD → Locations.",
- 13:"What the circuit supplies. <b>Pick any label you like.</b>",
+ 13:"What the circuit supplies. This one's the office — <b>pick Power.</b>",
  15:"Trip curve + current rating, in software. <b>Pick any you like.</b>",
  17:"Type A or B, 10/30mA, any circuit.",
- 19:"Tag the rooms it feeds. Helps on callouts and in the owner's app.",
+ 19:"Tag the rooms it feeds. <b>Pick Office.</b>",
  21:"<b>Nothing hits the board until you Sync.</b> The circuit flashes blue: CONFIG PENDING.",
  24:"",
  25:"",
- 27:"",
- 28:"",
- 29:"Build out the board: <b>HWC on 02, office on 03, solar on 19.</b> Open circuit 02.",
- 31:"This is the hot water cylinder. <b>Pick HWC, then Confirm.</b>",
- 32:"Cylinders draw hard on startup. <b>Set a curve + rating to suit, then the RCD.</b>",
- 36:"<b>AFDD</b> catches dangerous arcing MCBs and RCDs can't see, and trips the circuit. In trial now. <b>Switch it on.</b>",
- 37:"Lets the network manage this circuit at peaks.<span style=\"display:block;margin-top:7px;font-size:14px;font-weight:700;color:var(--ink)\">Use on HWC circuits where applicable.</span>",
- 38:"Circuit 02 is staged. <b>Jump straight to circuit 03</b> — button at the bottom.",
- 39:"A power circuit for the office. <b>Start with the label.</b>",
- 40:"<b>Pick Power, then Confirm.</b>",
- 45:"<b>Tag the location</b> so everyone knows what's on it.",
- 46:"<b>Pick Office, then Confirm.</b>",
- 47:"<b>Standby lockout</b> stops the owner switching this off from their app — use for routers and network gear, fridges/freezers. <b>Switch it on.</b>",
- 48:"Circuit 03 is staged. <b>Back to the board</b> for the last one.",
- 49:"<b>Solar goes on the bottom module</b> — heat dissipation, busbar load. Scroll down, open circuit 19.",
- 51:"<b>Pick Solar, then Confirm.</b>",
- 52:"<b>Set the MCB — that's all.</b> Solar inverters bring their own residual protection, so no RCD.",
- 54:"<b>Leave the RCD unset. Back to the board.</b>",
- 55:"Wrong label or circuit? <b>Recovery lives in the ⋮ menu up top.</b> Open it.",
- 56:"From here: set any circuit back to spare, or discard all pending changes — and each circuit's own ⋮ does the same. <b>Close the menu to carry on.</b>",
- 57:"Three circuits staged. <b>SYNC ALL applies them in one go</b> — two Basis Button presses, not one per circuit.",
- 60:"<b>Press the Basis Button once</b> — power drops and the new configs load.",
- 61:"Give it a moment — the ring shows it working. <b>Press again</b> to power back up, everything applied.",
- 63:"Configs are on. <b>Flick circuit 02 to energise the cylinder.</b> Flick anything synced on or off.",
- 64:"<b>Now circuit 03</b> for the office. Solar stays off until the inverter's commissioned.",
- 65:"Every new circuit gets a trip test. <b>Press TEST on circuit 02</b> — the breaker must throw: ELEC FAULT · RCD.",
- 66:"Threw to OFF, LED yellow. <b>Flick it back on</b> — cylinder proven: configured, synced, trip-tested, live.",
- 67:"<b>Every trip, boot and config change is logged</b> and filterable — including those RCD tests.",
- 70:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 48 hours.",
- 74:"<b>Bugs and ideas go straight to the Basis team.</b> Add what you were doing, a screenshot, and any feature requests."
+ 27:"Now the hot water cylinder on circuit 02. Open it.",
+ 29:"This is the hot water cylinder. <b>Pick HWC.</b>",
+ 30:"Cylinders draw hard on startup. Set a curve + rating to suit, then the RCD.",
+ 34:"<b>AFDD</b> catches dangerous arcing MCBs and RCDs can't see. In trial now. <b>Switch it on.</b>",
+ 35:"Lets the network manage this circuit at peaks.<span style=\"display:block;margin-top:7px;font-size:14px;font-weight:700;color:var(--ink)\">Use on HWC circuits.</span>",
+ 36:"Same as before — <b>sync the cylinder to the board.</b>",
+ 39:"",
+ 40:"",
+ 42:"",
+ 43:"",
+ 44:"<b>Every trip, boot and config change is logged</b> and filterable — including those RCD tests.",
+ 47:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 48 hours.",
+ 51:"<b>Bugs and ideas go straight to the Basis team.</b> Add what you were doing and a screenshot."
 };
-const POP_DONE={k:'All 10 parts complete',t:'Panel commissioned. Nice work.',
- what:"That's the full journey: connected, updated, tied to the site, four circuits configured and synced — plus event logs, offline installs, and how to reach the Basis team.",
- why:"Run it again any time, or explore freely: configure any circuit, sync one or many, trip and reset breakers."};
+const POP_DONE={k:'Done',t:'Panel commissioned. Nice work.',
+ what:"That's the flow: connected, updated, tied to the site, the office and hot water configured, synced and trip-tested — plus event logs, offline installs, and how to reach the Basis team.",
+ why:"Run it again any time, or explore freely: configure any circuit, sync it, trip and reset breakers."};
 /* ============ state derivation (jump-safe) ============ */
 const clone=o=>o==null?null:JSON.parse(JSON.stringify(o));
 function stateFor(i){
@@ -1508,7 +1451,7 @@ function stateFor(i){
   f.addrSet=i>=11; f.showBanner=i>=4&&i<=7;
   if(i===6) f.fwdlDone=true;
   if(i===7){f.fwdlDone=true; f.fwPhase='press';}
-  /* circuit 01 */
+  /* circuit 01 = the office (Power + Office location, standby lockout) */
   if(i>=15) setF(1,'label');
   if(i>=17) setF(1,'mcb');
   if(i>=19) setF(1,'rcd');
@@ -1518,35 +1461,25 @@ function stateFor(i){
   if(i===24) cst(1).devPending=true;
   if(i>=25) DEV[1]=clone(CIRCS[1]);
   if(i>=26) cst(1).live=true;
-  if(i===28){cst(1).fault='RCD'; cst(1).live=false;}
-  if(i===29) f.snack='Changes applied';
-  /* circuit 02 — HWC with AFDD + meter load control */
-  if(i>=32) setF(2,'label');
-  if(i>=34) setF(2,'mcb');
-  if(i>=36){setF(2,'rcd'); setF(2,'locs'); setF(2,'stby');}
-  if(i>=37) setF(2,'afdd');
-  if(i>=38) setF(2,'mlc');
-  /* circuit 03 — office power with standby lockout */
-  if(i>=41) setF(3,'label');
-  if(i>=43) setF(3,'mcb');
-  if(i>=45) setF(3,'rcd');
-  if(i>=47) setF(3,'locs');
-  if(i>=48){setF(3,'stby'); setF(3,'afdd'); setF(3,'mlc');}
-  /* circuit 19 — Solar; the RCD is deliberately never set */
-  if(i>=52) setF(19,'label');
-  if(i>=54){setF(19,'mcb'); setF(19,'locs'); setF(19,'afdd'); setF(19,'mlc'); setF(19,'stby');}
+  if(i===27) f.snack='Changes applied';
+  /* circuit 02 = HWC with AFDD + meter load control */
+  if(i>=30) setF(2,'label');
+  if(i>=32) setF(2,'mcb');
+  if(i>=34){setF(2,'rcd'); setF(2,'locs'); setF(2,'stby');}
+  if(i>=35) setF(2,'afdd');
+  if(i>=36) setF(2,'mlc');
   /* keep any toggles the learner flipped early */
-  [1,2,3,19].forEach(n=>{ if(CIRCS[n]&&userCfgs[n]) Object.keys(userCfgs[n]).forEach(fld=>{CIRCS[n][fld]=userCfgs[n][fld];}); });
-  /* bulk sync */
-  if(i>=58&&i<=62) f.selSet=new Set(pendingList());
-  if(i===60||i===61){[...(f.selSet||[])].forEach(n=>cst(n).devPending=true); f.bulkPhase=i-59;}
-  if(i===61){Object.keys(CST).forEach(n=>cst(+n).live=false); f.powerDown=true; f.bulkCharge=true;}
-  if(i>=62){[2,3,19].forEach(n=>{ if(CIRCS[n]){DEV[n]=clone(CIRCS[n]); cst(n).devPending=false;} }); if(DEV[1]) cst(1).live=true;}
-  if(i===63) f.snack='Changes applied';
-  if(i>=64) cst(2).live=true;
-  if(i>=65) cst(3).live=true;
-  if(i===66){cst(2).fault='RCD'; cst(2).live=false;}   /* arrived after the guided trip test */
-  if(i===73) f.expiry=Date.now()+43140*1000;
+  [1,2].forEach(n=>{ if(CIRCS[n]&&userCfgs[n]) Object.keys(userCfgs[n]).forEach(fld=>{CIRCS[n][fld]=userCfgs[n][fld];}); });
+  /* circuit 02 individual sync (steps 37-41) */
+  if(i>=37&&i<=41) f.selSet=new Set([2]);
+  if(i>=39&&i<=40) f.applyDeadline=Date.now()+1785*1000;
+  if(i===39) cst(2).devPending=true;
+  if(i>=40) DEV[2]=clone(CIRCS[2]);
+  if(i>=41) cst(2).live=true;
+  if(i===42) f.snack='Changes applied';
+  /* trip-test the office (circuit 01) after both circuits are live */
+  if(i===43){cst(1).fault='RCD'; cst(1).live=false;}
+  if(i===50) f.expiry=Date.now()+43140*1000;
   f.selSet=f.selSet||new Set();
   return f;
 }
@@ -1962,7 +1895,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!popov.hidden&&!do
 function restart(){ userCfgs={}; freePlay=false; lastBubbleKey=''; goto(0); showStart(); }
 function freeInit(){
   freePlay=true; freeScr='circuits'; activeCirc=1;
-  fx=stateFor(73); fx.snack=null;
+  fx=stateFor(41); fx.snack=null;
   render();
   toast('Free play — configure, sync, trip and reset anything');
 }
