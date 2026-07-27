@@ -2108,6 +2108,7 @@ screenEl.addEventListener('click',e=>{
   }
   if(adv){
     if(act==='connect'){fx.connecting=true; render(); T(()=>next(),1300); return;}
+    if(act==='join'){fx.connecting=true; render(); T(()=>next(),1600); return;}
     if(act==='opencirc'&&+el.dataset.n!==s.circ){toast('Open circuit '+String(s.circ).padStart(2,'0')+' — it has the lime highlight'); return;}
     const cv=confirmVal(act);
     if(cv){
