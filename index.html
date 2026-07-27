@@ -214,6 +214,9 @@ button.avatar{cursor:pointer}
 .hcard{background:var(--a-homecard); border-radius:16px; padding:14px 14px 16px; position:relative;
   display:flex; flex-direction:column}
 .hcard .serial{font-size:13.5px; font-weight:500; letter-spacing:.04em; color:#E4E7E8; margin-bottom:4px}
+.hcard .serial.serialhi{display:inline-block; color:#fff; border:2px solid var(--a-lime); border-radius:999px;
+  padding:3px 14px; margin-bottom:9px; animation:serialglow 2.2s ease-in-out infinite}
+@keyframes serialglow{0%,100%{box-shadow:0 0 0 3px rgba(152,255,171,.18)} 50%{box-shadow:0 0 0 7px rgba(152,255,171,.32)}}
 .hcard .imgwrap{display:flex; justify-content:center; position:relative; margin:0 -4px}
 .hcard .imgwrap img{width:64%; border-radius:6px}
 .hcard .overlays{position:absolute; left:0; right:0; bottom:10px; display:flex; flex-direction:column;
@@ -767,7 +770,7 @@ function boardCard(state){
       <button class="abtn white${hot('connect')}" data-act="connect" style="width:92%">
         ${state==='connecting'?'<span class="dots3 dark"><i></i><i></i><i></i></span>':'Connect'}</button>`;
   return `<div class="hcard" ${state==='connected'?'data-act="viewpanel" style="cursor:pointer"':''}>
-    <div class="serial">${SERIAL}</div>
+    <div class="serial${state==='found'?' serialhi':''}">${SERIAL}</div>
     <div class="imgwrap">
       <img src="${IMG_PANEL}" alt="Basis Smart Panel">
       <div class="overlays">${foot}</div>
@@ -1321,26 +1324,20 @@ SCREENS.downloadedPanels=()=>{
   </div>`}};
 /* ============ parts & steps ============ */
 const PARTS=[
- {t:'Connect to the Smart Panel',short:'Connect',s:0,e:3},
- {t:'Update the firmware',short:'Firmware',s:4,e:7},
- {t:'Set the site details',short:'Site',s:8,e:10},
- {t:'Configure the office',short:'Office',s:11,e:20,
-   subs:[['Label',13],['MCB',15],['RCD',17],['Locations',19]]},
- {t:'Sync the office',short:'Sync',s:21,e:26},
- {t:'Configure the hot water',short:'HWC',s:27,e:36,
-   subs:[['Label',28],['MCB',30],['RCD',32],['AFDD',34]]},
- {t:'Sync the hot water',short:'Sync',s:37,e:41},
- {t:'Test the RCD',short:'Trip test',s:42,e:43},
- {t:'Event logs',short:'Events',s:44,e:46},
- {t:'Offline mode',short:'Offline',s:47,e:50},
- {t:'Bugs & feedback',short:'Feedback',s:51,e:53}
+ {t:'Connect to the panel',short:'Connect',s:0,e:7,
+   subs:[['Pair',0],['Firmware',4]]},
+ {t:'Set the site details',short:'Site setup',s:8,e:10},
+ {t:'Configure the circuits',short:'Circuit config',s:11,e:43,
+   subs:[['Office',11],['Hot water',27],['Sync',37],['Trip test',42]]},
+ {t:'Logs & offline',short:'Extras',s:44,e:50,
+   subs:[['Logs',44],['Offline',47]]}
 ];
 const steps=[
  {screen:'homeSearching',auto:2400},                                   //0
  {screen:'homeFound',hotKey:'connect',advanceOn:'connect'},            //1
  {screen:'wifiJoin',hotKey:'join',advanceOn:'join'},                   //2
  {screen:'pressOnce',sim:'button'},                                    //3
- {screen:'dashboard',hotKey:'fwdl',advanceOn:'fwdl'},                  //4
+ {screen:'dashboard',hotKey:'fwdl',advanceOn:'fwdl',below:true},       //4
  {screen:'fwDownload',hotKey:'fwcont',advanceOn:'fwcont'},             //5
  {screen:'fwInstall',hotKey:'fwinst',advanceOn:'fwinst'},              //6
  {screen:'fwInstall',hotKey:'fwdone',sim:'button',advanceOn:'fwdone'}, //7
@@ -1386,16 +1383,13 @@ const steps=[
  {screen:'homeConnected',hotKey:'scanicon',advanceOn:'scanicon'},      //47
  {screen:'scanCamera',auto:3200},                                      //48
  {screen:'downloadPanelData',hotKey:'dlok',advanceOn:'dlok'},          //49
- {screen:'downloadedPanels',hotKey:'dpback',advanceOn:'dpback'},       //50
- {screen:'homeConnected',hotKey:'avatar',advanceOn:'avatar'},          //51
- {screen:'settings',hotKey:'setsupport',advanceOn:'setsupport'},       //52
- {screen:'support',hotKey:'reportbug',advanceOn:['reportbug','sharefb']} //53
+ {screen:'downloadedPanels',hotKey:'dpback',advanceOn:'dpback'}        //50 (last — ends the walkthrough)
 ];
 function hotKeyNow(){if(freePlay) return null; const h=steps[cur].hotKey; return typeof h==='function'?h():h;}
 
 /* per-step guidance (kicker+title in POP, body in SHORT — SHORT may contain <b>) */
 const POP={
- 0:{k:'Connect',t:'Connect to the Smart Panel'},
+ 1:{k:'Connect',t:'Connect to the Smart Panel'},
  4:{k:'Firmware',t:'Update the firmware'},
  8:{k:'Setup',t:'Set the site details'},
  11:{k:'Office',t:'Configure the office circuit'},
@@ -1417,12 +1411,11 @@ const POP={
  42:{k:'',t:'Test the RCD'},
  43:{k:'',t:'Turn it on to clear the fault'},
  44:{k:'Logs',t:'Event logs'},
- 47:{k:'Offline',t:'Offline mode'},
- 51:{k:'Feedback',t:'Report bugs & share feedback'}
+ 47:{k:'Offline',t:'Offline mode'}
 };
 const SHORT={
- 0:"Match the serial number, then Connect.",
- 4:"Two parts: download to the phone, install on the panel.",
+ 1:"Match the serial number, then Connect.",
+ 4:"There might be new firmware since this panel left the factory.",
  8:"Confirm the address, pick the ICP. It ties the board to the right meter, retailer and tariffs.",
  11:"4 taps: Label → MCB → RCD → Locations.",
  13:"What the circuit supplies. This one's the office — <b>pick Power.</b>",
@@ -1443,11 +1436,10 @@ const SHORT={
  42:"",
  43:"",
  44:"<b>Every trip, boot and config change is logged</b> and filterable — including those RCD tests.",
- 47:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 48 hours.",
- 51:"<b>Bugs and ideas go straight to the Basis team.</b> Add what you were doing and a screenshot."
+ 47:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 48 hours."
 };
 const POP_DONE={k:'Done',t:'Panel commissioned. Nice work.',
- what:"That's the flow: connected, updated, tied to the site, the office and hot water configured, synced and trip-tested — plus event logs, offline installs, and how to reach the Basis team.",
+ what:"That's the flow: connected, updated, tied to the site, the office and hot water configured, synced and trip-tested — plus event logs and offline installs.",
  why:"Run it again any time, or explore freely: configure any circuit, sync it, trip and reset breakers."};
 /* ============ state derivation (jump-safe) ============ */
 const clone=o=>o==null?null:JSON.parse(JSON.stringify(o));
@@ -1606,13 +1598,17 @@ addEventListener('load',()=>{fitStage(); setTimeout(fitStage,300);});
 
 /* attention connector: coach card → the control the step wants pressed */
 let connRaf=0;
-function connSoon(){clearTimeout(connRaf); connRaf=setTimeout(drawConnector,30);}
+function connSoon(){cancelAnimationFrame(connRaf); connRaf=requestAnimationFrame(drawConnector);}
 /* capture-phase catches every scroll container (.scr, sheet bodies) in one go */
 document.addEventListener('scroll',connSoon,{capture:true,passive:true});
 function drawConnector(){   /* positions the floating coach bubble above/below its target */
   const coach=$('#coach'); if(!coach) return;
   const svg=$('#connector'); if(svg) svg.innerHTML='';   /* the bubble has its own arrow now — no line */
   const hint=$('#scrollhint'); if(hint) hint.hidden=true;
+  /* one bubble per section: surface it only when a new labelled step is reached,
+     stay hidden through the in-between taps until the next section pops up */
+  if(!freePlay && !POP[cur]){ coach.hidden=true; if(hint) hint.hidden=true; return; }
+  coach.hidden=false;
   const sr=$('#stage').getBoundingClientRect();          /* viewport coords; coach is position:fixed */
   const cw=coach.offsetWidth, ch=coach.offsetHeight, GAP=12;
   const dock=()=>{ coach.classList.add('notarget'); coach.classList.remove('below');
@@ -1637,8 +1633,9 @@ function drawConnector(){   /* positions the floating coach bubble above/below i
   const tcx=t.left+t.width/2;
   const left=Math.max(sr.left+4, Math.min(tcx-cw/2, sr.right-cw-4));
   let top, below;
-  if(t.top-sr.top > ch+GAP){ top=t.top-ch-GAP; below=false; }   /* room above → sit above, arrow down */
-  else { top=t.bottom+GAP; below=true; }                         /* else drop below, arrow up */
+  const forceBelow=!freePlay&&steps[cur]&&steps[cur].below;      /* step opts into sitting below its target */
+  if(!forceBelow && t.top-sr.top > ch+GAP){ top=t.top-ch-GAP; below=false; }   /* room above → sit above, arrow down */
+  else { top=t.bottom+GAP; below=true; }                         /* else (or forced) drop below, arrow up */
   top=Math.max(sr.top+4, Math.min(top, sr.bottom-ch-4));
   coach.classList.toggle('below',below);
   coach.style.left=Math.round(left)+'px'; coach.style.top=Math.round(top)+'px';
@@ -2049,7 +2046,7 @@ screenEl.addEventListener('click',e=>{
       }
       saveCfg(cv[0],cv[1]); next(); return;
     }
-    if(act==='reportbug'||act==='sharefb'){showDone(); return;}
+    if(act==='dpback'){showDone(); return;}   /* offline is the last section — finish the walkthrough */
     next(); return;
   }
   if(pickHandlers(act,el)) return;
