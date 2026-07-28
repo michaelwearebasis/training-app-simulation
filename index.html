@@ -51,9 +51,12 @@ header.page{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
   padding:7px 13px; font-size:12px; font-weight:500}
 
 .steps-hdr{z-index:80; width:100%; padding:2px 0 4px}   /* now sits above the panel in the right column */
-.steps-row{display:flex; flex-direction:column; gap:3px; align-items:center; justify-content:center}
-.parrow{color:var(--ink3); font-size:12px; line-height:1; margin:0; flex:0 0 auto; user-select:none}
-.subchips{justify-content:center}
+.steps-row{display:flex; flex-direction:column; gap:4px; align-items:stretch; padding-left:8px}
+.prow{display:flex; align-items:center; gap:9px}
+.prow .pchip{flex:0 0 auto}
+.prow .subchips{flex:1 1 auto; min-width:0}
+.parrow{color:var(--ink3); font-size:12px; line-height:1; margin:0; padding-left:16px; text-align:left; flex:0 0 auto; user-select:none}
+.subchips{justify-content:flex-start}
 .pchip{display:inline-flex; align-items:center; gap:5px; background:var(--chip); color:var(--ink2);
   border-radius:999px; padding:5px 10px; font-size:11px; font-weight:500}
 .pchip .n{width:14px; height:14px; border-radius:50%; background:var(--ink3); color:var(--bg);
@@ -67,7 +70,7 @@ header.page{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
   :root:not([data-theme="light"]) .pchip.cur .n{background:#212629; color:var(--lime)}
 }
 .pchip.done .n{background:var(--lime); color:#212629}
-.subchips{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
+.subchips{display:flex; gap:6px; flex-wrap:wrap; margin:0}
 .partdesc{margin-top:9px; font-size:12.5px; line-height:1.45; color:var(--ink2); max-width:780px}
 .partdesc b{color:var(--ink); font-weight:700}
 .schip{background:var(--chip); color:var(--ink3); border-radius:999px; padding:4px 10px;
@@ -113,7 +116,9 @@ header.page{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
 .coach .pill{font-size:9.5px; padding:4px 10px; margin-bottom:7px; display:inline-block}
 .coach h3{display:inline-block; background:var(--a-lime); color:#0E5A2E; border-radius:999px; padding:5px 13px;
   font-size:13px; font-weight:650; letter-spacing:0; margin-bottom:8px; text-wrap:balance}
-.coach p{font-size:12px; line-height:1.5; color:var(--ink2)}
+.coach p,.coach #c-what{font-size:12px; line-height:1.5; color:var(--ink2)}
+#c-what ul,#pop-what ul{text-align:left; display:block; width:fit-content; margin:7px auto 1px; padding-left:1.3em}
+#c-what li,#pop-what li{margin:2px 0}
 .coach.flash{animation:coachbob 2.6s ease-in-out infinite, coachpop .55s ease-out}
 @keyframes coachpop{0%{box-shadow:0 8px 22px rgba(10,14,12,.18)} 45%{box-shadow:0 12px 36px rgba(152,255,171,.55)} 100%{box-shadow:0 12px 30px rgba(10,14,12,.18)}}
 .cnext{margin-top:10px; background:var(--a-lime); color:#101314; border:none; border-radius:999px;
@@ -134,7 +139,7 @@ header.page{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
   font-size:10.5px; letter-spacing:.11em; text-transform:uppercase; font-weight:700}
 .pop h3{display:inline-block; background:var(--a-lime); color:#0E5A2E; border-radius:999px; padding:6px 16px;
   font-size:17px; font-weight:650; letter-spacing:0; margin-bottom:12px; text-wrap:balance}
-.pop p{font-size:14px; line-height:1.55; color:var(--ink2)}
+.pop p,.pop #pop-what{font-size:14px; line-height:1.55; color:var(--ink2)}
 .pop .whylab{font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; font-weight:600;
   color:var(--pine); margin:14px 0 5px}
 :root[data-theme="dark"] .pop .whylab{color:var(--lime)}
@@ -647,7 +652,7 @@ button.avatar{cursor:pointer}
   </div>
   <div class="coach" id="coach" aria-live="polite">
     <h3 id="c-title"></h3>
-    <p id="c-what"></p>
+    <div id="c-what"></div>
     <button class="cnext" id="c-next" hidden>Next ›</button>
   </div>
   <svg id="arrows" aria-hidden="true"></svg>
@@ -658,7 +663,7 @@ button.avatar{cursor:pointer}
   <div class="pop" role="dialog" aria-modal="true" aria-labelledby="pop-title">
     <span class="pill" id="pop-kicker"></span>
     <h3 id="pop-title"></h3>
-    <p id="pop-what"></p>
+    <div id="pop-what"></div>
     <div class="whylab" id="pop-whylab">How it works</div>
     <p id="pop-why"></p>
     <div class="pop-actions" id="pop-actions"></div>
@@ -1340,7 +1345,7 @@ const PARTS=[
  {t:'Set the site details',short:'Site setup',s:8,e:10,
    desc:"Tie the board to the property's address and meter (ICP), so we can link their retailer and tariffs."},
  {t:'Configure the circuits',short:'Circuit config',s:11,e:37,
-   desc:"Let's set up a power circuit for an office, and a hot-water cylinder on ripple control.",
+   desc:"Let's set up a couple of circuits:<ul><li>power circuit for an office</li><li>HWC on ripple control</li></ul>",
    subs:[['Office',12],['Hot water',23],['Sync',32],['Trip test',36]]},
  {t:'Logs & offline',short:'Extras',s:38,e:44,
    desc:"Let's have a look at the event log from that RCD trip. Then, we'll see how to work when there's no internet or reception on site.",
@@ -1404,12 +1409,12 @@ const POP={
  17:{k:'Office · RCD',t:'RCD'},
  19:{k:'Office · Locations',t:'Locations'},
  21:{k:'Office · Standby lockout',t:'Standby lockout'},
- 22:{k:'Next circuit',t:'On to the hot water'},
- 23:{k:'Hot water',t:'Configure the hot water'},
+ 22:{k:'Next circuit',t:'Now the HWC'},
+ 23:{k:'Hot water',t:'Configure the HWC'},
  29:{k:'HWC · AFDD',t:'Arc-fault detection'},
  30:{k:'HWC · Load control',t:'Meter load control'},
  31:{k:'Sync',t:'Sync both circuits'},
- 34:{k:'Apply',t:'Apply the changes at the board'},
+ 34:{k:'Apply',t:'Apply the changes'},
  35:{k:'',t:'Turn the circuits on'},
  36:{k:'',t:"Let's test the RCD"},
  37:{k:'',t:'The circuit has tripped'},
@@ -1425,17 +1430,17 @@ const SHORT={
  15:"Trip curve + current rating, in software. <b>Pick what you'd normally choose for this type of circuit.</b>",
  17:"Choose the Type and limit.",
  19:"Tag the rooms it feeds. <b>Pick Office and any others you want.</b>",
- 21:"Locks this circuit on — it can't be switched off remotely or by a routine, so always-on loads (fridge, router, security) never lose power. <b>Enable it for the office.</b>",
- 22:"Office is staged but not on the board yet. <b>Tap Circuit 02</b> to set up the hot-water cylinder before syncing.",
- 23:"Now the hot-water cylinder — <b>Label it HWC</b> first.",
+ 21:"Locks this circuit on — it can't be switched off remotely or by a routine, so always-on loads (fridge, router, security) never lose power.<br><b>Enable it for the office.</b>",
+ 22:"Office is staged but not on the board yet. <b>Tap Circuit 02</b> to set up the HWC before syncing all changes.",
+ 23:"<b>Label it HWC</b> first.",
  29:"<b>AFDD</b> catches dangerous arcing MCBs and RCDs can't see. <b>Switch it on.</b>",
- 30:"Let the network manage this circuit at peaks. Enable if applicable.",
+ 30:"Let the network manage this circuit at peaks. <b>Enable if applicable.</b>",
  31:"Both circuits are still pending.",
  34:"Press <b>each circuit's TEST button</b>, or press the <b>Basis Button</b> to apply all changes.",
  35:"Both circuits are synced but still off. <b>Flick each breaker on</b> to energise them.",
  37:"It shows some relevant information on the screen and in the app. <b>Turn it back on to clear the fault.</b>",
  38:"<b>Every trip, boot and config change is logged</b> and filterable — including those RCD tests.",
- 40:"This is the RCD trip you just did — logged with its time, the circuit and the cause. Every event is recorded.",
+ 40:"This is the RCD trip you just did — logged with its time, the circuit and the cause. Every event is recorded, whether it's a test or a real event.<br>Types of events:<ul><li>Earth Leakage</li><li>Overcurrent</li><li>Short-circuit</li><li>Over temperature</li><li>Series Arc-fault</li><li>Parallel Arc-fault</li></ul>",
  41:"No signal on site? <b>Scan the box barcode beforehand</b> — the app caches what it needs for 12 hours.",
  43:"The firmware and settings for this panel are now on your phone — kept for <b>12 hours</b>, so you can commission on site with no internet or reception."
 };
@@ -1448,7 +1453,7 @@ function stateFor(i){
   const f={};
   CIRCS={}; DEV={}; CST={};
   f.addrSet=i>=11; f.showBanner=i>=4&&i<=7;
-  if(i===3) f.armUntil=Date.now()+3000;   /* panel takes a moment to come up after joining */
+  if(i===3) f.armUntil=Date.now()+1800;   /* panel takes a moment to come up after joining */
   if(i===6) f.fwdlDone=true;
   if(i===7){f.fwdlDone=true; f.fwPhase='press'; f.armUntil=Date.now()+2500;}   /* short pause after install before the press prompt */
   /* circuit 01 = the office (Power + Office location, standby lockout) */
@@ -1929,30 +1934,30 @@ function renderBubble(){
 }
 $('#c-next').addEventListener('click',()=>{ if(!freePlay&&steps[cur].requireOn) next(); });
 function partOf(i){return PARTS.findIndex(p=>i>=p.s&&i<=p.e);}
+function subchipsHtml(p){   /* sub-section pills for a part, keyed by progress */
+  return '<div class="subchips">'+p.subs.map(([t,si],k2)=>{
+    const nextS=k2<p.subs.length-1?p.subs[k2+1][1]:p.e+1;
+    const state=cur>=nextS?'done':(cur>=si?'cur':'');
+    return `<button class="schip ${state}" data-jump="${si}">${t}</button>`;
+  }).join('')+'</div>';
+}
 function renderStepper(){
   const ARR='<span class="parrow" aria-hidden="true">↓</span>';
+  const subrow=$('#subrow'); if(subrow) subrow.hidden=true;   /* subs now sit beside the current pill */
   if(freePlay){
-    $('#partsrow').innerHTML=PARTS.map((p,i)=>
-      `<button class="pchip done" data-part="${i}" title="${p.t}"><span class="n">✓</span>${p.short}</button>`).join(ARR)
-      +ARR+'<span class="pchip cur"><span class="n">✦</span>Free play</span>';
-    $('#subrow').hidden=true;
+    const rows=PARTS.map((p,i)=>
+      `<div class="prow"><button class="pchip done" data-part="${i}" title="${p.t}"><span class="n">✓</span>${p.short}</button></div>`);
+    rows.push('<div class="prow"><span class="pchip cur"><span class="n">✦</span>Free play</span></div>');
+    $('#partsrow').innerHTML=rows.join(ARR);
     return;
   }
   const pi=partOf(cur);
   $('#partsrow').innerHTML=PARTS.map((p,i)=>{
     const state=i<pi?'done':i===pi?'cur':'';
-    return `<button class="pchip ${state}" data-part="${i}" title="${p.t}">
-      <span class="n">${i<pi?'✓':i+1}</span>${p.short}</button>`;
+    const pill=`<button class="pchip ${state}" data-part="${i}" title="${p.t}"><span class="n">${i<pi?'✓':i+1}</span>${p.short}</button>`;
+    const subs=(i===pi&&p.subs)?subchipsHtml(p):'';
+    return `<div class="prow">${pill}${subs}</div>`;
   }).join(ARR);
-  const pp=PARTS[pi], subrow=$('#subrow');
-  if(pp&&pp.subs){
-    subrow.hidden=false;
-    subrow.innerHTML=pp.subs.map(([t,si],k2)=>{
-      const nextS=k2<pp.subs.length-1?pp.subs[k2+1][1]:pp.e+1;
-      const state=cur>=nextS?'done':(cur>=si?'cur':'');
-      return `<button class="schip ${state}" data-jump="${si}">${t}</button>`;
-    }).join('');
-  } else subrow.hidden=true;
 }
 const popov=$('#popov');
 function showStart(){
@@ -1969,7 +1974,7 @@ function showSection(pi){
   const p=PARTS[pi];
   $('#pop-kicker').textContent='Section '+(pi+1)+' of '+PARTS.length+' · '+p.short;
   $('#pop-title').textContent=p.t;
-  $('#pop-what').textContent=p.desc||'';
+  $('#pop-what').innerHTML=p.desc||'';
   $('#pop-whylab').textContent=''; $('#pop-why').textContent='';
   $('#pop-actions').innerHTML='<button class="pop-go" data-pop="sec">Continue ▶</button>';
   popov.hidden=false;
