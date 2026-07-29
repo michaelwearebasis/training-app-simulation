@@ -42,12 +42,22 @@
 .note b{font-weight:750;letter-spacing:.02em}
 .note.do{background:var(--limeBg);color:var(--limeInk);border-left:3px solid var(--limeEdge)}
 .note.warn{background:var(--amberBg);color:var(--amberInk);border-left:3px solid var(--amberEdge)}
+
+/* outcome band */
+.out{border:1px solid var(--limeEdge);border-radius:16px;background:var(--limeBg);padding:15px 18px 16px;margin-top:6px}
+.outh{font-size:12px;font-weight:800;color:var(--limeInk);letter-spacing:.11em;text-transform:uppercase;margin:0 0 12px}
+.outg{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px}
+@media(max-width:600px){.outg{grid-template-columns:1fr}}
+.oi{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;line-height:1.4;color:var(--ink)}
+.oi b{font-weight:700;color:var(--coal)}
+.ck{width:18px;height:18px;border-radius:50%;background:var(--limeEdge);color:#fff;font-size:11px;font-weight:800;
+ display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
 </style></head>
 <body><div class="pg">
 
  <div class="hero">
   <h1>A Basis Panel is only as good as the conversation you have first.</h1>
-  <p>Before you quote, sit down with the customer and work through these six questions. <b>Each answer changes how you set up the board — and the wiring.</b></p>
+  <p>Before you quote, work through these six questions with the customer. Their answers tell you exactly how to set up the board — <b>each card below has the move to make.</b></p>
  </div>
 
  <!-- GROUP 1 -->
@@ -61,7 +71,7 @@
      <h3>What are they chasing?</h3>
     </div>
     <p>Insights only, or <b>control and automation</b> too? Lower bills, solar optimisation, safety — or all three?</p>
-    <div class="note do">Their answer dictates circuit layout.</div>
+    <div class="note do"><b>Your move —</b> write down their priorities. The more control and automation they want, the more loads you split out below.</div>
    </div>
 
    <div class="card">
@@ -70,7 +80,7 @@
      <h3>How will they live with it?</h3>
     </div>
     <p>Remote control from the app, routines that shift load off-peak, standby on circuits they rarely use.</p>
-    <div class="note do">Match the layout to how they live, not just code minimums.</div>
+    <div class="note do"><b>Your move —</b> lay the board out around how they live, not just code minimums.</div>
    </div>
 
   </div>
@@ -87,7 +97,7 @@
      <h3>What gets its own circuit?</h3>
     </div>
     <p>Anything they want to <b>see, control, or automate</b>: HWC, EV charger, pool or spa pump, oven, heat pumps.</p>
-    <div class="note warn">Group these onto shared circuits and you take those options away.</div>
+    <div class="note do"><b>Your move —</b> give each of these its own circuit. Group them onto shared circuits and the customer loses the ability to monitor or control them.</div>
    </div>
 
    <div class="card">
@@ -96,7 +106,7 @@
      <h3>What must stay on 24/7?</h3>
     </div>
     <p>Fridges, freezers, security, and the router or ONT — <b>never switchable off</b>.</p>
-    <div class="note do">Agree it up front and lock it in. Everything else can be controllable.</div>
+    <div class="note do"><b>Your move —</b> agree the always-on list up front and set standby lockout on those circuits. Everything else stays controllable.</div>
    </div>
 
   </div>
@@ -113,7 +123,7 @@
      <h3>Ethernet or Wi-Fi?</h3>
     </div>
     <p>Hardwire Ethernet to the board if you can. Wi-Fi works — but check the signal actually reaches the board first.</p>
-    <div class="note warn">Wi-Fi is our customers' most common problem.</div>
+    <div class="note do"><b>Your move —</b> settle the connection before install day. <b>Wi-Fi that doesn't reach the board is our customers' #1 problem.</b></div>
    </div>
 
    <div class="card">
@@ -122,9 +132,20 @@
      <h3>Is the existing wiring up to it?</h3>
     </div>
     <p>Check condition, capacity, and supply limits before you commit.</p>
-    <div class="note do">Flag anything below standard now, so there are no surprises on install day.</div>
+    <div class="note do"><b>Your move —</b> flag anything below standard now, so there are no surprises on install day.</div>
    </div>
 
+  </div>
+ </div>
+
+ <!-- OUTCOME -->
+ <div class="out">
+  <div class="outh">Walk away from the conversation with</div>
+  <div class="outg">
+   <div class="oi"><span class="ck">✓</span><span>The loads to put on <b>their own circuits</b></span></div>
+   <div class="oi"><span class="ck">✓</span><span>The <b>always-on list</b> to lock with standby</span></div>
+   <div class="oi"><span class="ck">✓</span><span>A <b>connection plan</b> — Ethernet, or Wi-Fi you've checked</span></div>
+   <div class="oi"><span class="ck">✓</span><span>Any <b>wiring issues</b> flagged before install day</span></div>
   </div>
  </div>
 
