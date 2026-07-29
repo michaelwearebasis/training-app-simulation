@@ -30,8 +30,8 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 .intro .it{font-size:19px; font-weight:650; color:var(--coal); letter-spacing:-.015em}
 .intro .ic{font-size:14px; color:var(--ink2); margin-top:7px; line-height:1.5}
 .intro .ic b{color:var(--ink); font-weight:700}
-.intro .pill{display:inline-block; background:var(--lime); color:#16301F; font-size:11px; font-weight:700;
-  letter-spacing:.06em; text-transform:uppercase; padding:4px 12px; border-radius:999px; margin-bottom:11px}
+.intro .pill{display:inline-block; background:var(--lime); color:#16301F; font-size:14px; font-weight:700;
+  letter-spacing:.07em; text-transform:uppercase; padding:8px 22px; border-radius:999px; margin-bottom:14px}
 
 .wall{display:flex; flex-wrap:wrap; justify-content:center; gap:26px 22px; padding:14px 18px 8px; max-width:1440px; margin:0 auto}
 .cell{width:calc(390px * var(--s))}
@@ -290,6 +290,8 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 <script>
 'use strict';
 const $=s=>document.querySelector(s);
+/* ?intro=0 hides the top intro banner (for a 2nd embed of this demo) */
+if(new URLSearchParams(location.search).get('intro')==='0'){ const i=$('.intro'); if(i) i.remove(); }
 const NB=' ';
 function wString(w){ return w<999.5 ? Math.round(w)+NB+'W' : (w/1000).toFixed(2)+NB+'kW'; }
 function toast(scrEl,msg){
@@ -604,8 +606,7 @@ function renderRout(){
             <div class="rprog"><i style="width:63%"></i></div>
             <button class="abtn primary" data-rstop="${ri}" style="width:auto; padding:8px 18px; font-size:12px; margin-top:11px">⏹&ensp;Stop routine</button>
           </div>`;}).join('')}
-        <button class="card hot" data-ract="start" style="width:100%; text-align:center; font-size:13.5px; font-weight:600; color:var(--a-ink); position:relative">
-          ${bub('Add another circuit','top:-11px; right:4px')}+ New routine</button>`
+        <button class="card" data-ract="start" style="width:100%; text-align:center; font-size:13.5px; font-weight:600; color:var(--a-ink)">+ New routine</button>`
       :`<div class="card" style="text-align:center; padding:18px 16px">
           <div style="font-size:14px; font-weight:650; color:var(--a-ink)">No routines scheduled yet</div>
           <div style="font-size:12px; color:var(--a-ink2); margin-top:3px">Your scheduled and active routines can be found here.</div>
