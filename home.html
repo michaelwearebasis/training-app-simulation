@@ -26,6 +26,13 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 .hdr img{height:18px; display:block}
 .hdr .sub{font-size:12.5px; color:var(--ink3); border-left:1px solid var(--line); padding-left:10px}
 
+.intro{max-width:720px; margin:16px auto 2px; padding:0 20px; text-align:center}
+.intro .it{font-size:19px; font-weight:650; color:var(--coal); letter-spacing:-.015em}
+.intro .ic{font-size:14px; color:var(--ink2); margin-top:7px; line-height:1.5}
+.intro .ic b{color:var(--ink); font-weight:700}
+.intro .pill{display:inline-block; background:var(--lime); color:#16301F; font-size:11px; font-weight:700;
+  letter-spacing:.06em; text-transform:uppercase; padding:4px 12px; border-radius:999px; margin-bottom:11px}
+
 .wall{display:flex; flex-wrap:wrap; justify-content:center; gap:26px 22px; padding:14px 18px 8px; max-width:1440px; margin:0 auto}
 .cell{width:calc(390px * var(--s))}
 .cellhead{padding:0 2px 10px}
@@ -217,6 +224,12 @@ button{font:inherit; color:inherit; background:none; border:none; cursor:pointer
 </style>
 </head>
 <body>
+
+<div class="intro">
+  <span class="pill">Have a play</span>
+  <div class="it">What your customer sees in the Home app</div>
+  <div class="ic">Four things they can do — poke around each phone. <b>There's nothing to complete here</b> — explore what you like, then carry on.</div>
+</div>
 
 <div class="wall">
   <div class="cell" data-cell="live">
