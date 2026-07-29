@@ -372,7 +372,7 @@ button.avatar{cursor:pointer}
 .sheet .sbody{flex:1; overflow-y:auto; padding:18px 16px 14px}
 .sheet .slab{font-size:16px; font-weight:400; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center}
 .optgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px}
-.optgrid.needpick{outline:2px solid var(--a-lime); outline-offset:5px; border-radius:12px}
+.opt.pickme{box-shadow:0 0 0 2px var(--a-lime); position:relative; z-index:2}
 .opt{background:var(--a-card); border-radius:12px; min-height:52px; display:flex; align-items:center;
   justify-content:center; font-size:15px; font-weight:500; color:#E8EAEB; padding:8px}
 .opt.onw{background:#fff; color:#141414}
@@ -1040,9 +1040,9 @@ SCREENS.mcbSheet=()=>{
       ${(cv||cr)?`<button data-act="mcb-reset" style="font-size:13.5px;color:var(--a-cyan);width:auto;padding:0 2px">Reset</button>`:'<span style="width:34px"></span>'}</div>
     <div class="sbody">
       <div class="slab">Trip-curve profile <span class="req">*</span></div>
-      <div class="optgrid${cv?'':' needpick'}">${['B','C','D'].map((x,i)=>`<button class="opt ${cv===x?'onw':''} ${i===2?'wide':''}" data-act="mcb-curve" data-v="${x}">${x}</button>`).join('')}</div>
+      <div class="optgrid">${['B','C','D'].map((x,i)=>`<button class="opt ${cv===x?'onw':''} ${i===2?'wide':''}${!cv&&activeCirc===1?' pickme':''}" data-act="mcb-curve" data-v="${x}">${x}</button>`).join('')}</div>
       <div class="slab">Current rating <span class="req">*</span></div>
-      <div class="optgrid${cr?'':' needpick'}">${rates.map(r=>`<button class="opt ${cr===r?'onw':''}" data-act="mcb-rate" data-v="${r}" ${cv==='D'&&r>maxD?'disabled':''}>${r}A</button>`).join('')}</div>
+      <div class="optgrid">${rates.map(r=>`<button class="opt ${cr===r?'onw':''}${!cr&&activeCirc===1&&!(cv==='D'&&r>maxD)?' pickme':''}" data-act="mcb-rate" data-v="${r}" ${cv==='D'&&r>maxD?'disabled':''}>${r}A</button>`).join('')}</div>
       ${cv==='D'?'<div class="tiny" style="margin-top:-8px;margin-bottom:12px">Type D is available up to 20A.</div>':''}
     </div>
     <div class="sfoot"><button class="abtn ${ready?'mint':'ghost'}${ready?hot('mcbok'):''}" data-act="mcb-confirm" ${ready?'':'disabled'}>Confirm</button></div>
@@ -1058,9 +1058,9 @@ SCREENS.rcdSheet=()=>{
       ${any?`<button data-act="rcd-reset" style="font-size:13.5px;color:var(--a-cyan);width:auto;padding:0 2px">Reset</button>`:'<span style="width:34px"></span>'}</div>
     <div class="sbody">
       <div class="slab">Type <span class="req">*</span></div>
-      <div class="optgrid">${['A','B'].map(x=>`<button class="opt ${t===x?'onw':''}" data-act="rcd-type" data-v="${x}">${x}</button>`).join('')}</div>
+      <div class="optgrid">${['A','B'].map(x=>`<button class="opt ${t===x?'onw':''}${!t&&activeCirc===1?' pickme':''}" data-act="rcd-type" data-v="${x}">${x}</button>`).join('')}</div>
       <div class="slab">Trip threshold <span class="req">*</span></div>
-      <div class="optgrid">${[10,30].map(x=>`<button class="opt ${ma===x?'onw':''}" data-act="rcd-ma" data-v="${x}">${x}mA</button>`).join('')}</div>
+      <div class="optgrid">${[10,30].map(x=>`<button class="opt ${ma===x?'onw':''}${!ma&&activeCirc===1?' pickme':''}" data-act="rcd-ma" data-v="${x}">${x}mA</button>`).join('')}</div>
     </div>
     <div class="sfoot"><button class="abtn ${ready?'mint':'ghost'}${ready?hot('rcdok'):''}" data-act="rcd-confirm" ${ready?'':'disabled'}>Confirm</button></div>
   </div>`)}};
@@ -1412,7 +1412,6 @@ const POP={
  19:{k:'Office · Locations',t:'Locations'},
  21:{k:'Office · Standby lockout',t:'Standby lockout'},
  22:{k:'Next circuit',t:'Now the HWC'},
- 23:{k:'Hot water',t:'Configure the HWC'},
  29:{k:'HWC · AFDD',t:'Arc-fault detection'},
  30:{k:'HWC · Load control',t:'Meter load control'},
  31:{k:'Sync',t:'Sync both circuits'},
@@ -1435,7 +1434,6 @@ const SHORT={
  19:"Tag the rooms it feeds. <b>Pick Office and any others you want.</b>",
  21:"Stops the customer from turning this circuit off remotely.<br>Use for always-on loads, like fridge, router, security.<br><b>Let's enable it for the office, where the Wi-Fi lives.</b>",
  22:"Office is staged but not on the board yet. <b>Tap Circuit 02</b> to set up the HWC before syncing all changes.",
- 23:"<b>Label it HWC</b> first.",
  29:"<b>AFDD</b> catches dangerous arcing MCBs and RCDs can't see. <b>Switch it on.</b>",
  30:"Let the network manage this circuit at peaks. <b>Enable if applicable.</b>",
  31:"Both circuits are still pending.",
