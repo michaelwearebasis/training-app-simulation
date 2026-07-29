@@ -372,6 +372,7 @@ button.avatar{cursor:pointer}
 .sheet .sbody{flex:1; overflow-y:auto; padding:18px 16px 14px}
 .sheet .slab{font-size:16px; font-weight:400; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center}
 .optgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px}
+.optgrid.needpick{outline:2px solid var(--a-lime); outline-offset:5px; border-radius:12px}
 .opt{background:var(--a-card); border-radius:12px; min-height:52px; display:flex; align-items:center;
   justify-content:center; font-size:15px; font-weight:500; color:#E8EAEB; padding:8px}
 .opt.onw{background:#fff; color:#141414}
@@ -1039,9 +1040,9 @@ SCREENS.mcbSheet=()=>{
       ${(cv||cr)?`<button data-act="mcb-reset" style="font-size:13.5px;color:var(--a-cyan);width:auto;padding:0 2px">Reset</button>`:'<span style="width:34px"></span>'}</div>
     <div class="sbody">
       <div class="slab">Trip-curve profile <span class="req">*</span></div>
-      <div class="optgrid">${['B','C','D'].map((x,i)=>`<button class="opt ${cv===x?'onw':''} ${i===2?'wide':''}" data-act="mcb-curve" data-v="${x}">${x}</button>`).join('')}</div>
+      <div class="optgrid${cv?'':' needpick'}">${['B','C','D'].map((x,i)=>`<button class="opt ${cv===x?'onw':''} ${i===2?'wide':''}" data-act="mcb-curve" data-v="${x}">${x}</button>`).join('')}</div>
       <div class="slab">Current rating <span class="req">*</span></div>
-      <div class="optgrid">${rates.map(r=>`<button class="opt ${cr===r?'onw':''}" data-act="mcb-rate" data-v="${r}" ${cv==='D'&&r>maxD?'disabled':''}>${r}A</button>`).join('')}</div>
+      <div class="optgrid${cr?'':' needpick'}">${rates.map(r=>`<button class="opt ${cr===r?'onw':''}" data-act="mcb-rate" data-v="${r}" ${cv==='D'&&r>maxD?'disabled':''}>${r}A</button>`).join('')}</div>
       ${cv==='D'?'<div class="tiny" style="margin-top:-8px;margin-bottom:12px">Type D is available up to 20A.</div>':''}
     </div>
     <div class="sfoot"><button class="abtn ${ready?'mint':'ghost'}${ready?hot('mcbok'):''}" data-act="mcb-confirm" ${ready?'':'disabled'}>Confirm</button></div>
@@ -1404,6 +1405,7 @@ function hotKeyNow(){if(freePlay) return null; const h=steps[cur].hotKey; return
 const POP={
  1:{k:'Connect',t:'Connect to the Smart Panel'},
  4:{k:'Firmware',t:'Update the firmware'},
+ 9:{k:'Site details',t:'Already filled in'},
  13:{k:'Office · Label',t:'Label'},
  15:{k:'Office · MCB',t:'MCB'},
  17:{k:'Office · RCD',t:'RCD'},
@@ -1426,11 +1428,12 @@ const POP={
 const SHORT={
  1:"Match the serial number, then Connect.",
  4:"There might be new firmware since this panel left the factory.",
+ 9:"The address is already filled in for this demo — no need to type it. <b>Tap Next to carry on.</b>",
  13:"What the circuit supplies. This one's the office — <b>pick Power.</b>",
  15:"Trip curve + current rating, in software. <b>Pick what you'd normally choose for this type of circuit.</b>",
  17:"Choose the Type and limit.",
  19:"Tag the rooms it feeds. <b>Pick Office and any others you want.</b>",
- 21:"Locks this circuit on — it can't be switched off remotely or by a routine, so always-on loads (fridge, router, security) never lose power.<br><b>Enable it for the office.</b>",
+ 21:"Stops the customer from turning this circuit off remotely.<br>Use for always-on loads, like fridge, router, security.<br><b>Let's enable it for the office, where the Wi-Fi lives.</b>",
  22:"Office is staged but not on the board yet. <b>Tap Circuit 02</b> to set up the HWC before syncing all changes.",
  23:"<b>Label it HWC</b> first.",
  29:"<b>AFDD</b> catches dangerous arcing MCBs and RCDs can't see. <b>Switch it on.</b>",
@@ -1966,7 +1969,7 @@ function showStart(){
   $('#pop-what').textContent="Commission a panel end to end. The app is on the left; the switchboard on the right responds like the real thing. Lime highlights show where to tap.";
   $('#pop-whylab').textContent='The guided demo covers';
   $('#pop-why').textContent="Connecting · Setup · Configuring circuits · Logs";
-  $('#pop-actions').innerHTML='<button class="pop-go" data-pop="start">▶&ensp;Take the guided demo</button><button class="pop-alt" data-pop="free">Explore on your own</button>';
+  $('#pop-actions').innerHTML='<button class="pop-go" data-pop="start">▶&ensp;Start</button>';
   popov.hidden=false;
   $('.pop-go').focus({preventScroll:true});
 }
