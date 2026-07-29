@@ -48,8 +48,9 @@ body{background:#fff; color:var(--ink);
 .mbtn .hold{display:inline-flex; align-items:center; justify-content:center; background:#22272B; border-radius:6px; padding:4px 5px}
 .mbtn:hover{border-color:#bfc3c5; box-shadow:0 2px 6px rgba(0,0,0,.09)}
 .mbtn.sel{border-color:var(--lime); box-shadow:0 0 0 2.5px var(--lime); background:#F2FFF5}
-.list{display:flex; flex-direction:column; gap:8px; align-items:stretch}
-.list .mbtn{width:100%; justify-content:flex-start}
+.list{display:flex; flex-flow:row wrap; gap:8px; align-items:stretch}
+.list .mbtn{flex:1 1 100%; justify-content:flex-start}
+.list .mbtn.half{flex:1 1 calc(50% - 4px)}
 .pips{display:inline-flex; flex-direction:column; gap:3px; margin-left:auto; align-items:center;
   background:#22272B; border-radius:7px; padding:5px 7px}
 .cap{font-size:13px; color:var(--ink2); margin-top:12px; min-height:34px}
@@ -105,7 +106,7 @@ body{background:#fff; color:var(--ink);
       <div class="cap" id="c-capC"></div>
     </div>
     <div>
-      <div class="colhead">Panel</div>
+      <div class="colhead">Basis Panel</div>
       <div class="viewer" style="margin-bottom:14px"><svg viewBox="0 0 300 192"><use href="#sb"/></svg><span class="hint s">STATUS</span><span class="hint m">COMMS</span><span class="ov ovS" id="b-S"></span><span class="ov ovM" id="b-M"></span></div>
       <div class="list" id="sitList"></div>
       <div class="cap" id="b-capS"></div>
@@ -117,7 +118,8 @@ body{background:#fff; color:var(--ink);
 'use strict';
 /* circuit modes — grouped, plus an explicit "No light" state */
 const CMODES=[
- {n:'Power',    dot:{cls:'red',anim:''},        cap:'<b>Power</b> — the circuit is live (steady red), or slowly pulsing red when it’s on standby.'},
+ {n:'Power',    half:true, dot:{cls:'red',anim:''},           cap:'<b>Power</b> — the circuit is live: steady red.'},
+ {n:'Standby',  half:true, dot:{cls:'red',anim:'breatheRed'}, cap:'<b>Standby</b> — the circuit is on standby: slowly pulsing (breathing) red.'},
  {n:'Fault',    dot:{cls:'yellow',anim:''},      cap:'<b>Fault</b> — solid yellow when it’s tripped; slow-blinking yellow if the module itself needs attention.'},
  {n:'Waiting',  dot:{cls:'blue',anim:'blink1'},  cap:'<b>Waiting</b> — blinking blue: a change is staged and waiting to apply.'},
  {n:'No light', dot:{cls:'off',anim:''},         cap:'<b>No light</b> — the circuit is off, safe, or a spare position that isn’t in use.'},
@@ -139,7 +141,7 @@ function selWithin(btn){ btn.parentElement.querySelectorAll('.mbtn').forEach(x=>
 const cdot=m=>`<span class="hold"><span class="dot v ${m.cls} ${m.anim}"></span></span>`;
 const pip=m=>`<span class="pip ${m.cls} ${m.anim}"></span>`;
 
-document.getElementById('circList').innerHTML=CMODES.map((m,i)=>`<button class="mbtn" data-c="${i}">${cdot(m.dot)}${m.n}</button>`).join('');
+document.getElementById('circList').innerHTML=CMODES.map((m,i)=>`<button class="mbtn${m.half?' half':''}" data-c="${i}">${cdot(m.dot)}${m.n}</button>`).join('');
 document.getElementById('sitList').innerHTML=SIT.map((s,i)=>`<button class="mbtn" data-s="${i}">${s.n}<span class="pips">${pip(s.S)}${pip(s.M)}</span></button>`).join('');
 
 addEventListener('click',e=>{
