@@ -11,43 +11,43 @@
   --pillBg:rgba(255,255,255,.06); --pillLine:rgba(255,255,255,.10);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--white);
-  -webkit-font-smoothing:antialiased;line-height:1.5}
-.pg{max-width:1120px;margin:0 auto;padding:44px 24px 64px;display:flex;flex-direction:column;gap:56px}
-
-/* header */
+body{font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--white);-webkit-font-smoothing:antialiased;line-height:1.5}
+.pg{max-width:1160px;margin:0 auto;padding:44px 24px 64px;display:flex;flex-direction:column;gap:44px}
 .hd{display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center;max-width:60ch;margin:0 auto}
 .eyebrow{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:var(--s400)}
 .hd h1{font-weight:400;letter-spacing:-.02em;line-height:1.05;font-size:clamp(2.25rem,3.5vw + 1rem,3.75rem);color:var(--white)}
 .lede{font-size:clamp(1.0625rem,.5vw + .75rem,1.25rem);color:var(--s300);max-width:52ch}
-
+/* filter */
+.filter{display:flex;justify-content:center}
+.seg{display:inline-flex;flex-wrap:wrap;justify-content:center;gap:2px;border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:4px}
+.seg button{border:0;background:none;color:var(--s300);font:inherit;font-size:14px;font-weight:500;padding:7px 16px;border-radius:999px;cursor:pointer;transition:.15s}
+.seg button:hover{color:var(--white)}
+.seg button.on{background:var(--white);color:#1c1917}
+.seg button .n{opacity:.55;font-size:12px;margin-left:5px}
+.seg button.on .n{opacity:.5}
 /* grid + tiles */
-.grid,.qgrid{list-style:none}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-@media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+.grid{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:920px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:640px){.grid{grid-template-columns:repeat(2,1fr)}}
-.tile{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;background:var(--card);
-  border:1px solid var(--line);border-radius:16px;padding:20px 18px;cursor:pointer;transition:border-color .15s,background .15s;height:100%}
+.tile{display:flex;flex-direction:column;align-items:center;text-align:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;text-decoration:none;transition:border-color .15s,background .15s;height:100%}
 .tile:hover{border-color:var(--lineHover);background:var(--cardHover)}
-.tile .aud{align-self:flex-start;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--s500)}
-.tile .av{width:80px;height:80px;border-radius:50%;background:var(--s800);display:flex;align-items:center;justify-content:center;
-  font-size:24px;font-weight:600;color:var(--white);letter-spacing:.01em}
-.tile .nm{font-size:16px;font-weight:600;letter-spacing:-.01em;color:var(--white)}
-.tile .at{font-size:13px;color:var(--s400);margin-top:2px}
-.tile .stat{font-size:13.5px;line-height:1.4;color:var(--s300);
-  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-.pill{font-size:11px;color:var(--s200);background:var(--pillBg);border:1px solid var(--pillLine);border-radius:999px;padding:2px 9px}
-.tile .rm{margin-top:auto;padding-top:6px;font-size:13px;color:var(--s500);transition:color .15s}
+.trow{display:flex;width:100%;align-items:center;justify-content:space-between;gap:6px;min-height:16px}
+.aud{font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--s500)}
+.amb{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:600;color:#FCE4A6;background:rgba(252,211,77,.14);border:1px solid rgba(252,211,77,.35);border-radius:999px;padding:2px 7px}
+.av{width:72px;height:72px;border-radius:50%;background:var(--s800);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;color:var(--white)}
+.nm{font-size:15.5px;font-weight:600;letter-spacing:-.01em;color:var(--white)}
+.at{font-size:12.5px;color:var(--s400);margin-top:2px}
+.stat{font-size:13px;line-height:1.4;color:var(--s300);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pills{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.pill{font-size:10.5px;color:var(--s200);background:var(--pillBg);border:1px solid var(--pillLine);border-radius:999px;padding:2px 8px}
+.rm{margin-top:auto;padding-top:4px;font-size:12.5px;color:var(--s500);transition:color .15s}
 .tile:hover .rm{color:var(--white)}
-
-/* section header */
-.sec{display:flex;flex-direction:column;gap:26px}
+.count{text-align:center;font-size:12.5px;color:var(--s500)}
+/* trade */
+.sec{display:flex;flex-direction:column;gap:24px;margin-top:14px}
 .sec .sh{display:flex;flex-direction:column;gap:12px;max-width:52ch}
 .sec h2{font-weight:400;letter-spacing:-.02em;line-height:1.05;font-size:clamp(1.75rem,2.8vw + .5rem,2.75rem);color:var(--white)}
-
-/* trade + words cards */
-.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.qgrid{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 @media(max-width:820px){.qgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.qgrid{grid-template-columns:1fr}}
 .qcard{display:flex;flex-direction:column;gap:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;height:100%}
@@ -55,31 +55,8 @@ body{font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;background:v
 .qcard .by{margin-top:auto;display:flex;flex-direction:column;gap:2px}
 .qcard .by b{font-size:14px;font-weight:600;color:var(--white)}
 .qcard .by span{font-size:14px;color:var(--s400)}
-
-/* detail modal */
-.ov{position:fixed;inset:0;background:rgba(4,3,2,.7);backdrop-filter:blur(3px);z-index:100;display:none;
-  align-items:flex-start;justify-content:center;overflow-y:auto;padding:40px 18px}
-.ov.open{display:flex}
-.modal{background:var(--card);border:1px solid var(--lineHover);border-radius:22px;max-width:640px;width:100%;
-  padding:32px 30px 30px;position:relative}
-.modal .x{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
-  background:rgba(255,255,255,.04);color:var(--s300);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.modal .x:hover{color:var(--white);border-color:var(--lineHover)}
-.modal .mpills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-.modal h3{font-size:24px;font-weight:600;letter-spacing:-.01em;color:var(--white)}
-.modal .mat{font-size:13.5px;color:var(--s400);margin-top:4px}
-.modal .mq{font-size:18px;line-height:1.55;color:var(--white);margin:20px 0;padding-left:16px;border-left:3px solid #4d7a5c}
-.mmetrics{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
-.mmetric{flex:1 1 auto;min-width:96px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:11px 12px;text-align:center}
-.mmetric .v{font-size:19px;font-weight:700;color:var(--white)}
-.mmetric .l{font-size:10.5px;color:var(--s400);margin-top:2px;line-height:1.25}
-.mcost{font-size:13.5px;color:var(--s300);margin:12px 0 2px}
-.mcost b{color:var(--white)}
-.story h4{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--s400);margin:18px 0 6px}
-.story p{font-size:14.5px;line-height:1.6;color:var(--s300);margin-bottom:9px}
-.mfeat{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
-.mfeat span{font-size:11px;color:var(--s200);background:var(--pillBg);border:1px solid var(--pillLine);border-radius:6px;padding:3px 9px}
-.foot{text-align:center;font-size:11.5px;color:var(--s500);line-height:1.6}
+.foot{text-align:center;font-size:11.5px;color:var(--s500);line-height:1.6;margin-top:8px}
+.foot a{color:var(--s400)}
 </style></head>
 <body><div class="pg">
 
@@ -89,6 +66,8 @@ body{font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;background:v
   <p class="lede">Hear from homeowners living with Basis on the wall — and from the electricians installing them. What changed, what surprised them, what they'd tell the next person.</p>
  </header>
 
+ <div class="filter"><div class="seg" id="seg"></div></div>
+ <div class="count" id="count"></div>
  <ul class="grid" id="grid"></ul>
 
  <section class="sec">
@@ -96,109 +75,41 @@ body{font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;background:v
   <ul class="qgrid" id="trade"></ul>
  </section>
 
- <section class="sec">
-  <div class="sh"><span class="eyebrow">In their words</span><h2>More from homeowners.</h2></div>
-  <ul class="qgrid" id="words"></ul>
- </section>
-
- <div class="foot">Real Basis homes. Names shortened for privacy; figures are per-home and will vary.</div>
+ <div class="foot">All 49 stories from the Basis case-study library. Tap any card to read the full story on wearebasis.com. Names shortened for privacy.</div>
 </div>
 
-<div class="ov" id="ov"><div class="modal" id="modal"></div></div>
-
 <script>
-const CS=[
- {aud:"Homeowner",name:"Brigitte & Danny P.",at:"Auckland",pills:["Lower bills"],
-  stat:"$1,366 back in the family's pocket every year.",
-  meta:"Auckland · Family of 6 · 4-bedroom home · Basis home since 2024",
-  q:"We had no idea hot water was such a big part of our bill. Now we know exactly where our energy goes and how to control it. $1,366 back in our pocket, every year.",
-  metrics:[["21%","Less energy used"],["37%","Lower costs"],["$1,366","Annual savings"]],
-  cost:[3612,2246], feat:["Insights","Control","Retail plan"],
-  body:[["What we noticed",["After installing their Basis Board, Brigitte and her family were shocked to learn that their hot water cylinder was using 62% of their home's electricity.","Six people, a four-bedroom home, two showers running back-to-back most mornings. The HWC was working overtime and nobody had any idea."]],["What changed",["With the new insight, they quickly created a hot water routine and switched to a better retail plan. Power use dropped by 21%; total costs dropped by 37%.","Annual electricity bill: $3,612 before Basis, $2,246 after — $1,366 back in the family's pocket every year, with no behaviour change beyond the routine."]]]},
-
- {aud:"Homeowner",name:"Fleur S.",at:"Kingston",pills:["Solar & Battery"],
-  stat:"Grid use cut by 26% on an existing solar + battery setup.",
-  meta:"Kingston · Family of 2 · 3-bedroom home · hybrid solar + battery",
-  q:"It's taken the stress out of managing my solar. I can see exactly what's happening and stay fully self-sufficient.",
-  metrics:[["26%","Reduced grid use"],["1,036 kWh","Grid before"],["750 kWh","Grid after"]],
-  cost:null, feat:["Insights","Control"],
-  body:[["What we noticed",["Already running a full hybrid solar and battery setup, Fleur installed the Basis Board to take her energy independence further.","She wanted to stop guessing. Solar inverters give you a summary view, but they don't show which circuits are actually running on grid vs sun."]],["What changed",["Individual circuit insights and control removed the guesswork from managing her home's power. She now sees exactly when grid imports happen and which appliance triggered them.","Annual grid usage dropped from 1,036 kWh to 750 kWh — a 26% reduction, while comfort stayed exactly the same."]]]},
-
- {aud:"Homeowner",name:"Duncan B.",at:"Auckland",pills:["Safer homes"],
-  stat:"Electrocution risk caught at install, plus $1,796/yr saved.",
-  meta:"Auckland · Family of 5 · 4-bedroom home · spa pool",
-  q:"The spa wiring was literally sitting in water and corroding. Even with Type B RCDs in our traditional switchboard, it still couldn't detect the risk of electric shock. I couldn't believe how quickly the Basis Board picked it up once we installed it. It genuinely saved us from something extremely dangerous.",
-  metrics:[["24%","Less energy used"],["$1,796","Annual savings"],["Avoided","Electrocution"]],
-  cost:[3887,2091], feat:["Insights","Control","Retail plan","Type-B","Fault alerts"],
-  body:[["What we noticed",["When Duncan installed the Basis Board, he uncovered two major issues within minutes.","First: his spa pool was overheating, wasting roughly $120 every month. Second, and more serious: an electrical fault was already present, with water pooling and corrosion in the spa cabling. Even with Type-B RCDs in the previous switchboard, the risk hadn't been detected."]],["What changed",["Basis flagged both within the first scan, before anyone in the family was at risk. The spa was repaired and its dispatch tightened up; the electrical fault was isolated and rewired.","Twelve months on, Duncan's annual bill dropped from $3,887 to $2,091 — $1,796 back in his pocket every year. The serious shock risk that traditional protection hadn't caught is now resolved."]]]},
-
- {aud:"Homeowner",name:"Tim & Kelly A.",at:"Kapiti Coast",pills:["Lower bills"],
-  stat:"$642/yr recovered from a forgotten beer fridge.",
-  meta:"Kapiti Coast · Family of 4 · 3-bedroom home",
-  q:"I couldn't believe one old fridge was wasting that much power. Now we keep a closer eye on everything.",
-  metrics:[["16%","Less energy used"],["$812","Annual savings"],["$642/yr","Fridge culprit"]],
-  cost:[2987,2175], feat:["Insights","Control","Retail plan"],
-  body:[["What we noticed",["Seconds after connecting the Basis app, Tim noticed something strange. Over half of his home's power was coming from the garage."]],["What changed",["Using live data, he tracked down the culprit: an old beer fridge that had been quietly running for months. Disconnecting it cut the family's electricity use by 15%, saving an estimated $642 a year.","Combined with a retail-plan switch, total annual savings landed at $812. The family now keeps a closer eye on what's actually drawing in the background."]]]},
-
- {aud:"Homeowner",name:"Bella H.",at:"Mangawhai",pills:["Safer homes"],
-  stat:"Oven shut off remotely on the way to the supermarket.",
-  meta:"Mangawhai · Family of 4 · 3-bedroom house · twin toddlers",
-  q:"It saved me almost two hours from turning the car around, and probably from burning lunch or the house. I used to worry about this nearly every time I left the house but now I never do!",
-  metrics:[["2 hours","Time saved"],["$494","Annual savings"],["Peace of mind","Guaranteed"]],
-  cost:[2147,1653], feat:["Insights","Control"],
-  body:[["What we noticed",["As a mum of twin toddlers, Bella's days are non-stop. One hectic morning grocery run, she couldn't remember if she'd turned the oven off."]],["What changed",["Instead of driving back home, Bella opened the Basis Home App and saw that the oven was still on. With one tap, she switched it off remotely.","Two hours saved that day. The same fear-of-leaving-on that used to grip her every time she left the house has gone. Annual bill is down $494 on the side."]]]},
-
- {aud:"Homeowner",name:"James G.",at:"Tauranga",pills:["Upgrade Avoided"],
-  stat:"~$10,000 network upgrade avoided on a 63A connection.",
-  meta:"Tauranga · Family of 4 · 4-bedroom home · spa + EV + pool pump",
-  q:"Now, with the Basis app I monitor my real-time use and set circuits to stand-by so my peak demand stays within my 63A capacity. Paying $4.5k for the Basis Board saved me $10k in a network upgrade I was being forced to do.",
-  metrics:[["$10,000","Upgrade avoided (net)"],["2,100 kWh","Use before"],["1,554 kWh","Use after"]],
-  cost:null, feat:["Insights","Control"],
-  body:[["What we noticed",["James's home is packed with high-demand appliances: a spa pool, pool pump, EV charger, and more.","Before installing Basis, his energy use often breached his home's 63A supply limit, tripping pole fuses and threatening a $14k network upgrade from his lines company."]],["What changed",["With Basis, James monitors real-time demand and sets circuits to stand-by so his peak demand stays within his existing 63A capacity. No pole fuses tripping. No upgrade required.","Paying $4.5k for the Basis Board saved him roughly $10k net on the upgrade he was being forced into. Annual usage also dropped from 2,100 kWh to 1,554 kWh."]]]},
-];
+const BASE="https://www.wearebasis.com/nz/case-studies/";
+const CS=[{"slug":"brigitte-danny-p-auckland","aud":"Homeowner","name":"Brigitte P","attr":"Auckland","amb":false,"stat":"$1,366 back in the family's pocket every year.","benefits":["Lower bills"]},{"slug":"fleur-s-kingston","aud":"Homeowner","name":"Fleur S.","attr":"Kingston","amb":false,"stat":"Grid use cut by 26% on an existing solar + battery setup.","benefits":["Solar & Battery"]},{"slug":"duncan-b-auckland","aud":"Homeowner","name":"Duncan B.","attr":"Auckland","amb":false,"stat":"Electrocution risk caught at install + $1,796/yr saved.","benefits":["Safer homes"]},{"slug":"tim-kelly-a","aud":"Homeowner","name":"Tim & Kelly A.","attr":"Kapiti Coast","amb":false,"stat":"$642/yr recovered from a forgotten beer fridge.","benefits":["Lower bills"]},{"slug":"bella-h-mangawhai","aud":"Homeowner","name":"Bella H.","attr":"Mangawhai","amb":false,"stat":"Oven shut off remotely on the way to the supermarket.","benefits":["Safer homes"]},{"slug":"james-g-tauranga","aud":"Homeowner","name":"James G.","attr":"Tauranga","amb":false,"stat":"$10,000 network upgrade avoided on a 63A connection.","benefits":["Upgrade Avoided"]},{"slug":"angela-a","aud":"Homeowner","name":"Angela A","attr":"Auckland","amb":false,"stat":"$100 off her last power bill, just by putting hot water on standby overnight.","benefits":["Lower bills"]},{"slug":"anneka-c","aud":"Homeowner","name":"Anneka C.","attr":"Auckland","amb":false,"stat":"$624/yr saved by switching retailer plus a hidden garage fault caught.","benefits":["Lower bills"]},{"slug":"ben-b","aud":"Electrician","name":"Ben B","attr":"Rebel Electrical","amb":false,"stat":"A streamlined, tidy first install in his own home, with no issues since.","benefits":["Easy Installation"]},{"slug":"brendan","aud":"Homeowner","name":"Brendan","attr":"Auckland","amb":false,"stat":"A 10/10 recommendation: when a circuit trips, the app shows what’s gone, and the electrician already knows.","benefits":["Safer homes"]},{"slug":"brierly-l","aud":"Electrician","name":"Brierly L","attr":"Sole Trader","amb":false,"stat":"A quicker retrofit on quick connects, strong support, and a customer rapt with the solar integration.","benefits":["Easy Installation"]},{"slug":"butch-w","aud":"Electrician","name":"Butch W","attr":"BO & CO Electrical","amb":false,"stat":"No more check meters, full visibility on every load, and isolation from the app. A genuine game changer.","benefits":["Innovative tech"]},{"slug":"cameron-s","aud":"Electrician","name":"Cameron S","attr":"Maverick Electrical","amb":false,"stat":"A first install done in about five hours, with standout build quality and arc fault protection built in. He won't be going back to a traditional board.","benefits":["Innovative tech"]},{"slug":"corbin-c","aud":"Electrician","name":"Corbin C","attr":"Connor Electrical","amb":false,"stat":"A quicker, more efficient retrofit with greater protection and insights the customer loves to show off.","benefits":["Fault Detection"]},{"slug":"daniel-o","aud":"Electrician","name":"Daniel O","attr":"Hunter Electrical","amb":false,"stat":"A retrofit that terminated smoothly and went quicker than a standard switchboard.","benefits":["Easy Installation"]},{"slug":"gary-s-general-manager","aud":"Commercial","name":"Gary S","attr":"Sunrise Garden Serviced Apartments","amb":false,"stat":"Room-by-room power clarity tied to daily occupancy, earning Qualmark Gold sustainability status.","benefits":["Advanced safety","Lower bills"]},{"slug":"harry-and-margie","aud":"Homeowner","name":"Harry & Margie","attr":"Auckland","amb":false,"stat":"Upgrading to Basis meant we had RCD protection on every circuit, and our heat pump was wired in, in under two minutes.","benefits":["Safer homes"]},{"slug":"ian-p","aud":"Homeowner","name":"Ian P.","attr":"Auckland","amb":false,"stat":"Two always-on hot water cylinders reined in with circuit-level control plus lights Ian can switch off from anywhere.","benefits":["Lower bills"]},{"slug":"ian-w","aud":"Electrician","name":"Ian W","attr":"Neo Electrical","amb":false,"stat":"The latest all-in-one switchboard, fully controllable from the app. Ian's already recommending it.","benefits":["Innovative tech"]},{"slug":"izak-vdm","aud":"Homeowner","name":"Izak VDM","attr":"Waitoki","amb":false,"stat":"One clear view across a main home and a connected minor dwelling, down to each appliance.","benefits":["Lower bills"]},{"slug":"jade-m","aud":"Homeowner","name":"Jade M.","attr":"Christchurch","amb":false,"stat":"Peace of mind that nothing’s left running checked and controlled from anywhere.","benefits":["Safer homes"]},{"slug":"jadin-j","aud":"Electrician","name":"Jadin J","attr":"Beyond Electrical","amb":false,"stat":"One of the simplest switchboard installs Jadin has done. A genuine no-brainer.","benefits":["Easy Installation"]},{"slug":"james-a","aud":"Homeowner","name":"James A.","attr":"Auckland","amb":false,"stat":"$10,000 insurance excess removed, with a future-proofed setup for solar and battery.","benefits":["Safer homes","Lower bills"]},{"slug":"james-m","aud":"Homeowner","name":"James M","attr":"Christchurch","amb":false,"stat":"Overnight heating cut from ~15 kWh to 4.2 kWh about 72% less, on night rates.","benefits":["Lower bills"]},{"slug":"james-s","aud":"Electrician","name":"James S","attr":"James Smith Electrical","amb":false,"stat":"Real-time control and assessment for clients, and what James sees as the next phase in property safety and control.","benefits":["Fault Detection"]},{"slug":"jane-c","aud":"Homeowner","name":"Jane C.","attr":"Rural North Island","amb":false,"stat":"A water pump caught running needlessly and switched off remotely from another city.","benefits":["Safer homes"]},{"slug":"janine-and-andrew-c","aud":"Homeowner","name":"Janine & Andrew C.","attr":"Porirua, Wellington","amb":false,"stat":"Firmware updates have been effortless and the information always clear. Kiwi-developed tech they'd recommend hands down — a 10-out-of-10.","benefits":["Safer homes"]},{"slug":"jonathan-w","aud":"Electrician","name":"Jonathan W","attr":"","amb":true,"stat":"Easy to wire and well supported, with customers engaged enough to bring him back for more work.","benefits":["Advanced Safety"]},{"slug":"jordan-g","aud":"Electrician","name":"Jordan G","attr":"Sole Trader","amb":false,"stat":"Circuit-level clarity his solar, battery and EV setup couldn't show on its own.","benefits":["Innovative tech"]},{"slug":"lewis-c","aud":"Homeowner","name":"Lewis C","attr":"Christchurch","amb":false,"stat":"Lower bills and a safer home, with hot water tuned automatically to solar and time-of-use rates.","benefits":["Safer homes"]},{"slug":"matt-b","aud":"Homeowner","name":"Matt B.","attr":"Auckland","amb":false,"stat":"Hot water and air conditioning revealed 75% of a four-bedroom home’s power use.","benefits":["Lower bills"]},{"slug":"matt-k","aud":"Electrician","name":"Matt K","attr":"Evolve Electrical","amb":false,"stat":"A straightforward install with easy app configuration, and an electrician happy to put Basis's name forward.","benefits":["Easy Installation"]},{"slug":"matthew-c","aud":"Homeowner","name":"Matthew C","attr":"Auckland","amb":false,"stat":"Full visibility from day one. This family sees exactly what their home is doing, and decides with real confidence.","benefits":["Solar & Battery"]},{"slug":"michael-f","aud":"Homeowner","name":"Michael F.","attr":"Christchurch","amb":false,"stat":"Hot water 91% solar-powered, with solar payback tracking under four years.","benefits":["Solar & Battery"]},{"slug":"mitch-h","aud":"Electrician","name":"Mitch H","attr":"Cablerite","amb":false,"stat":"18 installs in, with superior functionality, advanced safety, and a board Mitch reckons belongs in every home.","benefits":["Innovative tech"]},{"slug":"patrick-m","aud":"Electrician","name":"Patrick M","attr":"Applied Electrical","amb":false,"stat":"A first install made easy with hands-on support, and a customer rapt with the insights.","benefits":["Innovative tech"]},{"slug":"paul-b","aud":"Homeowner","name":"Paul B","attr":"Wanaka","amb":false,"stat":"Hot water shifted from costly on-demand electric heating to the heat pump, powered by peak solar.","benefits":["Lower bills"]},{"slug":"rebecca-l","aud":"Homeowner","name":"Rebecca L.","attr":"Rolleston","amb":false,"stat":"~$70/yr saved by stopping a hot water cylinder from heating twice overnight.","benefits":["Lower bills"]},{"slug":"rob-m","aud":"Electrician","name":"Rob M","attr":"RPM Electrical","amb":false,"stat":"An easy retrofit in his own home, with insights, safety and fault finding well ahead of a traditional board.","benefits":["Innovative tech"]},{"slug":"robert-e","aud":"Homeowner","name":"Robert E.","attr":"Auckland","amb":false,"stat":"Every circuit visible and faults caught fast bills trending down.","benefits":["Lower bills"]},{"slug":"roger-p","aud":"Homeowner","name":"Roger P","attr":"Rotorua","amb":false,"stat":"A brand-new all-LED solar home he assumed was efficient — Basis found a hot wash drawing 2 kW; a cold wash now draws 40 watts.","benefits":["Solar & Battery"]},{"slug":"rory-s","aud":"Homeowner","name":"Rory S","attr":"Christchurch","amb":false,"stat":"A heat pump quietly drawing 43W at rest now every circuit is measured and under Rory’s control.","benefits":["Lower bills"]},{"slug":"sean-k","aud":"Electrician","name":"Sean K","attr":"","amb":true,"stat":"Six installs in and counting. Quicker, more predictable, and a new level of monitoring for any home.","benefits":["Easy Installation"]},{"slug":"sean-q","aud":"Homeowner","name":"Sean Q","attr":"Christchurch","amb":false,"stat":"Switchboard safety features added in a few taps, with no costly rewire.","benefits":["Safer homes"]},{"slug":"simon-b","aud":"Electrician","name":"Simon B","attr":"Complete Electrical Services","amb":false,"stat":"An easy, well-supported first install, and a customer excited to see and control their home.","benefits":["Easy Installation"]},{"slug":"theo-m","aud":"Electrician","name":"Theo M","attr":"","amb":true,"stat":"Five installs in, no pre-building required, and a superior product Theo's backed by buying one for his own home.","benefits":["Easy Installation"]},{"slug":"tom-v","aud":"Electrician","name":"Tom V","attr":"Van De Ven Electrical","amb":false,"stat":"Two retrofits in and a convert. A brilliant product, standout service, and the way of the future.","benefits":["Innovative tech"]},{"slug":"vea-g","aud":"Homeowner","name":"Vea G.","attr":"Auckland","amb":false,"stat":"Peace of mind that the heat pump and towel rail are never left on all from her phone.","benefits":["Safer homes"]},{"slug":"wayne-h","aud":"Electrician","name":"Wayne H","attr":"Laser Electrical Alexandra","amb":false,"stat":"A sleek, future-proofed upgrade with full app control and around $1,000 a year in energy savings.","benefits":["Innovative tech"]}];
 const TRADE=[
  {name:"Chris F.",role:"MD, French Electrical",q:"Basis is a no-brainer for anyone building a new home, replacing an existing switchboard or simply looking to get their electricity costs under control. It's seamless to install and a delightful product to work with."},
  {name:"Chris F.",role:"MD, French Electrical",q:"Our company has been in operation since 1974 and we've seen many products come and go. There's never been something quite like the Basis Board before."},
  {name:"Blake S.",role:"365 Electrical, Auckland",q:"It's new, innovative tech that is growing the electrical industry & safety. We love what the brand stands for and enjoy the ease of install!"},
  {name:"Dwaine M.",role:"AA Electrical · Livening Agent",q:"The metering install is definitely one of the easiest I've done so far. I would highly, highly recommend anyone to get one."},
 ];
-const WORDS=[
- {name:"Sarah",role:"Wellington",q:"Within a week of install, Basis pinged my electrician about a cable in the ceiling running hot. I'd been living over it for eleven years."},
- {name:"Mike & Jo",role:"Tauranga",q:"Basis found $140 a month in the first few weeks. I hadn't changed anything yet, I'd just looked."},
- {name:"Rachel",role:"Christchurch",q:"Our electrician came back at six months with a solar proposal based on our actual usage. It wasn't a brochure, it was our numbers. We said yes."},
-];
-const ini=n=>{const p=n.replace(/[^A-Za-z &]/g,"").split(/\s|&/).filter(Boolean);return((p[0]?.[0]??"")+(p[1]?.[0]??p[0]?.[1]??"")).toUpperCase();};
-
-document.getElementById('grid').innerHTML=CS.map((c,i)=>`
- <li><div class="tile" data-i="${i}">
-   <span class="aud">${c.aud}</span>
-   <span class="av">${ini(c.name)}</span>
-   <div><div class="nm">${c.name}</div><div class="at">${c.at}</div></div>
-   <p class="stat">${c.stat}</p>
-   <div class="pills">${c.pills.map(p=>`<span class="pill">${p}</span>`).join('')}</div>
-   <span class="rm">Read more →</span>
- </div></li>`).join('');
-
-const qcard=q=>`<li><div class="qcard"><p>&ldquo;${q.q}&rdquo;</p><div class="by"><b>${q.name}</b><span>${q.role}</span></div></div></li>`;
-document.getElementById('trade').innerHTML=TRADE.map(qcard).join('');
-document.getElementById('words').innerHTML=WORDS.map(qcard).join('');
-
-const ov=document.getElementById('ov'), modal=document.getElementById('modal');
-function openCS(i){const c=CS[i];
- modal.innerHTML=`<button class="x" aria-label="Close">✕</button>
-  <div class="mpills">${c.pills.map(p=>`<span class="pill">${p}</span>`).join('')}</div>
-  <h3>${c.name}</h3><div class="mat">${c.meta}</div>
-  <div class="mq">&ldquo;${c.q}&rdquo;</div>
-  <div class="mmetrics">${c.metrics.map(m=>`<div class="mmetric"><div class="v">${m[0]}</div><div class="l">${m[1]}</div></div>`).join('')}</div>
-  ${c.cost?`<div class="mcost">Annual bill: <b>$${c.cost[0].toLocaleString()}</b> before → <b>$${c.cost[1].toLocaleString()}</b> after</div>`:''}
-  <div class="story">${c.body.map(s=>`<h4>${s[0]}</h4>${s[1].map(p=>`<p>${p}</p>`).join('')}`).join('')}</div>
-  <div class="mfeat">${c.feat.map(f=>`<span>${f}</span>`).join('')}</div>`;
- ov.classList.add('open'); document.body.style.overflow='hidden';
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const ini=n=>{const p=(n||'').replace(/[^A-Za-z &]/g,'').split(/\s|&/).filter(Boolean);return((p[0]?.[0]??'')+(p[1]?.[0]??p[0]?.[1]??'')).toUpperCase();};
+const AUD=["all","Homeowner","Electrician","Commercial"];
+const LABEL={all:"All stories",Homeowner:"Homeowners",Electrician:"Electricians",Commercial:"Commercial"};
+let active="all";
+const seg=document.getElementById('seg'), grid=document.getElementById('grid'), countEl=document.getElementById('count');
+function count(a){return a==="all"?CS.length:CS.filter(c=>c.aud===a).length;}
+seg.innerHTML=AUD.map(a=>`<button data-a="${a}" class="${a==='all'?'on':''}">${LABEL[a]}<span class="n">${count(a)}</span></button>`).join('');
+function render(){
+ const list=active==="all"?CS:CS.filter(c=>c.aud===active);
+ countEl.textContent=`${list.length} ${active==="all"?"stories":LABEL[active].toLowerCase()}`;
+ grid.innerHTML=list.map(c=>`
+  <li><a class="tile" href="${BASE}${c.slug}" target="_blank" rel="noopener">
+    <div class="trow"><span class="aud">${c.aud}</span>${c.amb?'<span class="amb">★ Basis Ambassador</span>':''}</div>
+    <span class="av">${ini(c.name)}</span>
+    <div><div class="nm">${esc(c.name)}</div>${c.attr?`<div class="at">${esc(c.attr)}</div>`:''}</div>
+    <p class="stat">${esc(c.stat)}</p>
+    <div class="pills">${c.benefits.map(b=>`<span class="pill">${esc(b)}</span>`).join('')}</div>
+    <span class="rm">Read more →</span>
+  </a></li>`).join('');
 }
-function closeCS(){ov.classList.remove('open'); document.body.style.overflow='';}
-document.getElementById('grid').addEventListener('click',e=>{const t=e.target.closest('.tile');if(t)openCS(+t.dataset.i);});
-ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('.x'))closeCS();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCS();});
-if(location.hash.startsWith('#cs')){const n=+location.hash.slice(3);if(CS[n])openCS(n);}
+seg.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;active=b.dataset.a;[...seg.children].forEach(x=>x.classList.toggle('on',x.dataset.a===active));render();});
+render();
+document.getElementById('trade').innerHTML=TRADE.map(t=>`<li><div class="qcard"><p>&ldquo;${esc(t.q)}&rdquo;</p><div class="by"><b>${esc(t.name)}</b><span>${esc(t.role)}</span></div></div></li>`).join('');
 </script>
 </body></html>
