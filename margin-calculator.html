@@ -1,0 +1,228 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Basis — margin calculator</title>
+<style>
+@font-face{font-family:'Oracle';src:url('oracle.woff2') format('woff2');font-weight:300 600;font-display:swap;font-style:normal}
+:root{
+  --surface:#F6F6F7; --primary:#fff; --secondary:#F2F2F2; --tertiary:#EAEAEB;
+  --border:#DCDCDE; --border2:#EAEAEB; --accent:#39E581; --highlight:#000;
+  --ink:#1E1E1F; --ink2:#77777A; --ink3:#AAAAAD; --oncolour:#fff;
+  --tradeBg:#0B2E1A; --tradeAccent:#61EA9A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--surface);color:var(--ink);
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+#app{max-width:460px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:16px}
+.cap{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.cap .sub{font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{border-radius:16px;padding:20px;display:flex;flex-direction:column}
+.tile.hero{background:var(--highlight);color:var(--oncolour)}
+.tile.job{background:var(--secondary);color:var(--ink)}
+.tile .tl{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.tile.hero .tl{color:rgba(255,255,255,.6)}
+.tile .sub{margin-top:4px;font-size:12px}
+.tile.hero .sub{color:rgba(255,255,255,.4)}
+.tile.job .sub{color:var(--ink3)}
+.tile .big{margin-top:12px;font-size:30px;font-weight:320;line-height:1}
+.tile.job .big{color:var(--ink)}
+.tile .pct{margin-top:8px;font-size:12px;font-weight:500;color:var(--ink2)}
+.tile .foot{margin-top:auto;padding-top:20px;font-size:12px;color:var(--ink3)}
+.gauge{margin-top:auto;padding-top:20px;display:flex;gap:4px}
+.gauge i{height:6px;flex:1;border-radius:999px;background:rgba(255,255,255,.15)}
+.card{background:var(--primary);border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.card.pad0{padding:0;overflow:hidden}
+.hdrow{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.scale{margin-top:8px;display:flex;justify-content:space-between;font-size:12px;color:var(--ink3)}
+input.slider{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:999px;outline:none}
+input.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:999px;background:var(--highlight);border:4px solid var(--accent);cursor:pointer}
+input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;background:var(--highlight);border:4px solid var(--accent);cursor:pointer}
+.minput{display:inline-flex;align-items:center;border:1px solid var(--border);background:var(--primary);border-radius:8px;padding:8px 10px;gap:1px}
+.minput:focus-within{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.minput.off{opacity:.4}
+.minput .cur{font-size:14px;color:var(--ink3)}
+.minput input{border:0;outline:0;background:none;font:inherit;font-size:14px;color:var(--ink);width:100%;text-align:right;-moz-appearance:textfield}
+.minput input::-webkit-outer-spin-button,.minput input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.minput .suf{font-size:12px;color:var(--ink3);margin-left:2px}
+.w28{width:112px}.w24{width:96px}.w20{width:80px}
+.boardsel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bs{display:flex;flex-direction:column;align-items:center;border:1px solid var(--border);background:var(--primary);border-radius:12px;padding:12px 0;cursor:pointer;color:var(--ink)}
+.bs.on{border-color:var(--highlight);background:var(--highlight);color:var(--oncolour)}
+.bs .n{font-size:20px;font-weight:500;line-height:1}
+.bs .u{margin-top:4px;font-size:12px;opacity:.7}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper .lab{font-size:12px;color:var(--ink2)}
+.stepbox{display:flex;align-items:center;border:1px solid var(--border);border-radius:8px}
+.stepbox button{border:0;background:none;font:inherit;font-size:18px;line-height:1;color:var(--ink2);padding:6px 10px;cursor:pointer}
+.stepbox button:disabled{opacity:.3;cursor:default}
+.stepbox .v{width:20px;text-align:center;font-size:14px;font-weight:500;color:var(--ink)}
+.costhdr{display:flex;align-items:center;justify-content:space-between;width:100%;padding:20px;border:0;background:none;font:inherit;cursor:pointer}
+.costhdr .r{display:flex;align-items:center;gap:8px}
+.costtot{font-size:14px;color:var(--ink2)}
+.crow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border2)}
+.crow .lab{font-size:14px;color:var(--ink)}
+.crow .hint{font-size:12px;color:var(--ink3);margin-left:8px}
+.chev{transition:transform .2s;color:var(--ink2)}
+.chev.open{transform:rotate(180deg)}
+.chk{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:5px;border:1px solid var(--border);background:var(--primary);color:var(--oncolour)}
+.chk.on{border-color:var(--accent);background:var(--accent)}
+.bname{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:6px}
+.trade{border-radius:16px;overflow:hidden;background:var(--tradeBg)}
+.trade .th{display:flex;align-items:center;justify-content:space-between;width:100%;padding:20px;border:0;background:none;font:inherit;cursor:pointer;text-align:left;color:var(--tradeAccent)}
+.trade .th .t{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block}
+.trade .th .s{margin-top:4px;font-size:12px;color:rgba(255,255,255,.5);display:block;font-weight:400;text-transform:none;letter-spacing:0}
+.trade .body{padding:0 20px 20px}
+.trow{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:baseline;border-top:1px solid rgba(255,255,255,.1);padding:10px 0;color:var(--oncolour);font-size:14px}
+.trow .r{text-align:right}
+.trow .after{color:var(--tradeAccent);font-weight:600}
+.thead{display:grid;grid-template-columns:1fr auto auto;gap:14px;padding-bottom:8px;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.4)}
+.tnote{margin-top:12px;font-size:9px;color:rgba(255,255,255,.4)}
+.reset{margin:4px auto 0;background:none;border:0;font:inherit;font-size:14px;color:var(--ink2);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+</style></head>
+<body>
+<div id="app"><div id="inner"></div></div>
+<script>
+const SIZES=[12,16,20];
+const BOARD_PRESETS={12:2395,16:2890,20:3385};
+const SUNDRIES_PER_CIRCUIT=2.75;
+const sundriesFor=s=>Math.round(s*SUNDRIES_PER_CIRCUIT);
+const MAX_INSTALLED=8000, GST=0.15, HOURS_PER_EXTRA_BOARD=2, LEGACY_PER_HOUR=121, WTP_IDEAL=3999;
+const WTP_GRADIENT="linear-gradient(90deg,#5A8CFF 0%,#5A8CFF 36%,#39E581 41%,#39E581 52%,#FFC53D 64%,#FF554B 80%,#FF554B 100%)";
+const HOURLY_BANDS=[
+ {c:'#FF554B',min:-Infinity,max:0},{c:'#FF9142',min:0,max:80},{c:'#FFC53D',min:80,max:121},
+ {c:'#39E581',min:121,max:150},{c:'#00F5A0',min:150,max:Infinity}];
+const bandFor=v=>HOURLY_BANDS.find(b=>v>=b.min&&v<b.max)||HOURLY_BANDS[0];
+const money=new Intl.NumberFormat('en-NZ',{style:'currency',currency:'NZD',maximumFractionDigits:0});
+const makeBoard=s=>({size:s,price:BOARD_PRESETS[s],sundries:sundriesFor(s)});
+const DEFAULTS=()=>({installedCost:4000,boards:[makeBoard(16)],rebate:400,labourHours:4.5,labourRate:40,travel:45,inspectionEnabled:false,inspection:120});
+const KEY='basis-margin-calculator:v6';
+let state=DEFAULTS(), costsOpen=true, tradeOpen=true;
+try{const raw=localStorage.getItem(KEY);if(raw){const m={...DEFAULTS(),...JSON.parse(raw)};if(!Array.isArray(m.boards)||!m.boards.length)m.boards=DEFAULTS().boards;state=m;}}catch{}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));}catch{}};
+
+function calc(){
+ const totalCosts=state.boards.reduce((s,b)=>s+b.price-state.rebate+b.sundries,0)+state.labourHours*state.labourRate+state.travel+(state.inspectionEnabled?state.inspection:0);
+ const revenueExGst=state.installedCost/(1+GST);
+ const netMargin=revenueExGst-totalCosts;
+ const netMarginPct=revenueExGst>0?netMargin/revenueExGst:0;
+ const perHour=state.labourHours>0?netMargin/state.labourHours:0;
+ const boardCount=state.boards.length;
+ return {totalCosts,netMargin,netMarginPct,perHour,boardCount,hasHours:state.labourHours>0,maxInstalled:MAX_INSTALLED*boardCount,idealPrice:WTP_IDEAL*boardCount};
+}
+const mi=(f,val,{w='w24',cur=true,suf='',off=false,bi,bk}={})=>`<label class="minput ${w}${off?' off':''}">${cur?'<span class="cur">$</span>':''}<input type="number" inputmode="decimal" min="0" data-f="${f}"${bi!=null?` data-bi="${bi}" data-bk="${bk}"`:''} value="${Number.isFinite(val)?val:''}"${off?' disabled':''}>${suf?`<span class="suf">${suf}</span>`:''}</label>`;
+const chev=o=>`<svg class="chev ${o?'open':''}" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5 10 12.5 15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+function render(){
+ const c=calc(), multi=c.boardCount>1;
+ document.getElementById('inner').innerHTML=`
+  <div class="row2">
+   <div class="tile hero" id="heroTile"></div>
+   <div class="tile job" id="jobTile"></div>
+  </div>
+
+  <section class="card">
+   <div class="hdrow">
+     <p class="cap">Fully installed cost <span class="sub">(incl GST)</span></p>
+     ${mi('installedCost',state.installedCost,{w:'w28'})}
+   </div>
+   <input type="range" class="slider" id="slider" style="background:${WTP_GRADIENT}" min="0" max="${c.maxInstalled}" step="50" value="${state.installedCost}" data-f="installedCost">
+   <div class="scale"><span>${money.format(0)}</span><span id="idealLbl">Ideal ${money.format(c.idealPrice)}</span><span>${money.format(c.maxInstalled)}</span></div>
+  </section>
+
+  <section class="card">
+   <div class="hdrow" style="align-items:center;margin-bottom:12px">
+     <p class="cap">Board size</p>
+     <div class="stepper"><span class="lab">Boards</span><div class="stepbox">
+       <button data-act="count-dec" ${c.boardCount<=1?'disabled':''} aria-label="Fewer boards">−</button>
+       <span class="v">${c.boardCount}</span>
+       <button data-act="count-inc" ${c.boardCount>=9?'disabled':''} aria-label="More boards">+</button>
+     </div></div>
+   </div>
+   <div style="display:flex;flex-direction:column;gap:12px">
+     ${state.boards.map((b,i)=>`<div>${multi?`<p class="bname">Board ${i+1}</p>`:''}
+       <div class="boardsel">${SIZES.map(sz=>`<button class="bs ${b.size===sz?'on':''}" data-act="size" data-bi="${i}" data-size="${sz}"><span class="n">${sz}</span><span class="u">Circuit</span></button>`).join('')}</div>
+     </div>`).join('')}
+   </div>
+  </section>
+
+  <section class="card pad0">
+   <button class="costhdr" data-act="toggle-costs">
+     <span class="cap">Input costs <span class="sub">(ex GST)</span></span>
+     <span class="r"><span class="costtot" id="costTot">${money.format(c.totalCosts)}</span>${chev(costsOpen)}</span>
+   </button>
+   ${costsOpen?`<div style="padding:0 20px 20px">
+     ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Basis Board</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`}</span></span>${mi('board',b.price,{bi:i,bk:'price'})}</div>`).join('')}
+     <div class="crow"><span><span class="lab">Rebate</span><span class="hint">${multi?`Deducted · ×${c.boardCount}`:'Deducted'}</span></span>${mi('rebate',state.rebate)}</div>
+     <div class="crow"><span class="lab">Labour</span><span style="display:flex;gap:8px">${mi('labourHours',state.labourHours,{w:'w20',cur:false,suf:'hrs'})}${mi('labourRate',state.labourRate,{w:'w24',suf:'/hr'})}</span></div>
+     <div class="crow"><span class="lab">Travel</span>${mi('travel',state.travel)}</div>
+     ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Sundries</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`}</span></span>${mi('board',b.sundries,{bi:i,bk:'sundries'})}</div>`).join('')}
+     <div class="crow" style="border-bottom:0">
+       <button data-act="insp" style="display:flex;align-items:center;gap:8px;border:0;background:none;font:inherit;cursor:pointer">
+         <span class="chk ${state.inspectionEnabled?'on':''}">${state.inspectionEnabled?'<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 5 9l4.5-5.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</span>
+         <span class="lab">Inspection</span><span class="hint" style="margin:0">Optional</span>
+       </button>
+       ${mi('inspection',state.inspection,{off:!state.inspectionEnabled})}
+     </div>
+   </div>`:''}
+  </section>
+
+  <section class="trade">
+   <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
+   ${tradeOpen?`<div class="body">
+     <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After $${DEFAULTS().rebate}</span></div>
+     ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-DEFAULTS().rebate)}</span></div>`).join('')}
+     <p class="tnote">"After" reflects the $${DEFAULTS().rebate} Tier-3 rebate paid on install.</p>
+   </div>`:''}
+  </section>
+
+  <button class="reset" data-act="reset">Reset to defaults</button>`;
+ paint();
+}
+
+function paint(){
+ const c=calc();
+ const hero=document.getElementById('heroTile');
+ if(!c.hasHours){
+   hero.innerHTML=`<p class="tl">Net margin</p><span class="sub">Per hour (ex GST)</span><p class="big" style="color:rgba(255,255,255,.4)">—</p><span class="foot" style="color:rgba(255,255,255,.4)">Add labour hours</span>`;
+ } else {
+   const band=bandFor(c.perHour), filled=HOURLY_BANDS.indexOf(band)+1;
+   hero.innerHTML=`<p class="tl">Net margin</p><span class="sub">Per hour (ex GST)</span><p class="big" style="color:${band.c}">${money.format(c.perHour)}</p>
+     <div class="gauge">${HOURLY_BANDS.map((b,i)=>`<i style="background:${i<filled?band.c:'rgba(255,255,255,.15)'}"></i>`).join('')}</div>`;
+ }
+ document.getElementById('jobTile').innerHTML=`<p class="tl">Net margin</p><span class="sub">Per job (ex GST)</span><p class="big">${money.format(c.netMargin)}</p><span class="pct">${Math.round(c.netMarginPct*100)}% margin</span><span class="foot">· ${state.labourHours} hr install</span>`;
+ const ct=document.getElementById('costTot'); if(ct) ct.textContent=money.format(c.totalCosts);
+}
+
+const num=v=>v===''?0:Number(v);
+const app=document.getElementById('app');
+app.addEventListener('input',e=>{
+ const t=e.target; const f=t.dataset.f; if(!f)return;
+ if(f==='board'){ const i=+t.dataset.bi, k=t.dataset.bk; state.boards[i][k]=num(t.value); }
+ else if(f==='installedCost'){ let v=Math.min(Math.max(num(t.value),0),calc().maxInstalled); state.installedCost=v;
+   const slider=document.getElementById('slider'); const inp=document.querySelector('.minput input[data-f="installedCost"]');
+   if(t.type==='range'&&inp)inp.value=v; if(t.type!=='range'&&slider)slider.value=v; }
+ else { state[f]=num(t.value); }
+ save(); paint();
+});
+app.addEventListener('click',e=>{
+ const el=e.target.closest('[data-act]'); if(!el)return; const a=el.dataset.act;
+ if(a==='size'){ state.boards[+el.dataset.bi]=makeBoard(+el.dataset.size); }
+ else if(a==='count-dec'||a==='count-inc'){
+   const oldLen=state.boards.length, newLen=Math.max(1,Math.min(9,oldLen+(a==='count-inc'?1:-1)));
+   if(newLen===oldLen)return;
+   const boards=state.boards.slice(0,newLen); while(boards.length<newLen) boards.push({...boards[boards.length-1]});
+   const delta=newLen-oldLen;
+   state.boards=boards;
+   state.labourHours=Math.max(0,state.labourHours+delta*HOURS_PER_EXTRA_BOARD);
+   state.installedCost=Math.round(state.installedCost*newLen/oldLen);
+ }
+ else if(a==='insp'){ state.inspectionEnabled=!state.inspectionEnabled; }
+ else if(a==='toggle-costs'){ costsOpen=!costsOpen; }
+ else if(a==='toggle-trade'){ tradeOpen=!tradeOpen; }
+ else if(a==='reset'){ state=DEFAULTS(); }
+ else return;
+ save(); render();
+});
+render();
+</script>
+</body></html>
