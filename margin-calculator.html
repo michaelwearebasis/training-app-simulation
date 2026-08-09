@@ -12,28 +12,46 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--surface);color:var(--ink);
   -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
-#app{max-width:460px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:16px}
+.wrap{max-width:1120px;margin:0 auto;padding:26px 24px 44px;display:flex;flex-direction:column;gap:20px}
 .cap{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
 .cap .sub{font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tile{border-radius:16px;padding:20px;display:flex;flex-direction:column}
+
+/* header */
+.head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.head .ttl{font-size:22px;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
+.head .ttl .s{display:block;font-size:13px;font-weight:400;color:var(--ink2);margin-top:2px}
+.reset{border:1px solid var(--border);background:var(--primary);color:var(--ink2);border-radius:999px;
+  padding:9px 18px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:.15s;white-space:nowrap}
+.reset:hover{border-color:var(--ink3);color:var(--ink)}
+
+/* results row */
+.results{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tile{border-radius:18px;padding:26px 28px;display:flex;flex-direction:column;min-height:180px}
 .tile.hero{background:var(--highlight);color:var(--oncolour)}
 .tile.job{background:var(--secondary);color:var(--ink)}
-.tile .tl{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em}
-.tile.hero .tl{color:rgba(255,255,255,.6)}
-.tile .sub{margin-top:4px;font-size:12px}
-.tile.hero .sub{color:rgba(255,255,255,.4)}
-.tile.job .sub{color:var(--ink3)}
-.tile .big{margin-top:12px;font-size:30px;font-weight:320;line-height:1}
-.tile.job .big{color:var(--ink)}
-.tile .pct{margin-top:8px;font-size:12px;font-weight:500;color:var(--ink2)}
-.tile .foot{margin-top:auto;padding-top:20px;font-size:12px;color:var(--ink3)}
-.gauge{margin-top:auto;padding-top:20px;display:flex;gap:4px}
-.gauge i{height:6px;flex:1;border-radius:999px;background:rgba(255,255,255,.15)}
-.card{background:var(--primary);border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.tile .tl{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.tile.hero .tl{color:rgba(255,255,255,.55)}
+.tile .tl .s{font-weight:400;text-transform:none;letter-spacing:0}
+.tile .big{margin-top:14px;font-size:46px;font-weight:320;line-height:1;color:var(--ink)}
+.tile .big.dim{color:var(--ink3)}
+.tile.hero .big.dim{color:rgba(255,255,255,.4)}
+.tile .ctx{margin-top:8px;font-size:13px;font-weight:500}
+.tile .ctx.dim{color:rgba(255,255,255,.4)}
+.jmeta{margin-top:8px;display:flex;gap:14px;align-items:baseline}
+.jmeta .pct{font-size:14px;font-weight:500;color:var(--ink2)}
+.jmeta .hrs{font-size:13px;color:var(--ink3)}
+.gauge{margin-top:auto;padding-top:22px;display:flex;gap:5px}
+.gauge i{height:7px;flex:1;border-radius:999px;background:rgba(255,255,255,.15)}
+
+/* main two-column */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.col{display:flex;flex-direction:column;gap:16px}
+@media(max-width:800px){.results,.main{grid-template-columns:1fr}}
+
+.card{background:var(--primary);border-radius:18px;padding:22px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
 .card.pad0{padding:0;overflow:hidden}
-.hdrow{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
-.scale{margin-top:8px;display:flex;justify-content:space-between;font-size:12px;color:var(--ink3)}
+.hdrow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.scale{margin-top:10px;display:flex;justify-content:space-between;font-size:12px;color:var(--ink3)}
 input.slider{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:999px;outline:none}
 input.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:999px;background:var(--highlight);border:4px solid var(--accent);cursor:pointer}
 input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;background:var(--highlight);border:4px solid var(--accent);cursor:pointer}
@@ -44,22 +62,24 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 .minput input{border:0;outline:0;background:none;font:inherit;font-size:14px;color:var(--ink);width:100%;text-align:right;-moz-appearance:textfield}
 .minput input::-webkit-outer-spin-button,.minput input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .minput .suf{font-size:12px;color:var(--ink3);margin-left:2px}
-.w28{width:112px}.w24{width:96px}.w20{width:80px}
+.w28{width:120px}.w24{width:100px}.w20{width:84px}
 .boardsel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.bs{display:flex;flex-direction:column;align-items:center;border:1px solid var(--border);background:var(--primary);border-radius:12px;padding:12px 0;cursor:pointer;color:var(--ink)}
+.bs{display:flex;flex-direction:column;align-items:center;border:1px solid var(--border);background:var(--primary);border-radius:12px;padding:14px 0;cursor:pointer;color:var(--ink);transition:.12s}
+.bs:hover{border-color:var(--ink3)}
 .bs.on{border-color:var(--highlight);background:var(--highlight);color:var(--oncolour)}
-.bs .n{font-size:20px;font-weight:500;line-height:1}
+.bs.on:hover{border-color:var(--highlight)}
+.bs .n{font-size:22px;font-weight:500;line-height:1}
 .bs .u{margin-top:4px;font-size:12px;opacity:.7}
 .stepper{display:flex;align-items:center;gap:8px}
 .stepper .lab{font-size:12px;color:var(--ink2)}
 .stepbox{display:flex;align-items:center;border:1px solid var(--border);border-radius:8px}
-.stepbox button{border:0;background:none;font:inherit;font-size:18px;line-height:1;color:var(--ink2);padding:6px 10px;cursor:pointer}
+.stepbox button{border:0;background:none;font:inherit;font-size:18px;line-height:1;color:var(--ink2);padding:6px 12px;cursor:pointer}
 .stepbox button:disabled{opacity:.3;cursor:default}
-.stepbox .v{width:20px;text-align:center;font-size:14px;font-weight:500;color:var(--ink)}
-.costhdr{display:flex;align-items:center;justify-content:space-between;width:100%;padding:20px;border:0;background:none;font:inherit;cursor:pointer}
+.stepbox .v{width:22px;text-align:center;font-size:14px;font-weight:500;color:var(--ink)}
+.costhdr{display:flex;align-items:center;justify-content:space-between;width:100%;padding:22px;border:0;background:none;font:inherit;cursor:pointer}
 .costhdr .r{display:flex;align-items:center;gap:8px}
-.costtot{font-size:14px;color:var(--ink2)}
-.crow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border2)}
+.costtot{font-size:15px;font-weight:500;color:var(--ink)}
+.crow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--border2)}
 .crow .lab{font-size:14px;color:var(--ink)}
 .crow .hint{font-size:12px;color:var(--ink3);margin-left:8px}
 .chev{transition:transform .2s;color:var(--ink2)}
@@ -67,20 +87,19 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 .chk{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:5px;border:1px solid var(--border);background:var(--primary);color:var(--oncolour)}
 .chk.on{border-color:var(--accent);background:var(--accent)}
 .bname{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:6px}
-.trade{border-radius:16px;overflow:hidden;background:var(--tradeBg)}
-.trade .th{display:flex;align-items:center;justify-content:space-between;width:100%;padding:20px;border:0;background:none;font:inherit;cursor:pointer;text-align:left;color:var(--tradeAccent)}
+.trade{border-radius:18px;overflow:hidden;background:var(--tradeBg)}
+.trade .th{display:flex;align-items:center;justify-content:space-between;width:100%;padding:22px;border:0;background:none;font:inherit;cursor:pointer;text-align:left;color:var(--tradeAccent)}
 .trade .th .t{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block}
 .trade .th .s{margin-top:4px;font-size:12px;color:rgba(255,255,255,.5);display:block;font-weight:400;text-transform:none;letter-spacing:0}
-.trade .body{padding:0 20px 20px}
-.trow{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:baseline;border-top:1px solid rgba(255,255,255,.1);padding:10px 0;color:var(--oncolour);font-size:14px}
+.trade .body{padding:0 22px 22px}
+.trow{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:baseline;border-top:1px solid rgba(255,255,255,.1);padding:11px 0;color:var(--oncolour);font-size:14px}
 .trow .r{text-align:right}
 .trow .after{color:var(--tradeAccent);font-weight:600}
-.thead{display:grid;grid-template-columns:1fr auto auto;gap:14px;padding-bottom:8px;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.4)}
+.thead{display:grid;grid-template-columns:1fr auto auto;gap:16px;padding-bottom:8px;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.4)}
 .tnote{margin-top:12px;font-size:9px;color:rgba(255,255,255,.4)}
-.reset{margin:4px auto 0;background:none;border:0;font:inherit;font-size:14px;color:var(--ink2);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
 </style></head>
 <body>
-<div id="app"><div id="inner"></div></div>
+<div class="wrap" id="app"><div id="inner"></div></div>
 <script>
 const SIZES=[12,16,20];
 const BOARD_PRESETS={12:2395,16:2890,20:3385};
@@ -91,7 +110,8 @@ const WTP_GRADIENT="linear-gradient(90deg,#5A8CFF 0%,#5A8CFF 36%,#39E581 41%,#39
 const HOURLY_BANDS=[
  {c:'#FF554B',min:-Infinity,max:0},{c:'#FF9142',min:0,max:80},{c:'#FFC53D',min:80,max:121},
  {c:'#39E581',min:121,max:150},{c:'#00F5A0',min:150,max:Infinity}];
-const bandFor=v=>HOURLY_BANDS.find(b=>v>=b.min&&v<b.max)||HOURLY_BANDS[0];
+const BAND_LABEL=['Making a loss','Well below the $121/hr legacy','Below the $121/hr legacy','Beating the $121/hr legacy','Well ahead of the $121/hr legacy'];
+const bandIdx=v=>{const i=HOURLY_BANDS.findIndex(b=>v>=b.min&&v<b.max);return i<0?0:i;};
 const money=new Intl.NumberFormat('en-NZ',{style:'currency',currency:'NZD',maximumFractionDigits:0});
 const makeBoard=s=>({size:s,price:BOARD_PRESETS[s],sundries:sundriesFor(s)});
 const DEFAULTS=()=>({installedCost:3999,boards:[makeBoard(16)],rebate:400,labourHours:4.2,labourRate:55,travel:50,inspectionEnabled:false,inspection:120});
@@ -115,67 +135,76 @@ const chev=o=>`<svg class="chev ${o?'open':''}" width="20" height="20" viewBox="
 function render(){
  const c=calc(), multi=c.boardCount>1;
  document.getElementById('inner').innerHTML=`
-  <div class="row2">
+  <div class="head">
+   <div class="ttl">Margin calculator<span class="s">Net $ margin on a Basis Board install — per hour and per job.</span></div>
+   <button class="reset" data-act="reset">↺ Reset to defaults</button>
+  </div>
+
+  <div class="results">
    <div class="tile hero" id="heroTile"></div>
    <div class="tile job" id="jobTile"></div>
   </div>
 
-  <section class="card">
-   <div class="hdrow">
-     <p class="cap">Fully installed cost <span class="sub">(incl GST)</span></p>
-     ${mi('installedCost',state.installedCost,{w:'w28'})}
-   </div>
-   <input type="range" class="slider" id="slider" style="background:${WTP_GRADIENT}" min="0" max="${c.maxInstalled}" step="50" value="${state.installedCost}" data-f="installedCost">
-   <div class="scale"><span>${money.format(0)}</span><span id="idealLbl">Ideal ${money.format(c.idealPrice)}</span><span>${money.format(c.maxInstalled)}</span></div>
-  </section>
-
-  <section class="card">
-   <div class="hdrow" style="align-items:center;margin-bottom:12px">
-     <p class="cap">Board size</p>
-     <div class="stepper"><span class="lab">Boards</span><div class="stepbox">
-       <button data-act="count-dec" ${c.boardCount<=1?'disabled':''} aria-label="Fewer boards">−</button>
-       <span class="v">${c.boardCount}</span>
-       <button data-act="count-inc" ${c.boardCount>=9?'disabled':''} aria-label="More boards">+</button>
-     </div></div>
-   </div>
-   <div style="display:flex;flex-direction:column;gap:12px">
-     ${state.boards.map((b,i)=>`<div>${multi?`<p class="bname">Board ${i+1}</p>`:''}
-       <div class="boardsel">${SIZES.map(sz=>`<button class="bs ${b.size===sz?'on':''}" data-act="size" data-bi="${i}" data-size="${sz}"><span class="n">${sz}</span><span class="u">Circuit</span></button>`).join('')}</div>
-     </div>`).join('')}
-   </div>
-  </section>
-
-  <section class="card pad0">
-   <button class="costhdr" data-act="toggle-costs">
-     <span class="cap">Input costs <span class="sub">(ex GST)</span></span>
-     <span class="r"><span class="costtot" id="costTot">${money.format(c.totalCosts)}</span>${chev(costsOpen)}</span>
-   </button>
-   ${costsOpen?`<div style="padding:0 20px 20px">
-     ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Basis Board</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`}</span></span>${mi('board',b.price,{bi:i,bk:'price'})}</div>`).join('')}
-     <div class="crow"><span><span class="lab">Rebate</span><span class="hint">${multi?`Deducted · ×${c.boardCount}`:'Deducted'}</span></span>${mi('rebate',state.rebate)}</div>
-     <div class="crow"><span class="lab">Labour</span><span style="display:flex;gap:8px">${mi('labourHours',state.labourHours,{w:'w20',cur:false,suf:'hrs'})}${mi('labourRate',state.labourRate,{w:'w24',suf:'/hr'})}</span></div>
-     <div class="crow"><span class="lab">Travel</span>${mi('travel',state.travel)}</div>
-     ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Sundries</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`}</span></span>${mi('board',b.sundries,{bi:i,bk:'sundries'})}</div>`).join('')}
-     <div class="crow" style="border-bottom:0">
-       <button data-act="insp" style="display:flex;align-items:center;gap:8px;border:0;background:none;font:inherit;cursor:pointer">
-         <span class="chk ${state.inspectionEnabled?'on':''}">${state.inspectionEnabled?'<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 5 9l4.5-5.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</span>
-         <span class="lab">Inspection</span><span class="hint" style="margin:0">Optional</span>
-       </button>
-       ${mi('inspection',state.inspection,{off:!state.inspectionEnabled})}
+  <div class="main">
+   <div class="col">
+    <section class="card">
+     <div class="hdrow">
+       <p class="cap">Fully installed cost <span class="sub">(incl GST)</span></p>
+       ${mi('installedCost',state.installedCost,{w:'w28'})}
      </div>
-   </div>`:''}
-  </section>
+     <input type="range" class="slider" id="slider" style="background:${WTP_GRADIENT}" min="0" max="${c.maxInstalled}" step="50" value="${state.installedCost}" data-f="installedCost">
+     <div class="scale"><span>${money.format(0)}</span><span>Ideal ${money.format(c.idealPrice)}</span><span>${money.format(c.maxInstalled)}</span></div>
+    </section>
 
-  <section class="trade">
-   <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
-   ${tradeOpen?`<div class="body">
-     <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After $${DEFAULTS().rebate}</span></div>
-     ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-DEFAULTS().rebate)}</span></div>`).join('')}
-     <p class="tnote">"After" reflects the $${DEFAULTS().rebate} Tier-3 rebate paid on install.</p>
-   </div>`:''}
-  </section>
+    <section class="card">
+     <div class="hdrow" style="align-items:center;margin-bottom:14px">
+       <p class="cap">Board size</p>
+       <div class="stepper"><span class="lab">Boards</span><div class="stepbox">
+         <button data-act="count-dec" ${c.boardCount<=1?'disabled':''} aria-label="Fewer boards">−</button>
+         <span class="v">${c.boardCount}</span>
+         <button data-act="count-inc" ${c.boardCount>=9?'disabled':''} aria-label="More boards">+</button>
+       </div></div>
+     </div>
+     <div style="display:flex;flex-direction:column;gap:12px">
+       ${state.boards.map((b,i)=>`<div>${multi?`<p class="bname">Board ${i+1}</p>`:''}
+         <div class="boardsel">${SIZES.map(sz=>`<button class="bs ${b.size===sz?'on':''}" data-act="size" data-bi="${i}" data-size="${sz}"><span class="n">${sz}</span><span class="u">Circuit</span></button>`).join('')}</div>
+       </div>`).join('')}
+     </div>
+    </section>
+   </div>
 
-  <button class="reset" data-act="reset">Reset to defaults</button>`;
+   <div class="col">
+    <section class="card pad0">
+     <button class="costhdr" data-act="toggle-costs">
+       <span class="cap">Input costs <span class="sub">(ex GST)</span></span>
+       <span class="r"><span class="costtot" id="costTot">${money.format(c.totalCosts)}</span>${chev(costsOpen)}</span>
+     </button>
+     ${costsOpen?`<div style="padding:0 22px 22px">
+       ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Basis Board</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`}</span></span>${mi('board',b.price,{bi:i,bk:'price'})}</div>`).join('')}
+       <div class="crow"><span><span class="lab">Rebate</span><span class="hint">${multi?`Deducted · ×${c.boardCount}`:'Deducted'}</span></span>${mi('rebate',state.rebate)}</div>
+       <div class="crow"><span class="lab">Labour</span><span style="display:flex;gap:8px">${mi('labourHours',state.labourHours,{w:'w20',cur:false,suf:'hrs'})}${mi('labourRate',state.labourRate,{w:'w24',suf:'/hr'})}</span></div>
+       <div class="crow"><span class="lab">Travel</span>${mi('travel',state.travel)}</div>
+       ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Sundries</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`}</span></span>${mi('board',b.sundries,{bi:i,bk:'sundries'})}</div>`).join('')}
+       <div class="crow" style="border-bottom:0">
+         <button data-act="insp" style="display:flex;align-items:center;gap:8px;border:0;background:none;font:inherit;cursor:pointer">
+           <span class="chk ${state.inspectionEnabled?'on':''}">${state.inspectionEnabled?'<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 5 9l4.5-5.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</span>
+           <span class="lab">Inspection</span><span class="hint" style="margin:0">Optional</span>
+         </button>
+         ${mi('inspection',state.inspection,{off:!state.inspectionEnabled})}
+       </div>
+     </div>`:''}
+    </section>
+
+    <section class="trade">
+     <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
+     ${tradeOpen?`<div class="body">
+       <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After $${DEFAULTS().rebate}</span></div>
+       ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-DEFAULTS().rebate)}</span></div>`).join('')}
+       <p class="tnote">"After" reflects the $${DEFAULTS().rebate} Tier-3 rebate paid on install.</p>
+     </div>`:''}
+    </section>
+   </div>
+  </div>`;
  paint();
 }
 
@@ -183,20 +212,24 @@ function paint(){
  const c=calc();
  const hero=document.getElementById('heroTile');
  if(!c.hasHours){
-   hero.innerHTML=`<p class="tl">Net margin</p><span class="sub">Per hour (ex GST)</span><p class="big" style="color:rgba(255,255,255,.4)">—</p><span class="foot" style="color:rgba(255,255,255,.4)">Add labour hours</span>`;
+   hero.innerHTML=`<div class="tl">Net margin <span class="s">· per hour (ex GST)</span></div><p class="big dim">—</p><p class="ctx dim">Add labour hours</p>`;
  } else {
-   const band=bandFor(c.perHour), filled=HOURLY_BANDS.indexOf(band)+1;
-   hero.innerHTML=`<p class="tl">Net margin</p><span class="sub">Per hour (ex GST)</span><p class="big" style="color:${band.c}">${money.format(c.perHour)}</p>
-     <div class="gauge">${HOURLY_BANDS.map((b,i)=>`<i style="background:${i<filled?band.c:'rgba(255,255,255,.15)'}"></i>`).join('')}</div>`;
+   const i=bandIdx(c.perHour), band=HOURLY_BANDS[i], filled=i+1;
+   hero.innerHTML=`<div class="tl">Net margin <span class="s">· per hour (ex GST)</span></div>
+     <p class="big" style="color:${band.c}">${money.format(c.perHour)}</p>
+     <p class="ctx" style="color:${band.c}">${BAND_LABEL[i]}</p>
+     <div class="gauge">${HOURLY_BANDS.map((b,j)=>`<i style="background:${j<filled?band.c:'rgba(255,255,255,.15)'}"></i>`).join('')}</div>`;
  }
- document.getElementById('jobTile').innerHTML=`<p class="tl">Net margin</p><span class="sub">Per job (ex GST)</span><p class="big">${money.format(c.netMargin)}</p><span class="pct">${Math.round(c.netMarginPct*100)}% margin</span><span class="foot">· ${state.labourHours} hr install</span>`;
+ document.getElementById('jobTile').innerHTML=`<div class="tl">Net margin <span class="s">· per job (ex GST)</span></div>
+   <p class="big">${money.format(c.netMargin)}</p>
+   <div class="jmeta"><span class="pct">${Math.round(c.netMarginPct*100)}% margin</span><span class="hrs">${state.labourHours} hr install</span></div>`;
  const ct=document.getElementById('costTot'); if(ct) ct.textContent=money.format(c.totalCosts);
 }
 
 const num=v=>v===''?0:Number(v);
 const app=document.getElementById('app');
 app.addEventListener('input',e=>{
- const t=e.target; const f=t.dataset.f; if(!f)return;
+ const t=e.target, f=t.dataset.f; if(!f)return;
  if(f==='board'){ const i=+t.dataset.bi, k=t.dataset.bk; state.boards[i][k]=num(t.value); }
  else if(f==='installedCost'){ let v=Math.min(Math.max(num(t.value),0),calc().maxInstalled); state.installedCost=v;
    const slider=document.getElementById('slider'); const inp=document.querySelector('.minput input[data-f="installedCost"]');
