@@ -84,7 +84,7 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 <script>
 const SIZES=[12,16,20];
 const BOARD_PRESETS={12:2395,16:2890,20:3385};
-const SUNDRIES_PER_CIRCUIT=2.75;
+const SUNDRIES_PER_CIRCUIT=3.125;
 const sundriesFor=s=>Math.round(s*SUNDRIES_PER_CIRCUIT);
 const MAX_INSTALLED=8000, GST=0.15, HOURS_PER_EXTRA_BOARD=2, LEGACY_PER_HOUR=121, WTP_IDEAL=3999;
 const WTP_GRADIENT="linear-gradient(90deg,#5A8CFF 0%,#5A8CFF 36%,#39E581 41%,#39E581 52%,#FFC53D 64%,#FF554B 80%,#FF554B 100%)";
@@ -94,8 +94,8 @@ const HOURLY_BANDS=[
 const bandFor=v=>HOURLY_BANDS.find(b=>v>=b.min&&v<b.max)||HOURLY_BANDS[0];
 const money=new Intl.NumberFormat('en-NZ',{style:'currency',currency:'NZD',maximumFractionDigits:0});
 const makeBoard=s=>({size:s,price:BOARD_PRESETS[s],sundries:sundriesFor(s)});
-const DEFAULTS=()=>({installedCost:4000,boards:[makeBoard(16)],rebate:400,labourHours:4.5,labourRate:40,travel:45,inspectionEnabled:false,inspection:120});
-const KEY='basis-margin-calculator:v6';
+const DEFAULTS=()=>({installedCost:3999,boards:[makeBoard(16)],rebate:400,labourHours:4.2,labourRate:55,travel:50,inspectionEnabled:false,inspection:120});
+const KEY='basis-margin-calculator:v7';
 let state=DEFAULTS(), costsOpen=true, tradeOpen=true;
 try{const raw=localStorage.getItem(KEY);if(raw){const m={...DEFAULTS(),...JSON.parse(raw)};if(!Array.isArray(m.boards)||!m.boards.length)m.boards=DEFAULTS().boards;state=m;}}catch{}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));}catch{}};
