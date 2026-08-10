@@ -10,8 +10,10 @@
   --tradeBg:#0B2E1A; --tradeAccent:#61EA9A;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--surface);color:var(--ink);
+html{background:transparent}
+body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:transparent;color:var(--ink);
   -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+.page{background:var(--surface);border-radius:22px;min-height:100vh}
 .wrap{max-width:1120px;margin:0 auto;padding:26px 24px 44px;display:flex;flex-direction:column;gap:20px}
 .cap{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
 .cap .sub{font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0}
@@ -49,10 +51,12 @@ body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:
   .gauge{padding-top:16px}
 }
 
-/* main two-column */
-.main{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
-.col{display:flex;flex-direction:column;gap:20px}
-@media(max-width:800px){.main{grid-template-columns:1fr}}
+/* main — two rows of two */
+.main{display:flex;flex-direction:column;gap:20px}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.mrow.eq{align-items:stretch}   /* installed cost + board size: same height */
+.mrow.top{align-items:start}    /* trade price + input costs: top aligned */
+@media(max-width:800px){.mrow{grid-template-columns:1fr}}
 
 .card{background:var(--primary);border-radius:18px;padding:22px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
 .card.pad0{padding:0;overflow:hidden}
@@ -105,7 +109,7 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 .tnote{margin-top:12px;font-size:9px;color:rgba(255,255,255,.4)}
 </style></head>
 <body>
-<div class="wrap" id="app"><div id="inner"></div></div>
+<div class="page"><div class="wrap" id="app"><div id="inner"></div></div></div>
 <script>
 const SIZES=[12,16,20];
 const BOARD_PRESETS={12:2395,16:2890,20:3385};
@@ -152,7 +156,7 @@ function render(){
   </div>
 
   <div class="main">
-   <div class="col">
+   <div class="mrow eq">
     <section class="card">
      <div class="hdrow">
        <p class="cap">Fully installed cost <span class="sub">(incl GST)</span></p>
@@ -162,17 +166,6 @@ function render(){
      <div class="scale"><span>${money.format(0)}</span><span>Ideal ${money.format(c.idealPrice)}</span><span>${money.format(c.maxInstalled)}</span></div>
     </section>
 
-    <section class="trade">
-     <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
-     ${tradeOpen?`<div class="body">
-       <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After $${DEFAULTS().rebate}</span></div>
-       ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-DEFAULTS().rebate)}</span></div>`).join('')}
-       <p class="tnote">"After" reflects the $${DEFAULTS().rebate} Tier-3 rebate paid on install.</p>
-     </div>`:''}
-    </section>
-   </div>
-
-   <div class="col">
     <section class="card">
      <div class="hdrow" style="align-items:center;margin-bottom:14px">
        <p class="cap">Board size</p>
@@ -187,6 +180,17 @@ function render(){
          <div class="boardsel">${SIZES.map(sz=>`<button class="bs ${b.size===sz?'on':''}" data-act="size" data-bi="${i}" data-size="${sz}"><span class="n">${sz}</span><span class="u">Circuit</span></button>`).join('')}</div>
        </div>`).join('')}
      </div>
+    </section>
+   </div>
+
+   <div class="mrow top">
+    <section class="trade">
+     <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
+     ${tradeOpen?`<div class="body">
+       <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After $${DEFAULTS().rebate}</span></div>
+       ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-DEFAULTS().rebate)}</span></div>`).join('')}
+       <p class="tnote">"After" reflects the $${DEFAULTS().rebate} Tier-3 rebate paid on install.</p>
+     </div>`:''}
     </section>
 
     <section class="card pad0">
