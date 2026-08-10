@@ -1,0 +1,579 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Basis Mission Control — training</title>
+<style>
+/* ---- Basis Mission Control (dark theme, stone palette) ---- */
+:root{
+  --bg:#0C0A09; --card:#1C1917; --card2:#292524; --card3:#44403C;
+  --line:rgba(250,250,249,.09); --line2:rgba(250,250,249,.14);
+  --fg:#FAFAF9; --d600:#D6D3D1; --d500:#A8A29E; --d400:#78716C; --d300:#57534E;
+  --primary:#0EA5E9; --primary600:#0284C7; --success:#22C55E; --warning:#EAB308; --danger:#DE0F00;
+  --homebg:#88EFB3; --homefg:#1E1E1F; --tradebg:#212629;
+  --coach:#0EA5E9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:transparent}
+body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;line-height:1.5;font-size:14px}
+.app{min-height:100vh;display:flex;flex-direction:column}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+.mono{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* top bar */
+.topbar{display:flex;align-items:center;gap:20px;height:56px;padding:0 20px;border-bottom:1px solid var(--line);background:#0C0A09;position:sticky;top:0;z-index:30}
+.brand{display:flex;align-items:center;gap:9px;font-weight:600;letter-spacing:-.01em}
+.brand .dot{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#39E581,#0EA5E9);display:flex;align-items:center;justify-content:center;color:#0C0A09;font-weight:800;font-size:13px}
+.brand .mc{color:var(--d500);font-weight:500}
+.topnav{display:flex;gap:2px;margin-left:6px}
+.topnav a{padding:7px 12px;border-radius:8px;color:var(--d500);font-weight:500;font-size:13px}
+.topnav a.on{color:var(--fg);background:var(--card2)}
+.topsearch{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 12px;color:var(--d400);font-size:13px;min-width:220px}
+.topuser{width:30px;height:30px;border-radius:50%;background:var(--card3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--fg)}
+
+/* layout */
+.wrap{max-width:1200px;margin:0 auto;padding:24px 22px 80px;width:100%}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--d500);margin-bottom:16px}
+.crumbs a{color:var(--d500)} .crumbs a:hover{color:var(--fg)}
+.crumbs .sep{opacity:.5}
+
+.h1{font-size:24px;font-weight:600;letter-spacing:-.02em}
+.sub{color:var(--d500);font-size:13px}
+
+/* card */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.28)}
+.card>.chd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.card>.chd .t{font-size:15px;font-weight:600}
+.card>.cbd{padding:16px 18px}
+.card.pad0>.cbd{padding:0}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;border-radius:7px;padding:2px 8px;white-space:nowrap;line-height:1.4}
+.chip.flat-default{background:var(--card3);color:var(--d600)}
+.chip.flat-success{background:rgba(34,197,94,.16);color:#4ADE80}
+.chip.flat-warning{background:rgba(234,179,8,.16);color:#FDE047}
+.chip.flat-danger{background:rgba(222,15,0,.18);color:#FCA5A5}
+.chip.flat-primary{background:rgba(14,165,233,.16);color:#7DD3FC}
+.chip.solid-danger{background:var(--danger);color:#fff}
+.chip.home{background:var(--homebg);color:var(--homefg);font-weight:600}
+.chip.trade{background:var(--tradebg);color:#fff;border:1px solid var(--line2);font-weight:600}
+.chip.sm{font-size:11px;padding:1px 7px}
+
+.dotstat{display:inline-flex;align-items:center;gap:7px;font-size:13px}
+.dotstat i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.dotstat.on i{background:var(--success);box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+.dotstat.off i{background:var(--danger)}
+
+/* table (heroui-like) */
+table.hu{width:100%;border-collapse:separate;border-spacing:0}
+table.hu thead th{text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--d500);background:var(--card2);padding:10px 16px;white-space:nowrap}
+table.hu thead th:first-child{border-top-left-radius:10px;border-bottom-left-radius:10px}
+table.hu thead th:last-child{border-top-right-radius:10px;border-bottom-right-radius:10px}
+table.hu tbody td{padding:12px 16px;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:middle}
+table.hu tbody tr:last-child td{border-bottom:0}
+table.hu tbody tr.click{cursor:pointer;transition:background .12s}
+table.hu tbody tr.click:hover{background:var(--card2)}
+table.hu tbody tr.dim{opacity:.5}
+.thwrap{padding:4px}
+
+.usercell{display:flex;align-items:center;gap:11px}
+.usercell .av{width:34px;height:34px;border-radius:50%;background:var(--card3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:0 0 auto}
+.usercell .nm{font-weight:500}
+.usercell .de{font-size:12px;color:var(--d500)}
+
+/* sub-nav tabs (underlined) */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line2);margin-bottom:20px;overflow-x:auto}
+.tabs button{position:relative;padding:11px 14px;color:var(--d500);font-weight:500;font-size:14px;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tabs button:hover{color:var(--fg)}
+.tabs button.on{color:var(--fg)}
+.tabs button.on::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;background:var(--primary);border-radius:2px}
+.subtabs{display:inline-flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:3px;margin-bottom:18px}
+.subtabs button{padding:6px 13px;border-radius:7px;color:var(--d500);font-weight:500;font-size:13px}
+.subtabs button.on{background:var(--card3);color:var(--fg)}
+
+/* site header */
+.sitehead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+.sitehead .addr{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.metarow{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--d500);font-size:13px;margin-top:8px}
+.metarow b{color:var(--d600);font-weight:500}
+.idbadge{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--d500)}
+.idbadge b{color:var(--fg);font-weight:500}
+
+/* KPI row */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px 15px}
+.kpi .k{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--d500);font-weight:600}
+.kpi .v{font-size:22px;font-weight:600;margin-top:5px;letter-spacing:-.01em}
+.kpi .s{font-size:12px;color:var(--d500);margin-top:2px}
+
+/* grid helpers */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* flags icons */
+.flagset{display:flex;align-items:center;gap:9px;color:var(--d400)}
+.flagset svg{width:16px;height:16px;display:block}
+.flagset .warn{color:var(--warning)}
+.flagset .pri{color:var(--primary)}
+
+/* connectivity */
+.netgrid{display:grid;grid-template-columns:1fr auto auto;gap:6px 26px;align-items:center;font-size:13.5px}
+.netgrid .hd{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--d400)}
+.netgrid .row1{display:flex;align-items:center;gap:7px;color:var(--d600)}
+.netgrid .row1 svg{width:17px;height:17px;flex:0 0 auto}
+.signalpill svg{width:16px;height:16px}
+.netgrid .val{text-align:right}
+.expl{font-size:12px;color:var(--d500);margin-top:12px}
+.signalpill{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--d500)}
+.bars{display:flex;align-items:flex-end;gap:2px;height:16px}
+.bars i{width:3px;border-radius:1px;background:var(--d400)}
+.bars i.on{background:var(--success)}
+
+/* generic chart svg */
+.chartwrap{position:relative}
+svg.chart{display:block;width:100%}
+.crosshair{stroke:var(--d400);stroke-width:1;stroke-dasharray:3 3}
+.tip{position:absolute;pointer-events:none;background:#0C0A09;border:1px solid var(--line2);border-radius:8px;padding:7px 10px;font-size:12px;box-shadow:0 6px 20px rgba(0,0,0,.5);transform:translate(-50%,-115%);white-space:nowrap;z-index:5;opacity:0;transition:opacity .08s}
+.tip .tt{color:var(--d500);font-size:11px;margin-bottom:2px}
+.tip b{font-weight:600}
+
+/* coach */
+.coach{position:fixed;z-index:60;left:50%;bottom:26px;transform:translateX(-50%);width:min(560px,calc(100% - 32px));background:#0C0A09;border:1px solid var(--line2);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.6);padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
+.coach .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#39E581,#0EA5E9);color:#0C0A09;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.coach .body{flex:1;min-width:0}
+.coach .step{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--d500);font-weight:600}
+.coach .msg{margin-top:3px;font-size:14px;color:var(--fg)}
+.coach .msg b{color:#7DD3FC;font-weight:600}
+.coach .actions{display:flex;align-items:center;gap:10px;margin-top:12px}
+.coach .btn{background:var(--primary);color:#fff;border-radius:9px;padding:8px 16px;font-weight:600;font-size:13px}
+.coach .btn:hover{background:var(--primary600)}
+.coach .btn.ghost{background:transparent;color:var(--d500);padding:8px 6px}
+.coach .prog{margin-left:auto;font-size:12px;color:var(--d400)}
+.coach.hint .msg b{color:#FDE047}
+/* spotlight */
+.spot{position:absolute;border-radius:12px;box-shadow:0 0 0 3px rgba(14,165,233,.9),0 0 0 9999px rgba(4,6,10,.55);pointer-events:none;z-index:20;transition:all .25s ease;animation:coachpulse 1.8s ease-in-out infinite}
+@keyframes coachpulse{0%,100%{box-shadow:0 0 0 3px rgba(14,165,233,.95),0 0 0 9999px rgba(4,6,10,.55)}50%{box-shadow:0 0 0 6px rgba(14,165,233,.5),0 0 0 9999px rgba(4,6,10,.55)}}
+.locked{position:relative}
+.locked::after{content:"";position:absolute;inset:0;z-index:15}
+.pointing{position:relative;z-index:22}
+</style></head>
+<body>
+<div class="app" id="app"></div>
+<div id="coachRoot"></div>
+
+<script>
+/* ============================ REAL DATA — 1B Northumberland Avenue ============================ */
+const SITE={
+  id:"nrthmbld", address:"1B Northumberland Avenue", suburb:"Karori, Wellington 6012",
+  icp:"1002057214UN96F", panelSerial:"FALUBX3KR9RSQCNQ0G5E", smSerial:"FALMECO2XCJZS",
+  hardware:"HW_CLYDE", smVersion:"2.9.3", circuits:20, online:true,
+};
+/* Configuration — real subcircuit_metadata */
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const LABELS={lights:"Lights",power:"Power",ufh:"Underfloor heating",oven:"Oven",hwc:"Hot water",hob:"Hob",hvac:"HVAC",alarm:"Alarm",spare:"Spare"};
+const CIRCUITS=[
+ {n:1,label:"lights",mcbC:"C",mcbA:6,rcd:"A",ma:30,afd:true,standbyLocked:false,lcLocked:true,loc:["bedroom1","ensuite1","toilet1","laundry","hallway","garage"],state:"LIVE"},
+ {n:2,label:"lights",mcbC:"B",mcbA:6,rcd:"A",ma:30,afd:true,standbyLocked:false,lcLocked:true,loc:["kitchen","lounge","entrance","garden"],state:"LIVE"},
+ {n:3,label:"lights",mcbC:"B",mcbA:6,rcd:"A",ma:30,afd:true,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:4,label:"lights",mcbC:"B",mcbA:6,rcd:"A",ma:30,afd:true,standbyLocked:false,lcLocked:true,loc:[],state:"STANDBY"},
+ {n:5,label:"power",mcbC:"B",mcbA:16,rcd:"B",ma:10,afd:false,standbyLocked:false,lcLocked:true,loc:["laundry"],state:"LIVE"},
+ {n:6,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:["kitchen"],state:"LIVE"},
+ {n:7,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:8,label:"ufh",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:9,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:10,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:11,label:"alarm",mcbC:"B",mcbA:2,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:12,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:13,label:"oven",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"STANDBY"},
+ {n:14,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:15,label:"hwc",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:16,label:"hob",mcbC:"B",mcbA:20,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"STANDBY"},
+ {n:17,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:["bedroom1","bedroom2","bedroom3"],state:"LIVE"},
+ {n:18,label:"power",mcbC:"B",mcbA:20,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:["kitchen"],state:"LIVE"},
+ {n:19,label:"hvac",mcbC:"B",mcbA:10,rcd:"A",ma:10,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"STANDBY"},
+ {n:20,label:"spare",mcbC:"",mcbA:0,rcd:"",ma:0,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:null},
+];
+/* Connectivity — real system_manager_periodic_data + presence_event */
+const CONN={type:"wireless",signalDbm:-59,channel:6,freqMhz:2437,wiredMB:0,wirelessMB:8.4,cloudConns:3,cloudErrs:0,uptimePct:99.94,
+  lastEvent:{kind:"connected",when:"3 days ago"},
+  outages:[
+    {t:"2026-06-26 21:56",dur:"1m 52s",reason:"MQTT_KEEP_ALIVE_TIMEOUT"},
+    {t:"2026-06-13 19:48",dur:"17s",reason:"MQTT_KEEP_ALIVE_TIMEOUT"},
+    {t:"2026-06-10 20:02",dur:"12s",reason:"MQTT_KEEP_ALIVE_TIMEOUT"},
+  ]};
+/* Users — generic (as requested) */
+const USERS=[
+ {name:"The Homeowner",email:"homeowner@example.com",home:true,trade:false,reg:"14 Mar 2026",av:"H"},
+ {name:"Partner Account",email:"partner@example.com",home:true,trade:false,reg:"14 Mar 2026",av:"P"},
+ {name:"The Electrician",email:"sparky@example.com",home:false,trade:true,company:"Northside Electrical",reg:"12 Mar 2026",tradeApproved:true,av:"E"},
+ {name:"Apprentice",email:"apprentice@example.com",home:false,trade:true,company:"Northside Electrical",reg:"2 Aug 2026",tradeApproved:false,av:"A"},
+];
+/* 5 filler sites (never clicked) */
+const OTHER_SITES=[
+ {address:"42 Rimu Road",suburb:"Khandallah, Wellington",online:true,circuits:16,faults:0},
+ {address:"8 Seaview Terrace",suburb:"Island Bay, Wellington",online:true,circuits:20,faults:2},
+ {address:"115 Ohiro Road",suburb:"Brooklyn, Wellington",online:false,circuits:12,faults:1},
+ {address:"3/27 Kelburn Parade",suburb:"Kelburn, Wellington",online:true,circuits:20,faults:0},
+ {address:"64 Onslow Road",suburb:"Johnsonville, Wellington",online:true,circuits:16,faults:0},
+];
+
+/* ============================ ICONS ============================ */
+const I={
+ search:'<svg viewBox="0 0 20 20" fill="none" width="15" height="15"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.6"/><path d="m14 14 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+ chev:'<svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M7.5 5 12.5 10 7.5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ globe:'<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 12h17M12 3.5c2.5 2.4 2.5 14.6 0 17M12 3.5c-2.5 2.4-2.5 14.6 0 17" stroke="currentColor" stroke-width="1.4"/></svg>',
+ signal:'<svg viewBox="0 0 24 24" fill="none"><path d="M2 16.5a14 14 0 0 1 20 0M5.5 13a9 9 0 0 1 13 0M9 9.5a4 4 0 0 1 6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="18.5" r="1.4" fill="currentColor"/></svg>',
+ boltslash:'<svg viewBox="0 0 20 20" fill="currentColor"><path d="M11.983 1.907a.75.75 0 0 0-1.354-.31L6.633 8H9.5a.75.75 0 0 1 .676 1.073l-.53 1.1 5.4 5.4 1.42-6.24A.75.75 0 0 0 15.75 8H12.9l-.917-6.093Z" opacity=".55"/><path d="M3.28 2.22a.75.75 0 0 0-1.06 1.06l14.5 14.5a.75.75 0 1 0 1.06-1.06L3.28 2.22Z"/></svg>',
+ power:'<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1a.75.75 0 0 1 .75.75v6.5a.75.75 0 0 1-1.5 0v-6.5A.75.75 0 0 1 10 1Zm-3.4 3.1a.75.75 0 0 1 .1 1.06 5 5 0 1 0 6.6 0 .75.75 0 1 1 .96-1.15 6.5 6.5 0 1 1-8.52 0 .75.75 0 0 1 1.06.09Z"/></svg>',
+ clock:'<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm.75 4.5a.75.75 0 0 0-1.5 0V10c0 .2.08.39.22.53l2 2a.75.75 0 1 0 1.06-1.06l-1.78-1.78V6.5Z"/></svg>',
+};
+
+/* ============================ STATE ============================ */
+let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0 };
+// debug/deep-link: #screen=site&tab=panel&panelTab=connectivity&coach=6
+(function(){const h=location.hash.slice(1); if(!h)return; h.split("&").forEach(kv=>{const[k,v]=kv.split("=");if(k in S)S[k]=(k==="coach"?+v:v);});})();
+const app=document.getElementById('app');
+const money=n=>"$"+n.toLocaleString();
+
+/* ---- coach steps ---- */
+const GROUPS=[1,2,2,3,3,3]; // which of the 7 demo steps each coach micro-step belongs to
+const STEPS=[
+ {screen:"sites",   msg:'This is <b>Sites</b> — every property where you’ve installed a Basis panel. We’ll open <b>1B Northumberland Avenue</b>. Click its row.', target:"#row-nrthmbld", advanceOn:"click"},
+ {screen:"site", tab:"property", msg:'You’re on the site. Open the <b>Property</b> tab, then choose <b>Users</b> to see the sparkies and customers connected to this panel.', target:"#subtab-users", advanceOn:"click"},
+ {screen:"site", tab:"property", propertyTab:"users", msg:'These are the accounts linked to the panel — the <b>homeowner</b> (Home) and the <b>electrician</b> (Trade, with approval status). Next we’ll check the panel itself.', advanceOn:"next"},
+ {screen:"site", tab:"panel", panelTab:"configuration", msg:'Open the <b>Panel</b> tab — <b>Configuration</b> shows every circuit’s MCB, RCD and AFDD, exactly as commissioned.', target:"#tab-panel", advanceOn:"click"},
+ {screen:"site", tab:"panel", panelTab:"connectivity", msg:'Now <b>Connectivity</b> — is the panel on <b>wired or Wi‑Fi</b>, what’s the signal, and have there been any internet drops?', target:"#subtab-connectivity", advanceOn:"click"},
+ {screen:"site", tab:"panel", panelTab:"connectivity", msg:'It’s on <b>Wi‑Fi</b> at <b>−59 dBm</b> (channel 6). The drops in the history were <b>brief keep‑alive timeouts that self‑recovered</b> — 99.94% uptime, so not a real problem. More steps coming next.', advanceOn:"next"},
+];
+
+/* ============================ RENDER ============================ */
+function render(){
+  app.innerHTML = topbar() + (S.screen==="sites" ? sitesScreen() : siteScreen());
+  renderCoach();
+  wire();
+}
+
+function topbar(){
+  return `<div class="topbar">
+    <div class="brand"><span class="dot">B</span> Basis <span class="mc">Mission Control</span></div>
+    <nav class="topnav">
+      <a class="${S.screen==='sites'?'on':''}">Sites</a>
+      <a>Fleet</a><a>Firmware</a><a>Users</a>
+    </nav>
+    <div class="topsearch">${I.search}<span>Search sites, ICP, serial…</span></div>
+    <div class="topuser">MB</div>
+  </div>`;
+}
+
+/* ---------- Sites list ---------- */
+function sitesScreen(){
+  const rows=[
+    siteRow({id:SITE.id,address:SITE.address,suburb:SITE.suburb,online:true,circuits:20,faults:1,highlight:true}),
+    ...OTHER_SITES.map((s,i)=>siteRow({id:"o"+i,...s,faults:s.faults}))
+  ].join("");
+  return `<div class="wrap">
+    <div class="crumbs"><a>Home</a><span class="sep">${I.chev}</span><span>Sites</span></div>
+    <div class="h1">Sites</div>
+    <div class="sub" style="margin:4px 0 20px">6 sites with panels you’ve installed</div>
+    <div class="card pad0"><div class="cbd"><div class="thwrap">
+      <table class="hu"><thead><tr>
+        <th>Address</th><th>Status</th><th>Circuits</th><th>Faults (90d)</th><th>Panel serial</th><th></th>
+      </tr></thead><tbody>${rows}</tbody></table>
+    </div></div></div>
+  </div>`;
+}
+function siteRow(s){
+  const serial = s.highlight?SITE.panelSerial:("FAL"+Math.random().toString(36).slice(2,10).toUpperCase());
+  return `<tr class="click" id="row-${s.id}" data-site="${s.id}">
+    <td><div style="font-weight:600">${s.address}</div><div style="font-size:12px;color:var(--d500)">${s.suburb}</div></td>
+    <td>${s.online?'<span class="dotstat on"><i></i>Online</span>':'<span class="dotstat off"><i></i>Offline</span>'}</td>
+    <td class="tnum">${s.circuits}</td>
+    <td>${s.faults>0?`<span class="chip flat-warning">${s.faults}</span>`:'<span style="color:var(--d500)">0</span>'}</td>
+    <td class="mono" style="font-size:12px;color:var(--d500)">${serial.slice(0,12)}…</td>
+    <td style="text-align:right;color:var(--d400)">${I.chev}</td>
+  </tr>`;
+}
+
+/* ---------- Site shell ---------- */
+function siteScreen(){
+  const tabs=[["overview","Overview"],["property","Property"],["panel","Panel"],["faults","Faults",1],["events","Events"],["routines","Routines",2],["insights","Insights"],["savings","Savings"]];
+  const tabhtml=tabs.map(([k,label,cnt])=>`<button id="tab-${k}" class="${S.tab===k?'on':''}" data-tab="${k}">${label}${cnt?` <span class="chip sm flat-default">${cnt}</span>`:''}</button>`).join("");
+  return `<div class="wrap">
+    <div class="crumbs"><a data-nav="sites">Sites</a><span class="sep">${I.chev}</span><span>${SITE.address}</span></div>
+    <div class="sitehead">
+      <div>
+        <div class="addr">${SITE.address}</div>
+        <div class="sub" style="margin-top:2px">${SITE.suburb}</div>
+        <div class="metarow">
+          <span><span class="dotstat on"><i></i>Panel online</span></span>
+          <span>ICP <b>${SITE.icp}</b></span>
+          <span>${SITE.circuits} circuits</span>
+          <span>SM firmware <b>${SITE.smVersion}</b></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="idbadge">Panel <b class="mono">${SITE.panelSerial}</b></span>
+      </div>
+    </div>
+    <div class="tabs" style="margin-top:16px">${tabhtml}</div>
+    ${tabContent()}
+  </div>`;
+}
+function tabContent(){
+  switch(S.tab){
+    case "property": return propertyTab();
+    case "panel": return panelTab();
+    case "overview": return `<div class="card"><div class="cbd sub">Overview — site summary.</div></div>`;
+    default: return `<div class="card"><div class="cbd" style="padding:40px;text-align:center;color:var(--d500)">Building the <b style="color:var(--fg)">${cap(S.tab)}</b> section next…</div></div>`;
+  }
+}
+
+/* ---------- Property ---------- */
+function propertyTab(){
+  const sub=[["overview","Overview"],["users","Users"],["retailer","Energy retailer"]]
+    .map(([k,l])=>`<button id="subtab-${k}" class="${S.propertyTab===k?'on':''}" data-ptab="${k}">${l}</button>`).join("");
+  let body;
+  if(S.propertyTab==="users"){
+    const rows=USERS.map(u=>`<tr>
+      <td><div class="usercell"><div class="av">${u.av}</div><div><div class="nm">${u.name}</div><div class="de">${u.trade?[u.email,u.company].filter(Boolean).join(" • "):u.email}</div></div></div></td>
+      <td>${u.home?'<span class="chip home">Home</span>':''}</td>
+      <td>${u.trade?`<span style="display:inline-flex;gap:8px;align-items:center"><span class="chip trade">Trade</span>${u.tradeApproved?'<span class="chip flat-success">Approved</span>':'<span class="chip flat-warning">Awaiting approval</span>'}</span>`:''}</td>
+      <td style="color:var(--d500)">${u.reg}</td>
+    </tr>`).join("");
+    body=`<div class="card pad0"><div class="cbd"><div class="thwrap">
+      <table class="hu"><thead><tr><th>User</th><th>Home</th><th>Trade</th><th>Registered</th></tr></thead>
+      <tbody>${rows}</tbody></table></div></div></div>`;
+  } else {
+    body=`<div class="card"><div class="cbd sub">${cap(S.propertyTab)} — (open <b style="color:var(--fg)">Users</b>).</div></div>`;
+  }
+  return `<div class="subtabs">${sub}</div>${body}`;
+}
+
+/* ---------- Panel ---------- */
+function panelTab(){
+  const sub=[["configuration","Configuration"],["connectivity","Connectivity"],["firmware","Firmware"],["notes","Notes"],["tools","Tools"]]
+    .map(([k,l])=>`<button id="subtab-${k}" class="${S.panelTab===k?'on':''}" data-ntab="${k}">${l}</button>`).join("");
+  let body;
+  if(S.panelTab==="configuration") body=configTable();
+  else if(S.panelTab==="connectivity") body=connectivity();
+  else body=`<div class="card"><div class="cbd sub">${cap(S.panelTab)}.</div></div>`;
+  return `<div class="subtabs">${sub}</div>${body}`;
+}
+
+function configTable(){
+  const rows=CIRCUITS.map(c=>{
+    const spare=c.label==="spare";
+    const mcb=c.mcbC?`<span class="mono">${c.mcbC}${c.mcbA}</span>`:'<span style="color:var(--d400)">–</span>';
+    const rcd=c.rcd?`<span class="mono">${c.rcd} ${c.ma}mA</span>`:'<span style="color:var(--d400)">–</span>';
+    const lc = c.lcLocked ? `<span title="Meter load control disabled">${I.boltslash}</span>` : `<span class="warn" title="Meter load control enabled">${I.power}</span>`;
+    const sb = c.standbyLocked ? `<span class="warn" title="Standby unavailable">${I.power}</span>` : `<span title="Standby available">${I.power}</span>`;
+    const afd = c.afd ? `<span class="chip flat-warning" title="Arc Fault Detection enabled">AFD</span>` : '';
+    const stChip = c.state==null ? '<span style="color:var(--d400)">—</span>'
+      : `<span class="chip ${c.state==='LIVE'?'flat-danger':'flat-default'}">${c.state}</span>`;
+    const locs = c.loc.length? `<span style="font-size:12px;color:var(--d500)"> · ${c.loc.length} room${c.loc.length>1?'s':''}</span>`:'';
+    return `<tr class="${spare?'dim':''}">
+      <td><span style="display:inline-flex;align-items:center;gap:8px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:var(--card3);font-size:11px;font-weight:600" class="tnum">${c.n}</span>
+        <b style="font-weight:600">${LABELS[c.label]||cap(c.label)}</b>${locs}</span></td>
+      <td>${mcb}</td><td>${rcd}</td>
+      <td><span class="flagset">${lc}${sb}${afd}</span></td>
+      <td>${stChip}</td>
+    </tr>`;
+  }).join("");
+  return `<div class="card pad0" id="cfgcard"><div class="cbd"><div class="thwrap">
+    <table class="hu"><thead><tr><th>Circuit</th><th>MCB</th><th>RCD</th><th>Flags</th><th>State</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
+    <div style="padding:12px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--d500);display:flex;gap:18px;flex-wrap:wrap">
+      <span>20 circuits · all RCBO</span><span class="flagset" style="gap:6px">${I.boltslash} Load control locked</span>
+      <span class="flagset" style="gap:6px"><span class="chip flat-warning">AFD</span> Arc-fault detection on C1–C4</span>
+    </div>
+  </div></div>`;
+}
+
+/* ---------- Connectivity ---------- */
+function connectivity(){
+  return `<div class="grid2" style="align-items:start">
+    <div class="card"><div class="chd"><span class="t">Network interface</span><span class="sub" style="font-size:12px">Last 10 min</span></div>
+     <div class="cbd">
+       <div class="netgrid">
+         <span></span><span class="hd" style="text-align:right">RX</span><span class="hd" style="text-align:right">TX</span>
+         <span class="row1">${I.globe}Wired</span><span class="val mono" style="color:var(--d400)">—</span><span class="val mono" style="color:var(--d400)">—</span>
+         <span class="row1">${I.signal}Wireless</span><span class="val mono">5.9 MB</span><span class="val mono">2.5 MB</span>
+       </div>
+       <p class="expl">Traffic only on the wireless interface — panel is on <b style="color:var(--d600)">Wi‑Fi</b>.</p>
+     </div></div>
+
+    <div class="card"><div class="chd"><span class="t">Cloud connection</span></div>
+     <div class="cbd">
+       <div style="display:flex;gap:26px;flex-wrap:wrap">
+         <div><div class="sub" style="font-size:12px">Status</div><div style="margin-top:4px"><span class="dotstat on"><i></i>Connected</span></div></div>
+         <div><div class="sub" style="font-size:12px">Active connections</div><div style="font-size:18px;font-weight:600;margin-top:2px" class="tnum">3</div></div>
+         <div><div class="sub" style="font-size:12px">Connection errors</div><div style="font-size:18px;font-weight:600;margin-top:2px;color:var(--success)" class="tnum">0</div></div>
+       </div>
+       <p class="expl">Last known event: panel <b style="color:var(--d600)">connected</b> ${CONN.lastEvent.when}.</p>
+     </div></div>
+
+    <div class="card" style="grid-column:1/-1"><div class="chd"><span class="t">Wireless signal &amp; frequency</span>
+      <span style="display:flex;align-items:center;gap:12px">
+        <span class="signalpill">Ch 6 · 2437 MHz</span>
+        <span class="signalpill">${signalBars(-59)} <b style="color:var(--fg)">−59 dBm</b></span>
+      </span></div>
+      <div class="cbd">${signalChart()}</div>
+    </div>
+
+    <div class="card" style="grid-column:1/-1"><div class="chd"><span class="t">Connectivity history (90 days)</span>
+      <span class="sub" style="font-size:12px">${CONN.uptimePct}% uptime · ${CONN.outages.length} outages</span></div>
+      <div class="cbd">${connHistory()}
+        <p class="expl">Last known event: panel <b style="color:var(--d600)">connected</b> ${CONN.lastEvent.when}. The three drops were brief <b style="color:var(--d600)">keep‑alive timeouts</b> that reconnected on their own — not an internet problem for this home.</p>
+      </div>
+    </div>
+  </div>`;
+}
+function signalBars(dbm){
+  const lvl = dbm>=-50?4:dbm>=-60?3:dbm>=-70?2:1;
+  let h=""; for(let i=0;i<4;i++) h+=`<i class="${i<lvl?'on':''}" style="height:${5+i*3.5}px"></i>`;
+  return `<span class="bars">${h}</span>`;
+}
+/* interactive signal chart (dBm) with quality bands */
+function signalChart(){
+  // synth 1h series around -59, hover-interactive
+  const W=880,H=230, pad={l:44,r:14,t:12,b:26};
+  const N=90, pts=[];
+  let v=-59; for(let i=0;i<N;i++){ v += (Math.sin(i/6)*0.9 + (((i*37)%7)-3)*0.6); v=Math.max(-64,Math.min(-54,v)); pts.push(v); }
+  const ymin=-80,ymax=-40;
+  const x=i=> pad.l + i/(N-1)*(W-pad.l-pad.r);
+  const y=val=> pad.t + (ymax-val)/(ymax-ymin)*(H-pad.t-pad.b);
+  const bands=[["Poor",-80,-70,"rgba(243,18,96,.10)","#F87088"],["Fair",-70,-60,"rgba(245,165,36,.10)","#F5A524"],["Good",-60,-50,"rgba(6,182,212,.10)","#22D3EE"],["Excellent",-50,-40,"rgba(23,201,100,.10)","#4ADE80"]];
+  let bandRects=bands.map(([nm,a,b,fill,col])=>`<rect x="${pad.l}" y="${y(b)}" width="${W-pad.l-pad.r}" height="${y(a)-y(b)}" fill="${fill}"/><text x="${W-pad.r-6}" y="${y(b)+13}" text-anchor="end" fill="${col}" font-size="10" opacity=".85">${nm}</text>`).join("");
+  let yaxis=""; for(let g=-80;g<=-40;g+=10){ yaxis+=`<text x="${pad.l-8}" y="${y(g)+3}" text-anchor="end" fill="var(--d400)" font-size="10">${g}</text>`; }
+  const line=pts.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(p).toFixed(1)}`).join(" ");
+  const dots=pts.map((p,i)=>`<circle class="pt" data-i="${i}" cx="${x(i).toFixed(1)}" cy="${y(p).toFixed(1)}" r="7" fill="transparent"/>`).join("");
+  return `<div class="chartwrap" id="sigwrap">
+    <svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:230px">
+      ${bandRects}${yaxis}
+      <text x="${pad.l}" y="10" fill="var(--d400)" font-size="10">dBm</text>
+      <path d="${line}" fill="none" stroke="#FAFAF9" stroke-width="1.6"/>
+      <line class="crosshair" id="sigch" x1="0" y1="${pad.t}" x2="0" y2="${H-pad.b}" style="opacity:0"/>
+      <circle id="sigmk" r="3.5" fill="#FAFAF9" style="opacity:0"/>
+      ${dots}
+    </svg>
+    <div class="tip" id="sigtip"></div>
+  </div>`;
+}
+function connHistory(){
+  // 90-day online bar with 3 tiny offline ticks
+  const W=880,H=54;
+  const marks=CONN.outages.map((o,i)=>{ const px=[0.62,0.42,0.36][i]*W; return `<rect x="${px}" y="8" width="3" height="30" fill="rgba(243,18,96,.85)"><title>Offline ${o.dur} · ${o.reason}</title></rect>`;}).join("");
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:54px">
+    <rect x="0" y="8" width="${W}" height="30" rx="4" fill="rgba(34,197,94,.16)"/>
+    ${marks}
+    <text x="0" y="52" fill="var(--d400)" font-size="10">15 May</text>
+    <text x="${W}" y="52" text-anchor="end" fill="var(--d400)" font-size="10">today</text>
+  </svg>`;
+}
+
+/* ============================ COACH ============================ */
+function renderCoach(){
+  const root=document.getElementById('coachRoot');
+  document.querySelectorAll('.spot').forEach(e=>e.remove());
+  if(S.coach>=STEPS.length){ root.innerHTML=""; return; }
+  const st=STEPS[S.coach];
+  root.innerHTML=`<div class="coach ${st.target?'':'hint'}">
+    <div class="num">${S.coach+1}</div>
+    <div class="body">
+      <div class="step">Step ${GROUPS[S.coach]} of 7</div>
+      <div class="msg">${st.msg}</div>
+      <div class="actions">
+        ${st.advanceOn==="next"?'<button class="btn" data-coach="next">Got it</button>':'<span class="sub" style="font-size:12.5px;color:var(--d400)">← follow the highlight</span>'}
+        <span class="prog">Guided walkthrough</span>
+      </div>
+    </div>
+  </div>`;
+  if(st.target){ requestAnimationFrame(()=>spotlight(st.target)); }
+}
+function spotlight(sel){
+  const el=document.querySelector(sel); if(!el) return;
+  const r=el.getBoundingClientRect();
+  const s=document.createElement('div'); s.className='spot';
+  s.style.left=(r.left-6)+'px'; s.style.top=(r.top-6+window.scrollY)+'px';
+  s.style.width=(r.width+12)+'px'; s.style.height=(r.height+12)+'px';
+  document.getElementById('coachRoot').appendChild(s);
+  el.classList.add('pointing');
+}
+function coachAdvance(viaTarget){
+  const st=STEPS[S.coach];
+  S.coach++;
+  const nx=STEPS[S.coach];
+  if(nx){ if(nx.tab)S.tab=nx.tab; if(nx.propertyTab)S.propertyTab=nx.propertyTab; if(nx.panelTab)S.panelTab=nx.panelTab;
+    if(nx.screen==="site"&&S.screen!=="site")S.screen="site"; }
+  render();
+}
+function maybeCoachClick(sel){
+  const st=STEPS[S.coach];
+  if(st && st.advanceOn==="click" && st.target===sel){ coachAdvance(true); return true; }
+  return false;
+}
+
+/* ============================ WIRING ============================ */
+function wire(){
+  // top nav / crumbs back to sites
+  app.querySelectorAll('[data-nav="sites"]').forEach(b=>b.onclick=()=>{S.screen="sites";render();});
+  // site rows
+  app.querySelectorAll('tr[data-site]').forEach(tr=>tr.onclick=()=>{
+    const id=tr.getAttribute('data-site');
+    if(id!==SITE.id){ /* filler sites never open */ return; }
+    if(maybeCoachClick('#row-'+id)) return;
+    S.screen="site"; render();
+  });
+  // main tabs
+  app.querySelectorAll('.tabs button[data-tab]').forEach(b=>b.onclick=()=>{
+    const k=b.getAttribute('data-tab');
+    if(maybeCoachClick('#tab-'+k)) return;
+    S.tab=k; render();
+  });
+  // property subtabs
+  app.querySelectorAll('[data-ptab]').forEach(b=>b.onclick=()=>{
+    const k=b.getAttribute('data-ptab');
+    if(maybeCoachClick('#subtab-'+k)) return;
+    S.propertyTab=k; render();
+  });
+  // panel subtabs
+  app.querySelectorAll('[data-ntab]').forEach(b=>b.onclick=()=>{
+    const k=b.getAttribute('data-ntab');
+    if(maybeCoachClick('#subtab-'+k)) return;
+    S.panelTab=k; render();
+  });
+  // coach next
+  document.getElementById('coachRoot').querySelectorAll('[data-coach="next"]').forEach(b=>b.onclick=()=>coachAdvance(false));
+  // signal chart interactivity
+  wireSignal();
+  // report height
+  reportHeight();
+}
+function wireSignal(){
+  const wrap=document.getElementById('sigwrap'); if(!wrap) return;
+  const svg=wrap.querySelector('svg'), tip=document.getElementById('sigtip'), ch=document.getElementById('sigch'), mk=document.getElementById('sigmk');
+  wrap.querySelectorAll('.pt').forEach(pt=>{
+    pt.addEventListener('mouseenter',()=>{
+      const cx=+pt.getAttribute('cx'), cy=+pt.getAttribute('cy');
+      const dbm=Math.round(-40 - (cy-12)/(230-12-26)*40); // inverse of y()
+      const rect=wrap.getBoundingClientRect(), sr=svg.getBoundingClientRect();
+      const px=(cx/880)*sr.width, py=(cy/230)*sr.height;
+      ch.setAttribute('x1',cx);ch.setAttribute('x2',cx);ch.style.opacity=.6;
+      mk.setAttribute('cx',cx);mk.setAttribute('cy',cy);mk.style.opacity=1;
+      const mins=Math.round((+pt.getAttribute('data-i'))/89*60);
+      tip.innerHTML=`<div class="tt">${60-mins} min ago</div><b>${dbm} dBm</b> · <span style="color:var(--d500)">${dbm>=-60?'Good':dbm>=-70?'Fair':'Poor'}</span>`;
+      tip.style.left=px+'px'; tip.style.top=py+'px'; tip.style.opacity=1;
+    });
+  });
+  wrap.addEventListener('mouseleave',()=>{tip.style.opacity=0;ch.style.opacity=0;mk.style.opacity=0;});
+}
+
+/* iframe auto-height */
+function reportHeight(){try{parent.postMessage({basisEmbed:'height',height:Math.ceil(document.documentElement.scrollHeight)},'*');}catch(e){}}
+if(window.ResizeObserver){new ResizeObserver(reportHeight).observe(document.body);}
+addEventListener('load',reportHeight);
+
+render();
+</script>
+</body></html>
