@@ -28,7 +28,7 @@ body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:
 
 /* full-width results hero */
 .hero{background:var(--highlight);color:var(--oncolour);border-radius:18px;padding:28px 32px;
-  display:grid;grid-template-columns:1fr 1fr;margin-bottom:12px}
+  display:grid;grid-template-columns:1fr 1fr;margin-top:12px}
 .hmetric{display:flex;flex-direction:column;min-height:158px;padding:0 36px}
 .hmetric:first-child{padding-left:0}
 .hmetric:last-child{padding-right:0}
@@ -102,6 +102,14 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 .trade .th .t{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block}
 .trade .th .s{margin-top:4px;font-size:12px;color:rgba(255,255,255,.5);display:block;font-weight:400;text-transform:none;letter-spacing:0}
 .trade .body{padding:0 22px 22px}
+.rtlab{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.4);margin-bottom:8px}
+.rtsel{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:18px}
+.rt{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:var(--oncolour);border-radius:10px;padding:8px 4px;cursor:pointer;font:inherit;transition:.12s}
+.rt:hover{border-color:rgba(255,255,255,.32)}
+.rt.on{border-color:var(--tradeAccent);background:rgba(97,234,154,.15)}
+.rt .rtn{font-size:12.5px;font-weight:500}
+.rt .rtv{font-size:11px;color:rgba(255,255,255,.5)}
+.rt.on .rtv{color:var(--tradeAccent)}
 .trow{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:baseline;border-top:1px solid rgba(255,255,255,.1);padding:11px 0;color:var(--oncolour);font-size:14px}
 .trow .r{text-align:right}
 .trow .after{color:var(--tradeAccent);font-weight:600}
@@ -113,6 +121,7 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 <script>
 const SIZES=[12,16,20];
 const BOARD_PRESETS={12:2395,16:2890,20:3385};
+const REBATE_TIERS=[{range:'0–2',rebate:0},{range:'3–9',rebate:200},{range:'10–15',rebate:300},{range:'16+',rebate:400}];
 const SUNDRIES_PER_CIRCUIT=3.125;
 const sundriesFor=s=>Math.round(s*SUNDRIES_PER_CIRCUIT);
 const MAX_INSTALLED=8000, GST=0.15, HOURS_PER_EXTRA_BOARD=2, LEGACY_PER_HOUR=121, WTP_IDEAL=3999;
@@ -146,13 +155,8 @@ function render(){
  const c=calc(), multi=c.boardCount>1;
  document.getElementById('inner').innerHTML=`
   <div class="head">
-   <div class="ttl">Margin calculator<span class="s">Net $ margin on a Basis Board install — per hour and per job.</span></div>
+   <div class="ttl">Margin calculator</div>
    <button class="reset" data-act="reset">↺ Reset to defaults</button>
-  </div>
-
-  <div class="hero">
-   <div class="hmetric" id="heroHour"></div>
-   <div class="hmetric" id="heroJob"></div>
   </div>
 
   <div class="main">
@@ -187,9 +191,11 @@ function render(){
     <section class="trade">
      <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
      ${tradeOpen?`<div class="body">
-       <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After $${DEFAULTS().rebate}</span></div>
-       ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-DEFAULTS().rebate)}</span></div>`).join('')}
-       <p class="tnote">"After" reflects the $${DEFAULTS().rebate} Tier-3 rebate paid on install.</p>
+       <p class="rtlab">Your rebate tier · boards installed</p>
+       <div class="rtsel">${REBATE_TIERS.map(t=>`<button class="rt ${state.rebate===t.rebate?'on':''}" data-act="rebate-tier" data-rebate="${t.rebate}"><span class="rtn">${t.range}</span><span class="rtv">${money.format(t.rebate)}</span></button>`).join('')}</div>
+       <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After ${money.format(state.rebate)}</span></div>
+       ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-state.rebate)}</span></div>`).join('')}
+       <p class="tnote">Rebate scales with how many boards you install. "After" is the board cost once it's paid.</p>
      </div>`:''}
     </section>
 
@@ -214,6 +220,11 @@ function render(){
      </div>`:''}
     </section>
    </div>
+  </div>
+
+  <div class="hero">
+   <div class="hmetric" id="heroHour"></div>
+   <div class="hmetric" id="heroJob"></div>
   </div>`;
  paint();
 }
@@ -259,6 +270,7 @@ app.addEventListener('click',e=>{
    state.labourHours=Math.max(0,state.labourHours+delta*HOURS_PER_EXTRA_BOARD);
    state.installedCost=Math.round(state.installedCost*newLen/oldLen);
  }
+ else if(a==='rebate-tier'){ state.rebate=+el.dataset.rebate; }
  else if(a==='insp'){ state.inspectionEnabled=!state.inspectionEnabled; }
  else if(a==='toggle-costs'){ costsOpen=!costsOpen; }
  else if(a==='toggle-trade'){ tradeOpen=!tradeOpen; }
