@@ -51,12 +51,11 @@ body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:
   .gauge{padding-top:16px}
 }
 
-/* main — two rows of two */
-.main{display:flex;flex-direction:column;gap:24px}
-.mrow{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.mrow.eq{align-items:stretch}   /* installed cost + board size: same height */
-.mrow.top{align-items:start}    /* trade price + input costs: top aligned */
-@media(max-width:800px){.mrow{grid-template-columns:1fr}}
+/* main — two independent columns that flow naturally; column bottoms aligned */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.col{display:flex;flex-direction:column;gap:20px}
+.col>section:last-child{flex-grow:1}   /* last card in each column fills to align the bottoms */
+@media(max-width:800px){.main{grid-template-columns:1fr}}
 
 .card{background:var(--primary);border-radius:18px;padding:22px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
 .card.pad0{padding:0;overflow:hidden}
@@ -163,7 +162,7 @@ function render(){
   </div>
 
   <div class="main">
-   <div class="mrow top">
+   <div class="col">
     <section class="card">
      <div class="hdrow" style="align-items:center;margin-bottom:14px">
        <p class="cap">Board size</p>
@@ -180,6 +179,18 @@ function render(){
      </div>
     </section>
 
+    <section class="trade">
+     <div class="thd"><span class="t">Rebates</span><span class="s">Per panel · quarterly volume</span></div>
+     <div class="rtwrap"><div class="rtsel">${REBATE_TIERS.map(t=>`<button class="rt ${state.rebate===t.rebate?'on':''}" data-act="rebate-tier" data-rebate="${t.rebate}"><span class="rtn">${t.range}</span><span class="rtv">${money.format(t.rebate)}</span></button>`).join('')}</div></div>
+     <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
+     ${tradeOpen?`<div class="body">
+       <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After ${money.format(state.rebate)}</span></div>
+       ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-state.rebate)}</span></div>`).join('')}
+     </div>`:''}
+    </section>
+   </div>
+
+   <div class="col">
     <section class="card pad0">
      <div class="costhdr">
        <span class="cap">Input costs <span class="sub">(ex GST)</span></span>
@@ -198,18 +209,6 @@ function render(){
          ${mi('inspection',state.inspection,{off:!state.inspectionEnabled})}
        </div>
      </div>
-    </section>
-   </div>
-
-   <div class="mrow top">
-    <section class="trade">
-     <div class="thd"><span class="t">Rebates</span><span class="s">Per panel · quarterly volume</span></div>
-     <div class="rtwrap"><div class="rtsel">${REBATE_TIERS.map(t=>`<button class="rt ${state.rebate===t.rebate?'on':''}" data-act="rebate-tier" data-rebate="${t.rebate}"><span class="rtn">${t.range}</span><span class="rtv">${money.format(t.rebate)}</span></button>`).join('')}</div></div>
-     <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
-     ${tradeOpen?`<div class="body">
-       <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After ${money.format(state.rebate)}</span></div>
-       ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-state.rebate)}</span></div>`).join('')}
-     </div>`:''}
     </section>
 
     <section class="card">
