@@ -19,7 +19,7 @@ body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:
 .cap .sub{font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0}
 
 /* header */
-.head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px}
 .head .ttl{font-size:22px;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
 .head .ttl .s{display:block;font-size:13px;font-weight:400;color:var(--ink2);margin-top:2px}
 .reset{border:1px solid var(--border);background:var(--primary);color:var(--ink2);border-radius:999px;
@@ -97,24 +97,25 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 .chk{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:5px;border:1px solid var(--border);background:var(--primary);color:var(--oncolour)}
 .chk.on{border-color:var(--accent);background:var(--accent)}
 .bname{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:6px}
-.trade{border-radius:18px;overflow:hidden;background:var(--tradeBg)}
-.trade .th{display:flex;align-items:center;justify-content:space-between;width:100%;padding:22px;border:0;background:none;font:inherit;cursor:pointer;text-align:left;color:var(--tradeAccent)}
-.trade .th .t{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block}
-.trade .th .s{margin-top:4px;font-size:12px;color:rgba(255,255,255,.5);display:block;font-weight:400;text-transform:none;letter-spacing:0}
+.trade{border-radius:18px;overflow:hidden;background:var(--primary);box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.trade .th{display:flex;align-items:center;justify-content:space-between;width:100%;padding:22px;border:0;background:none;font:inherit;cursor:pointer;text-align:left;color:var(--ink)}
+.trade .th .t{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block;color:var(--ink2)}
+.trade .th .s{margin-top:4px;font-size:12px;color:var(--ink3);display:block;font-weight:400;text-transform:none;letter-spacing:0}
 .trade .body{padding:0 22px 22px}
-.rtlab{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.4);margin-bottom:8px}
+.rtlab{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);margin-bottom:8px}
 .rtsel{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:18px}
-.rt{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:var(--oncolour);border-radius:10px;padding:8px 4px;cursor:pointer;font:inherit;transition:.12s}
-.rt:hover{border-color:rgba(255,255,255,.32)}
-.rt.on{border-color:var(--tradeAccent);background:rgba(97,234,154,.15)}
+.rt{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid var(--border);background:var(--primary);color:var(--ink);border-radius:10px;padding:8px 4px;cursor:pointer;font:inherit;transition:.12s}
+.rt:hover{border-color:var(--ink3)}
+.rt.on{border-color:var(--highlight);background:var(--highlight);color:var(--oncolour)}
 .rt .rtn{font-size:12.5px;font-weight:500}
-.rt .rtv{font-size:11px;color:rgba(255,255,255,.5)}
-.rt.on .rtv{color:var(--tradeAccent)}
-.trow{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:baseline;border-top:1px solid rgba(255,255,255,.1);padding:11px 0;color:var(--oncolour);font-size:14px}
+.rt .rtv{font-size:11px;color:var(--ink3)}
+.rt.on .rtv{color:rgba(255,255,255,.7)}
+.trow{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:baseline;border-top:1px solid var(--border2);padding:11px 0;color:var(--ink);font-size:14px}
 .trow .r{text-align:right}
-.trow .after{color:var(--tradeAccent);font-weight:600}
-.thead{display:grid;grid-template-columns:1fr auto auto;gap:16px;padding-bottom:8px;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.4)}
-.tnote{margin-top:12px;font-size:9px;color:rgba(255,255,255,.4)}
+.trow .after{color:var(--ink);font-weight:600}
+.thead{display:grid;grid-template-columns:1fr auto auto;gap:16px;padding-bottom:8px;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3)}
+.tnote{margin-top:12px;font-size:9px;color:var(--ink3)}
+.cval{font-size:14px;font-weight:500;color:var(--ink)}
 </style></head>
 <body>
 <div class="page"><div class="wrap" id="app"><div id="inner"></div></div></div>
@@ -191,7 +192,7 @@ function render(){
     <section class="trade">
      <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
      ${tradeOpen?`<div class="body">
-       <p class="rtlab">Your rebate tier · boards installed</p>
+       <p class="rtlab">Rebates per panels installed quarterly</p>
        <div class="rtsel">${REBATE_TIERS.map(t=>`<button class="rt ${state.rebate===t.rebate?'on':''}" data-act="rebate-tier" data-rebate="${t.rebate}"><span class="rtn">${t.range}</span><span class="rtv">${money.format(t.rebate)}</span></button>`).join('')}</div>
        <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After ${money.format(state.rebate)}</span></div>
        ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-state.rebate)}</span></div>`).join('')}
@@ -205,8 +206,7 @@ function render(){
        <span class="r"><span class="costtot" id="costTot">${money.format(c.totalCosts)}</span>${chev(costsOpen)}</span>
      </button>
      ${costsOpen?`<div style="padding:0 22px 22px">
-       ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Basis Board</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`}</span></span>${mi('board',b.price,{bi:i,bk:'price'})}</div>`).join('')}
-       <div class="crow"><span><span class="lab">Rebate</span><span class="hint">${multi?`Deducted · ×${c.boardCount}`:'Deducted'}</span></span>${mi('rebate',state.rebate)}</div>
+       ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Basis Board</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`} · with $${state.rebate} rebate</span></span><span class="cval">${money.format(b.price-state.rebate)}</span></div>`).join('')}
        <div class="crow"><span class="lab">Labour</span><span style="display:flex;gap:8px">${mi('labourHours',state.labourHours,{w:'w20',cur:false,suf:'hrs'})}${mi('labourRate',state.labourRate,{w:'w24',suf:'/hr'})}</span></div>
        <div class="crow"><span class="lab">Travel</span>${mi('travel',state.travel)}</div>
        ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Sundries</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`}</span></span>${mi('board',b.sundries,{bi:i,bk:'sundries'})}</div>`).join('')}
