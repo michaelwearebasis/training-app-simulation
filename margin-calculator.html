@@ -163,15 +163,6 @@ function render(){
   <div class="main">
    <div class="mrow eq">
     <section class="card">
-     <div class="hdrow">
-       <p class="cap">Fully installed cost <span class="sub">(incl GST)</span></p>
-       ${mi('installedCost',state.installedCost,{w:'w28'})}
-     </div>
-     <input type="range" class="slider" id="slider" style="background:${WTP_GRADIENT}" min="0" max="${c.maxInstalled}" step="50" value="${state.installedCost}" data-f="installedCost">
-     <div class="scale"><span>${money.format(0)}</span><span>Ideal ${money.format(c.idealPrice)}</span><span>${money.format(c.maxInstalled)}</span></div>
-    </section>
-
-    <section class="card">
      <div class="hdrow" style="align-items:center;margin-bottom:14px">
        <p class="cap">Board size</p>
        <div class="stepper"><span class="lab">Boards</span><div class="stepbox">
@@ -185,6 +176,15 @@ function render(){
          <div class="boardsel">${SIZES.map(sz=>`<button class="bs ${b.size===sz?'on':''}" data-act="size" data-bi="${i}" data-size="${sz}"><span class="n">${sz}</span><span class="u">Circuit</span></button>`).join('')}</div>
        </div>`).join('')}
      </div>
+    </section>
+
+    <section class="card">
+     <div class="hdrow">
+       <p class="cap">Fully installed cost <span class="sub">(incl GST)</span></p>
+       ${mi('installedCost',state.installedCost,{w:'w28'})}
+     </div>
+     <input type="range" class="slider" id="slider" style="background:${WTP_GRADIENT}" min="0" max="${c.maxInstalled}" step="50" value="${state.installedCost}" data-f="installedCost">
+     <div class="scale"><span>${money.format(0)}</span><span>Ideal ${money.format(c.idealPrice)}</span><span>${money.format(c.maxInstalled)}</span></div>
     </section>
    </div>
 
