@@ -98,12 +98,13 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 .chk.on{border-color:var(--accent);background:var(--accent)}
 .bname{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:6px}
 .trade{border-radius:18px;overflow:hidden;background:var(--primary);box-shadow:0 1px 2px rgba(0,0,0,.05)}
-.trade .th{display:flex;align-items:center;justify-content:space-between;width:100%;padding:22px;border:0;background:none;font:inherit;cursor:pointer;text-align:left;color:var(--ink)}
-.trade .th .t{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block;color:var(--ink2)}
-.trade .th .s{margin-top:4px;font-size:12px;color:var(--ink3);display:block;font-weight:400;text-transform:none;letter-spacing:0}
+.trade .th{display:flex;align-items:center;justify-content:space-between;width:100%;padding:22px;border:0;border-top:1px solid var(--border2);background:none;font:inherit;cursor:pointer;text-align:left;color:var(--ink)}
+.thd{padding:22px 22px 14px}
+.thd .t,.trade .th .t{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block;color:var(--ink2)}
+.thd .s,.trade .th .s{margin-top:4px;font-size:12px;color:var(--ink3);display:block;font-weight:400;text-transform:none;letter-spacing:0}
 .trade .body{padding:0 22px 22px}
-.rtlab{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);margin-bottom:8px}
-.rtsel{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:18px}
+.rtwrap{padding:0 22px 20px}
+.rtsel{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .rt{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid var(--border);background:var(--primary);color:var(--ink);border-radius:10px;padding:8px 4px;cursor:pointer;font:inherit;transition:.12s}
 .rt:hover{border-color:var(--ink3)}
 .rt.on{border-color:var(--highlight);background:var(--highlight);color:var(--oncolour)}
@@ -190,10 +191,10 @@ function render(){
 
    <div class="mrow top">
     <section class="trade">
+     <div class="thd"><span class="t">Rebates</span><span class="s">Per panel · quarterly volume</span></div>
+     <div class="rtwrap"><div class="rtsel">${REBATE_TIERS.map(t=>`<button class="rt ${state.rebate===t.rebate?'on':''}" data-act="rebate-tier" data-rebate="${t.rebate}"><span class="rtn">${t.range}</span><span class="rtv">${money.format(t.rebate)}</span></button>`).join('')}</div></div>
      <button class="th" data-act="toggle-trade"><span><span class="t">Basis Board trade price</span><span class="s">What you should be paying · ex GST</span></span>${chev(tradeOpen)}</button>
      ${tradeOpen?`<div class="body">
-       <p class="rtlab">Rebates per panels installed quarterly</p>
-       <div class="rtsel">${REBATE_TIERS.map(t=>`<button class="rt ${state.rebate===t.rebate?'on':''}" data-act="rebate-tier" data-rebate="${t.rebate}"><span class="rtn">${t.range}</span><span class="rtv">${money.format(t.rebate)}</span></button>`).join('')}</div>
        <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After ${money.format(state.rebate)}</span></div>
        ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-state.rebate)}</span></div>`).join('')}
        <p class="tnote">Rebate scales with how many boards you install. "After" is the board cost once it's paid.</p>
