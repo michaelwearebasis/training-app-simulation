@@ -9,6 +9,7 @@
   --bg:#0C0A09; --card:#1C1917; --cardHover:#26221F; --line:rgba(255,255,255,.06); --lineHover:rgba(255,255,255,.16);
   --white:#FFFFFF; --s200:#E7E5E4; --s300:#D6D3D1; --s400:#A8A29E; --s500:#8A827C; --s800:#292524;
   --pillBg:rgba(255,255,255,.06); --pillLine:rgba(255,255,255,.10);
+  --green:#39E581; --greenHover:#2FCB72; --greenBg:rgba(57,229,129,.12); --greenLine:rgba(57,229,129,.38);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--white);-webkit-font-smoothing:antialiased;line-height:1.5}
@@ -29,13 +30,15 @@ body{font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;background:v
 .scrollwrap{position:relative}
 .scroller{overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:2px 2px 14px}
 .scroller::-webkit-scrollbar{height:8px}
-.scroller::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
+.scroller::-webkit-scrollbar-thumb{background:var(--green);border-radius:999px}
+.scroller::-webkit-scrollbar-thumb:hover{background:var(--greenHover)}
+.scroller{scrollbar-color:var(--green) rgba(255,255,255,.04)}
 .scroller::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:999px}
 .grid{list-style:none;display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);grid-auto-columns:clamp(240px,29%,320px);gap:16px;align-items:stretch}
 .fade{position:absolute;top:0;right:0;bottom:14px;width:80px;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none;opacity:1;transition:opacity .2s}
 .fade.gone{opacity:0}
-.arrow{position:absolute;top:calc(50% - 7px);transform:translateY(-50%);z-index:6;width:42px;height:42px;border-radius:50%;border:1px solid var(--lineHover);background:rgba(28,25,23,.92);color:var(--white);font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .2s}
-.arrow:hover{background:var(--cardHover)}
+.arrow{position:absolute;top:calc(50% - 7px);transform:translateY(-50%);z-index:6;width:42px;height:42px;border-radius:50%;border:1px solid var(--green);background:var(--green);color:#0C0A09;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s,opacity .2s}
+.arrow:hover{background:var(--greenHover);border-color:var(--greenHover)}
 .arrow.left{left:-8px} .arrow.right{right:-8px}
 .arrow[hidden]{display:none}
 .cue{color:#98FFAB;font-weight:600;white-space:nowrap}
@@ -53,7 +56,8 @@ body{font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;background:v
 .at{font-size:12.5px;color:var(--s400);margin-top:2px}
 .stat{font-size:13px;line-height:1.4;color:var(--s300);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .pills{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
-.pill{font-size:10.5px;color:var(--s200);background:var(--pillBg);border:1px solid var(--pillLine);border-radius:999px;padding:2px 8px}
+.pill{font-size:10.5px;color:var(--green);background:var(--greenBg);border:1px solid var(--greenLine);border-radius:999px;padding:2px 8px}
+.tile.quote .pills{margin-top:auto}
 .rm{margin-top:auto;padding-top:4px;font-size:12.5px;color:var(--s500);transition:color .15s}
 .tile:hover .rm{color:var(--white)}
 .count{text-align:center;font-size:12.5px;color:var(--s500)}
@@ -121,9 +125,9 @@ function render(){
     <div><div class="nm">${esc(c.name)}</div>${c.attr?`<div class="at">${esc(c.attr)}</div>`:''}</div>
     <p class="stat">${c.quote?'&ldquo;'+esc(c.stat)+'&rdquo;':esc(c.stat)}</p>
     <div class="pills">${pills}</div>
-    <span class="rm">Read more →</span>`;
-   const href=c.quote?c.link:`${BASE}${c.slug}`;
-   return `<li><a class="tile${c.quote?' quote':''}" href="${href}" target="_blank" rel="noopener">${inner}</a></li>`;
+    ${c.quote?'':'<span class="rm">Read more →</span>'}`;
+   if(c.quote) return `<li><div class="tile quote">${inner}</div></li>`;
+   return `<li><a class="tile" href="${BASE}${c.slug}" target="_blank" rel="noopener">${inner}</a></li>`;
  }).join('');
 }
 const scroller=document.getElementById('scroller'),fade=document.getElementById('fade'),cue=document.getElementById('cue'),arrowL=document.getElementById('arrowL'),arrowR=document.getElementById('arrowR');
