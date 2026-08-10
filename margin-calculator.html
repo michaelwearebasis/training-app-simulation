@@ -13,7 +13,7 @@
 html{background:transparent}
 body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:transparent;color:var(--ink);
   -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
-.page{background:var(--surface);border-radius:22px;min-height:100vh}
+.page{background:var(--surface);border-radius:22px}
 .wrap{max-width:1120px;margin:0 auto;padding:26px 24px 44px;display:flex;flex-direction:column;gap:24px}
 .cap{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
 .cap .sub{font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0}
@@ -86,7 +86,7 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 .stepbox button{border:0;background:none;font:inherit;font-size:18px;line-height:1;color:var(--ink2);padding:6px 12px;cursor:pointer}
 .stepbox button:disabled{opacity:.3;cursor:default}
 .stepbox .v{width:22px;text-align:center;font-size:14px;font-weight:500;color:var(--ink)}
-.costhdr{display:flex;align-items:center;justify-content:space-between;width:100%;padding:22px;border:0;background:none;font:inherit;cursor:pointer}
+.costhdr{display:flex;align-items:center;justify-content:space-between;width:100%;padding:22px}
 .costhdr .r{display:flex;align-items:center;gap:8px}
 .costtot{font-size:15px;font-weight:500;color:var(--ink)}
 .crow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--border2)}
@@ -99,9 +99,10 @@ input.slider::-moz-range-thumb{width:28px;height:28px;border-radius:999px;backgr
 .bname{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:6px}
 .trade{border-radius:18px;overflow:hidden;background:var(--primary);box-shadow:0 1px 2px rgba(0,0,0,.05)}
 .trade .th{display:flex;align-items:center;justify-content:space-between;width:100%;padding:22px;border:0;border-top:1px solid var(--border2);background:none;font:inherit;cursor:pointer;text-align:left;color:var(--ink)}
-.thd{padding:22px 22px 14px}
+.thd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:22px 22px 14px}
 .thd .t,.trade .th .t{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block;color:var(--ink2)}
-.thd .s,.trade .th .s{margin-top:4px;font-size:12px;color:var(--ink3);display:block;font-weight:400;text-transform:none;letter-spacing:0}
+.thd .s{font-size:12px;color:var(--ink3);font-weight:400}
+.trade .th .s{margin-top:4px;font-size:12px;color:var(--ink3);display:block;font-weight:400;text-transform:none;letter-spacing:0}
 .trade .body{padding:0 22px 22px}
 .rtwrap{padding:0 22px 20px}
 .rtsel{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -197,16 +198,15 @@ function render(){
      ${tradeOpen?`<div class="body">
        <div class="thead"><span>Board</span><span class="r">Trade</span><span class="r">After ${money.format(state.rebate)}</span></div>
        ${SIZES.map(sz=>`<div class="trow"><span>${sz} circuit</span><span class="r">${money.format(BOARD_PRESETS[sz])}</span><span class="r after">${money.format(BOARD_PRESETS[sz]-state.rebate)}</span></div>`).join('')}
-       <p class="tnote">Rebate scales with how many boards you install. "After" is the board cost once it's paid.</p>
      </div>`:''}
     </section>
 
     <section class="card pad0">
-     <button class="costhdr" data-act="toggle-costs">
+     <div class="costhdr">
        <span class="cap">Input costs <span class="sub">(ex GST)</span></span>
-       <span class="r"><span class="costtot" id="costTot">${money.format(c.totalCosts)}</span>${chev(costsOpen)}</span>
-     </button>
-     ${costsOpen?`<div style="padding:0 22px 22px">
+       <span class="r"><span class="costtot" id="costTot">${money.format(c.totalCosts)}</span></span>
+     </div>
+     <div style="padding:0 22px 22px">
        ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Basis Board</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`} · with $${state.rebate} rebate</span></span><span class="cval">${money.format(b.price-state.rebate)}</span></div>`).join('')}
        <div class="crow"><span class="lab">Labour</span><span style="display:flex;gap:8px">${mi('labourHours',state.labourHours,{w:'w20',cur:false,suf:'hrs'})}${mi('labourRate',state.labourRate,{w:'w24',suf:'/hr'})}</span></div>
        <div class="crow"><span class="lab">Travel</span>${mi('travel',state.travel)}</div>
@@ -218,7 +218,7 @@ function render(){
          </button>
          ${mi('inspection',state.inspection,{off:!state.inspectionEnabled})}
        </div>
-     </div>`:''}
+     </div>
     </section>
    </div>
   </div>
@@ -244,7 +244,7 @@ function paint(){
  }
  hj.innerHTML=`<div class="tl">Net margin <span class="s">· per job (ex GST)</span></div>
    <p class="big">${money.format(c.netMargin)}</p>
-   <p class="jmeta"><span class="pct">${Math.round(c.netMarginPct*100)}% margin</span> <span class="hrs">· ${state.labourHours} hr install</span></p>`;
+   <p class="jmeta"><span class="pct">${Math.round(c.netMarginPct*100)}% margin</span> <span class="hrs">· ${Math.round(state.labourHours*10)/10} hr install</span></p>`;
  const ct=document.getElementById('costTot'); if(ct) ct.textContent=money.format(c.totalCosts);
 }
 
@@ -268,7 +268,7 @@ app.addEventListener('click',e=>{
    const boards=state.boards.slice(0,newLen); while(boards.length<newLen) boards.push({...boards[boards.length-1]});
    const delta=newLen-oldLen;
    state.boards=boards;
-   state.labourHours=Math.max(0,state.labourHours+delta*HOURS_PER_EXTRA_BOARD);
+   state.labourHours=Math.max(0,Math.round((state.labourHours+delta*HOURS_PER_EXTRA_BOARD)*10)/10);
    state.installedCost=Math.round(state.installedCost*newLen/oldLen);
  }
  else if(a==='rebate-tier'){ state.rebate=+el.dataset.rebate; }
@@ -280,5 +280,11 @@ app.addEventListener('click',e=>{
  save(); render();
 });
 render();
+
+/* Report content height to the embedding page so the iframe can auto-size.
+   Works if the host page listens for messages of shape {basisEmbed:'height', height:<px>}. */
+const reportHeight=()=>{try{parent.postMessage({basisEmbed:'height',height:Math.ceil(document.documentElement.scrollHeight)},'*');}catch(e){}};
+if(window.ResizeObserver){new ResizeObserver(reportHeight).observe(document.body);}
+addEventListener('load',reportHeight);
 </script>
 </body></html>
