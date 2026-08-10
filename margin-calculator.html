@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Basis — margin calculator</title>
+<title>Basis margin calculator</title>
 <style>
 @font-face{font-family:'Oracle';src:url('oracle.woff2') format('woff2');font-weight:300 600;font-display:swap;font-style:normal}
 :root{
@@ -36,6 +36,7 @@ body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:
 .hmetric .tl{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.55)}
 .hmetric .tl .s{font-weight:400;text-transform:none;letter-spacing:0}
 .hmetric .big{margin-top:14px;font-size:48px;font-weight:320;line-height:1;color:#fff}
+.hmetric .big .per{font-size:20px;font-weight:400;opacity:.5}
 .hmetric .big.dim{color:rgba(255,255,255,.4)}
 .hmetric .ctx{margin-top:10px;font-size:13px;font-weight:500}
 .hmetric .ctx.dim{color:rgba(255,255,255,.4)}
@@ -157,7 +158,7 @@ function render(){
  const c=calc(), multi=c.boardCount>1;
  document.getElementById('inner').innerHTML=`
   <div class="head">
-   <div class="ttl">Margin calculator</div>
+   <div class="ttl">Basis margin calculator</div>
    <button class="reset" data-act="reset">↺ Reset to defaults</button>
   </div>
 
@@ -192,11 +193,7 @@ function render(){
 
    <div class="col">
     <section class="card pad0">
-     <div class="costhdr">
-       <span class="cap">Input costs <span class="sub">(ex GST)</span></span>
-       <span class="r"><span class="costtot" id="costTot">${money.format(c.totalCosts)}</span></span>
-     </div>
-     <div style="padding:0 22px 22px">
+     <div style="padding:22px 22px 0">
        ${state.boards.map((b,i)=>`<div class="crow"><span><span class="lab">Basis Board</span><span class="hint">${multi?`Board ${i+1} · ${b.size} circuit`:`${b.size} circuit`} · with $${state.rebate} rebate</span></span><span class="cval">${money.format(b.price-state.rebate)}</span></div>`).join('')}
        <div class="crow"><span class="lab">Labour</span><span style="display:flex;gap:8px">${mi('labourHours',state.labourHours,{w:'w20',cur:false,suf:'hrs'})}${mi('labourRate',state.labourRate,{w:'w24',suf:'/hr'})}</span></div>
        <div class="crow"><span class="lab">Travel</span>${mi('travel',state.travel)}</div>
@@ -208,6 +205,10 @@ function render(){
          </button>
          ${mi('inspection',state.inspection,{off:!state.inspectionEnabled})}
        </div>
+     </div>
+     <div class="costhdr" style="border-top:1px solid var(--border2)">
+       <span class="cap">Input costs <span class="sub">(ex GST)</span></span>
+       <span class="r"><span class="costtot" id="costTot">${money.format(c.totalCosts)}</span></span>
      </div>
     </section>
 
@@ -237,7 +238,7 @@ function paint(){
  } else {
    const i=bandIdx(c.perHour), band=HOURLY_BANDS[i], filled=i+1;
    hh.innerHTML=`<div class="tl">Net margin <span class="s">· per hour (ex GST)</span></div>
-     <p class="big" style="color:${band.c}">${money.format(c.perHour)}</p>
+     <p class="big" style="color:${band.c}">${money.format(c.perHour)}<span class="per">/hr</span></p>
      <p class="ctx" style="color:${band.c}">${BAND_LABEL[i]}</p>
      <div class="gauge">${HOURLY_BANDS.map((b,j)=>`<i style="background:${j<filled?band.c:'rgba(255,255,255,.15)'}"></i>`).join('')}</div>`;
  }
