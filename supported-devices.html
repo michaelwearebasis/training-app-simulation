@@ -20,7 +20,7 @@ body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:
 
 .eyebrow{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:var(--supported)}
 .head h1{margin-top:8px;font-size:clamp(1.7rem,2.4vw + 1rem,2.4rem);font-weight:500;letter-spacing:-.02em;color:var(--ink);line-height:1.05}
-.head .lede{margin-top:12px;max-width:60ch;font-size:15px;color:var(--ink2)}
+.head .lede{margin-top:12px;max-width:none;font-size:15px;color:var(--ink2)}
 
 .grow{display:flex;align-items:center;gap:12px;background:var(--supportedBg);border:1px solid var(--supportedLine);border-radius:14px;padding:14px 18px}
 .grow .dotpulse{position:relative;flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--supported)}
@@ -47,9 +47,11 @@ body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:
 .card{display:flex;flex-direction:column;gap:9px;background:var(--primary);border:1px solid var(--border);border-radius:16px;padding:17px 17px 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .chead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 .rcol{display:flex;flex-direction:column;align-items:center;gap:8px;flex:0 0 auto}
+.cardtop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.ltop{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1 1 auto}
 .cat{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--ink3)}
 .logowrap{display:flex;align-items:center;justify-content:center}
-.logo{height:42px;width:auto;max-width:172px;object-fit:contain;object-position:center;display:block}
+.logo{height:42px;width:auto;max-width:132px;object-fit:contain;object-position:center;display:block}
 .lgtext{font-size:15px;font-weight:600;color:var(--ink)}
 .badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;border-radius:999px;padding:3px 9px;white-space:nowrap}
 .badge i{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
@@ -74,7 +76,7 @@ body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:
   <div class="head">
     <span class="eyebrow">Integrations</span>
     <h1>Supported devices</h1>
-    <p class="lede">A supported device integrates with Basis — so you can see its data and control it through Basis, which unlocks smarter automations. Here&rsquo;s the solar and EV hardware we work with today, plus what we&rsquo;re actively integrating next — the list keeps growing.</p>
+    <p class="lede">A supported device integrates with Basis — so you can see its data and control it through Basis, which unlocks smarter automations and insights. Especially useful if the device isn&rsquo;t fed from the Basis Panel. Here&rsquo;s the solar and EV hardware we work with today, plus what we&rsquo;re actively integrating next — the list keeps growing.</p>
   </div>
 
   <div class="grow">
@@ -154,7 +156,7 @@ const ALL=[...SOLAR.map(d=>({...d,cat:"solar"})),...EV.map(d=>({...d,cat:"ev"}))
 const CATLABEL={solar:"Solar",ev:"EV charger"};
 const LOGOS={
  "Tesla":"tesla.png","Sigenergy":"sigenergy.png","Fronius":"fronius.png","SolaX":"solax.png","Sungrow":"sungrow.png","GoodWe":"goodwe.png",
- "ABB":"abb.svg","Autel":"autel.png","Dahua Technology":"dahua.ico","Dahua":"dahua.ico","Smart EV Chargers":"smartev.ico","Teltonika Energy":"teltonika.svg","Wallbox":"wallbox.png","Delta Electronics":"delta.ico","EO Charging":"eo.png","EnergySmart":"energysmart.ico","Etrel":"etrel.png","EVPORT":"evport.png","EVPower":"evpower.jpg","Evnex":"evnex.png","Kwetta":"kwetta.ico","Ocular":"ocular.png","Orbis":"orbis.jpg","Schneider Electric":"schneiderelectric.svg","Siemens":"siemens.svg"
+ "ABB":"abb.svg","Autel":"autel.svg","Dahua Technology":"dahua.ico","Dahua":"dahua.ico","Smart EV Chargers":"smartev.png","Teltonika Energy":"teltonika.svg","Wallbox":"wallbox.png","Delta Electronics":"delta.ico","EO Charging":"eo.png","EnergySmart":"energysmart.ico","Etrel":"etrel.png","EVPORT":"evport.png","Evnex":"evnex.png","Kwetta":"kwetta.png","Ocular":"ocular.png","Orbis":"orbis.jpg","Schneider Electric":"schneiderelectric.svg","Siemens":"siemens.svg"
 };
 const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
@@ -172,12 +174,15 @@ function render(){
     const chips=(d.chips||[]).map(c=>`<span class="chip">${esc(c)}</span>`).join("");
     const logo=LOGOS[d.brand];
     return `<div class="card">
-      <div class="chead"><span class="cat">${CATLABEL[d.cat]}</span><div class="rcol"><span class="badge ${st.cls}"><i></i>${st.label}</span>${logo?`<div class="logowrap"><img class="logo" src="logos/${logo}" alt="${esc(d.brand)} logo" loading="lazy"></div>`:``}</div></div>
-      <div>
-        <div class="brand">${esc(d.brand)}</div>
-        <div class="model">${esc(d.model)}</div>
+      <div class="cardtop">
+        <div class="ltop">
+          <span class="cat">${CATLABEL[d.cat]}</span>
+          <div class="brand">${esc(d.brand)}</div>
+          <div class="model">${esc(d.model)}</div>
+          <div class="meta">${esc(d.meta)}</div>
+        </div>
+        <div class="rcol"><span class="badge ${st.cls}"><i></i>${st.label}</span>${logo?`<div class="logowrap"><img class="logo" src="logos/${logo}" alt="${esc(d.brand)} logo" loading="lazy"></div>`:``}</div>
       </div>
-      <div class="meta">${esc(d.meta)}</div>
       ${chips?`<div class="chips">${chips}</div>`:""}
       ${d.note?`<div class="rmnote">${esc(d.note)}</div>`:""}
     </div>`;
