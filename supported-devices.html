@@ -1,0 +1,191 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Basis — supported devices</title>
+<style>
+@font-face{font-family:'Oracle';src:url('oracle.woff2') format('woff2');font-weight:300 600;font-display:swap;font-style:normal}
+:root{
+  --surface:#F6F6F7; --primary:#fff; --secondary:#F2F2F2; --tertiary:#EAEAEB;
+  --border:#DCDCDE; --border2:#EAEAEB; --accent:#39E581; --highlight:#000;
+  --ink:#1E1E1F; --ink2:#77777A; --ink3:#AAAAAD;
+  --supported:#12A150; --supportedBg:rgba(57,229,129,.16); --supportedLine:rgba(18,161,80,.28);
+  --alpha:#0E8FA8; --alphaBg:rgba(14,143,168,.12); --alphaLine:rgba(14,143,168,.28);
+  --coming:#B4740A; --comingBg:rgba(180,116,10,.12); --comingLine:rgba(180,116,10,.28);
+  --assess:#71717A; --assessBg:rgba(113,113,122,.10); --assessLine:rgba(113,113,122,.24);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:transparent}
+body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:transparent;color:var(--ink);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;line-height:1.5;overflow-x:hidden}
+.page{background:var(--surface);border-radius:22px}
+.wrap{max-width:1120px;margin:0 auto;padding:30px 24px 44px;display:flex;flex-direction:column;gap:22px}
+
+.eyebrow{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:var(--supported)}
+.head h1{margin-top:8px;font-size:clamp(1.7rem,2.4vw + 1rem,2.4rem);font-weight:500;letter-spacing:-.02em;color:var(--ink);line-height:1.05}
+.head .lede{margin-top:12px;max-width:60ch;font-size:15px;color:var(--ink2)}
+
+.grow{display:flex;align-items:center;gap:12px;background:var(--supportedBg);border:1px solid var(--supportedLine);border-radius:14px;padding:14px 18px}
+.grow .dotpulse{position:relative;flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--supported)}
+.grow .dotpulse::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--supported);opacity:.4;animation:pulse 2s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.6);opacity:.5}100%{transform:scale(1.4);opacity:0}}
+.grow p{font-size:13.5px;color:#0B3D22}
+.grow p b{font-weight:600}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px}
+.lg{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)}
+.lg i{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.lg.supported i{background:var(--supported)} .lg.alpha i{background:var(--alpha)}
+.lg.coming i{background:var(--coming)} .lg.assess i{background:var(--assess)}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.tabs{display:inline-flex;flex-wrap:wrap;gap:2px;border:1px solid var(--border);background:var(--primary);border-radius:999px;padding:4px}
+.tabs button{border:0;background:none;color:var(--ink2);font:inherit;font-size:13px;font-weight:500;padding:8px 16px;border-radius:999px;cursor:pointer;transition:.15s}
+.tabs button:hover{color:var(--ink)}
+.tabs button.on{background:var(--highlight);color:#fff}
+.tabs button .n{opacity:.5;font-size:12px;margin-left:5px}
+.count{font-size:12.5px;color:var(--ink3)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:14px}
+.card{display:flex;flex-direction:column;gap:9px;background:var(--primary);border:1px solid var(--border);border-radius:16px;padding:17px 17px 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.chead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cat{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--ink3)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.badge i{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
+.badge.supported{color:var(--supported);background:var(--supportedBg);border:1px solid var(--supportedLine)} .badge.supported i{background:var(--supported)}
+.badge.alpha{color:var(--alpha);background:var(--alphaBg);border:1px solid var(--alphaLine)} .badge.alpha i{background:var(--alpha)}
+.badge.coming{color:var(--coming);background:var(--comingBg);border:1px solid var(--comingLine)} .badge.coming i{background:var(--coming)}
+.badge.assess{color:var(--assess);background:var(--assessBg);border:1px solid var(--assessLine)} .badge.assess i{background:var(--assess)}
+.brand{font-size:17px;font-weight:600;letter-spacing:-.01em;color:var(--ink);line-height:1.15}
+.model{font-size:13px;color:var(--ink2);margin-top:-3px}
+.meta{font-size:12px;color:var(--ink3)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.chip{font-size:10.5px;color:var(--ink2);background:var(--secondary);border:1px solid var(--border2);border-radius:6px;padding:2px 7px;white-space:nowrap}
+.rmnote{font-size:11px;color:var(--ink3);margin-top:1px}
+.spacer{flex:1}
+
+.foot{font-size:12px;color:var(--ink3);border-top:1px solid var(--border2);padding-top:18px}
+.foot b{color:var(--ink2);font-weight:600}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style></head>
+<body>
+<div class="page"><div class="wrap" id="app">
+  <div class="head">
+    <span class="eyebrow">Integrations</span>
+    <h1>Supported devices</h1>
+    <p class="lede">The solar inverters, batteries and EV chargers the Basis Smart Panel works with. We&rsquo;re actively integrating more hardware — some is live today, more is in testing, and the list keeps growing.</p>
+  </div>
+
+  <div class="grow">
+    <span class="dotpulse"></span>
+    <p><b>Actively expanding.</b> New devices are added as each integration is validated — check back as the list grows.</p>
+  </div>
+
+  <div class="legend">
+    <span class="lg supported"><i></i>Supported today</span>
+    <span class="lg alpha"><i></i>Ready for alpha</span>
+    <span class="lg coming"><i></i>Coming soon</span>
+    <span class="lg assess"><i></i>Assessing</span>
+  </div>
+
+  <div class="bar">
+    <div class="tabs" id="tabs"></div>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <p class="foot">Source: Basis DER integration readiness. <b>Updated April 2026.</b> Protocol and readiness details are indicative and evolve as integrations are validated.</p>
+</div></div>
+
+<script>
+const STATUS={
+  supported:{label:"Supported today",cls:"supported"},
+  alpha:{label:"Ready for alpha",cls:"alpha"},
+  coming:{label:"Coming soon",cls:"coming"},
+  assess:{label:"Assessing",cls:"assess"}
+};
+const ORDER={supported:0,alpha:1,coming:2,assess:3};
+
+// Solar inverters / batteries / gateways (from the Solar Digital Guideline)
+const SOLAR=[
+ {brand:"Tesla",model:"Powerwall 3 + Backup Gateway 2",meta:"Hybrid inverter + battery, single unit",status:"supported",chips:["Inverter","Battery","Gateway"]},
+ {brand:"Sigenergy",model:"SigenStor EC · Sigen Hybrid",meta:"Single- & three-phase range",status:"supported",chips:["Inverter","Battery","Gateway","EV charger"]},
+ {brand:"Fronius",model:"Inverters & batteries",meta:"Confirmed line-up coming soon",status:"coming",chips:[]},
+ {brand:"SolaX",model:"Inverters & batteries",meta:"Confirmed line-up coming soon",status:"coming",chips:[]},
+ {brand:"Sungrow",model:"Inverters & batteries",meta:"Confirmed line-up coming soon",status:"coming",chips:[]},
+ {brand:"GoodWe",model:"Inverters & batteries",meta:"Confirmed line-up coming soon",status:"coming",chips:[]},
+];
+
+// EV chargers (from the DER Integration Readiness sheet)
+const EV=[
+ {brand:"ABB",model:"Terra AC",meta:"AC · 3.7–7.4 kW",status:"alpha",chips:["OCPP 1.6J","Modbus TCP","Modbus RS485"]},
+ {brand:"Autel",model:"MaxiCharger",meta:"AC · 7.4 kW",status:"alpha",chips:["OCPP 1.6J → 2.0.1","Modbus TCP","Modbus RS485"]},
+ {brand:"Dahua Technology",model:"Intelligent EV Charger",meta:"AC · 7.4–22 kW",status:"alpha",chips:["OCPP 1.6J","Modbus TCP"],note:"Local control on the roadmap"},
+ {brand:"Smart EV Chargers",model:"Wall Charger (DLB)",meta:"AC · 7.4 kW",status:"alpha",chips:["OCPP 1.6J"]},
+ {brand:"Teltonika Energy",model:"TeltoCharge",meta:"AC · 7.4 kW",status:"alpha",chips:["OCPP 1.6J","Modbus RS485"]},
+ {brand:"Wallbox",model:"Pulsar Max",meta:"AC · 7.4 kW",status:"alpha",chips:["OCPP 1.6J"]},
+
+ {brand:"Cornerstone (RCR)",model:"LIGHT AC · GLOW AC",meta:"AC · 7–22 kW",status:"assess",chips:["OCPP 1.6"]},
+ {brand:"Cornerstone (RCR)",model:"FlexiDC",meta:"DC fast · 60–120 kW",status:"assess",chips:["OCPP 1.6J"]},
+ {brand:"Dahua",model:"D-Volt",meta:"AC · 7–22 kW",status:"assess",chips:["OCPP 1.6J","Modbus TCP"]},
+ {brand:"Delta Electronics",model:"AC MAX Smart",meta:"AC · 7.4–22 kW",status:"assess",chips:["OCPP 1.6","Modbus TCP"]},
+ {brand:"Delta Electronics",model:"DC Wallbox",meta:"DC fast · 25–50 kW",status:"assess",chips:["OCPP 1.6","Modbus TCP"]},
+ {brand:"Delta Electronics",model:"DC City Charger",meta:"DC fast · 100–200 kW",status:"assess",chips:["OCPP 1.6","Modbus TCP"]},
+ {brand:"Delta Electronics",model:"HPC",meta:"DC fast · 350 kW",status:"assess",chips:["OCPP 1.6J → 2.0"]},
+ {brand:"EO Charging",model:"Genius 2",meta:"AC · 7–22 kW",status:"assess",chips:["OCPP 1.6J"]},
+ {brand:"EO Charging",model:"Mini Pro 3",meta:"AC · 7 kW",status:"assess",chips:["OCPP 1.6J"]},
+ {brand:"EnergySmart",model:"Velocity",meta:"AC · 7.4 kW",status:"assess",chips:["OCPP 1.6J"]},
+ {brand:"Etrel",model:"Inch Pro · Inch Pro Duo",meta:"AC · 7.4–22 kW",status:"assess",chips:["OCPP 1.6J","Modbus TCP"]},
+ {brand:"EVPORT",model:"Home Charger",meta:"AC · 7.4 kW",status:"assess",chips:["App / Wi-Fi"]},
+ {brand:"EVPower",model:"Ecolink",meta:"AC · 7.4 kW",status:"assess",chips:["OCPP 1.6J"]},
+ {brand:"Evnex",model:"X7 · X22",meta:"AC · 7.4–22 kW",status:"assess",chips:["OCPP 1.6J (proprietary)"]},
+ {brand:"Kwetta",model:"Skyhook",meta:"DC fast · 200 kW",status:"assess",chips:["Specs on request"]},
+ {brand:"Ocular",model:"IQ Home",meta:"AC · 7.4–22 kW",status:"assess",chips:["OCPP 1.6J / 2.0.1","Modbus TCP"]},
+ {brand:"Ocular",model:"IQ Solar",meta:"AC · 7.4–22 kW",status:"assess",chips:["OCPP 1.6J"]},
+ {brand:"Orbis",model:"Viaris Combi + · Uni",meta:"AC · 7.4 kW",status:"assess",chips:["OCPP 1.6","Modbus RS485"]},
+ {brand:"Schneider Electric",model:"EVlink Pro AC",meta:"AC · 7.4–22 kW",status:"assess",chips:["OCPP 1.6J","Modbus TCP"]},
+ {brand:"Siemens",model:"VersiCharge",meta:"AC · 7.4 kW",status:"assess",chips:["OCPP 1.6J → 2.0.1","Modbus TCP","Modbus RS485"]},
+];
+
+const ALL=[...SOLAR.map(d=>({...d,cat:"solar"})),...EV.map(d=>({...d,cat:"ev"}))]
+  .sort((a,b)=>ORDER[a.status]-ORDER[b.status]);
+const CATLABEL={solar:"Solar",ev:"EV charger"};
+const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+let active="all";
+const tabsEl=document.getElementById("tabs"), gridEl=document.getElementById("grid"), countEl=document.getElementById("count");
+const TABS=[["all","All"],["solar","Solar"],["ev","EV chargers"]];
+const nFor=k=>k==="all"?ALL.length:ALL.filter(d=>d.cat===k).length;
+tabsEl.innerHTML=TABS.map(([k,l])=>`<button data-k="${k}" class="${k==="all"?"on":""}">${l}<span class="n">${nFor(k)}</span></button>`).join("");
+
+function render(){
+  const list=active==="all"?ALL:ALL.filter(d=>d.cat===active);
+  countEl.textContent=`${list.length} ${list.length===1?"device":"devices"}`;
+  gridEl.innerHTML=list.map(d=>{
+    const st=STATUS[d.status];
+    const chips=(d.chips||[]).map(c=>`<span class="chip">${esc(c)}</span>`).join("");
+    return `<div class="card">
+      <div class="chead"><span class="cat">${CATLABEL[d.cat]}</span><span class="badge ${st.cls}"><i></i>${st.label}</span></div>
+      <div>
+        <div class="brand">${esc(d.brand)}</div>
+        <div class="model">${esc(d.model)}</div>
+      </div>
+      <div class="meta">${esc(d.meta)}</div>
+      <div class="spacer"></div>
+      ${chips?`<div class="chips">${chips}</div>`:""}
+      ${d.note?`<div class="rmnote">${esc(d.note)}</div>`:""}
+    </div>`;
+  }).join("");
+}
+tabsEl.addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  active=b.dataset.k;
+  [...tabsEl.children].forEach(x=>x.classList.toggle("on",x.dataset.k===active));
+  render();
+});
+render();
+
+/* Report content height so the embedding page can auto-size the iframe. */
+const reportHeight=()=>{try{parent.postMessage({basisEmbed:'height',height:Math.ceil(document.documentElement.scrollHeight)},'*');}catch(e){}};
+if(window.ResizeObserver){new ResizeObserver(reportHeight).observe(document.body);}
+addEventListener('load',reportHeight);
+</script>
+</body></html>
