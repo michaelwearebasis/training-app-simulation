@@ -47,6 +47,9 @@ body{font-family:'Oracle',-apple-system,'Segoe UI',Roboto,sans-serif;background:
 .card{display:flex;flex-direction:column;gap:9px;background:var(--primary);border:1px solid var(--border);border-radius:16px;padding:17px 17px 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .chead{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .cat{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--ink3)}
+.logowrap{display:flex;align-items:center;min-height:34px}
+.logo{height:30px;width:auto;max-width:158px;object-fit:contain;object-position:left center;display:block}
+.lgtext{font-size:15px;font-weight:600;color:var(--ink)}
 .badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;border-radius:999px;padding:3px 9px;white-space:nowrap}
 .badge i{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
 .badge.supported{color:var(--supported);background:var(--supportedBg);border:1px solid var(--supportedLine)} .badge.supported i{background:var(--supported)}
@@ -148,6 +151,10 @@ const EV=[
 const ALL=[...SOLAR.map(d=>({...d,cat:"solar"})),...EV.map(d=>({...d,cat:"ev"}))]
   .sort((a,b)=>ORDER[a.status]-ORDER[b.status]);
 const CATLABEL={solar:"Solar",ev:"EV charger"};
+const LOGOS={
+ "Tesla":"tesla.png","Sigenergy":"sigenergy.png","Fronius":"fronius.png","SolaX":"solax.png","Sungrow":"sungrow.png","GoodWe":"goodwe.png",
+ "ABB":"abb.svg","Autel":"autel.png","Dahua Technology":"dahua.ico","Dahua":"dahua.ico","Smart EV Chargers":"smartev.ico","Teltonika Energy":"teltonika.svg","Wallbox":"wallbox.png","Delta Electronics":"delta.ico","EO Charging":"eo.png","EnergySmart":"energysmart.ico","Etrel":"etrel.png","EVPORT":"evport.png","EVPower":"evpower.jpg","Evnex":"evnex.png","Kwetta":"kwetta.ico","Ocular":"ocular.png","Orbis":"orbis.jpg","Schneider Electric":"schneiderelectric.svg","Siemens":"siemens.svg"
+};
 const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
 let active="all";
@@ -162,8 +169,10 @@ function render(){
   gridEl.innerHTML=list.map(d=>{
     const st=STATUS[d.status];
     const chips=(d.chips||[]).map(c=>`<span class="chip">${esc(c)}</span>`).join("");
+    const logo=LOGOS[d.brand];
     return `<div class="card">
       <div class="chead"><span class="cat">${CATLABEL[d.cat]}</span><span class="badge ${st.cls}"><i></i>${st.label}</span></div>
+      ${logo?`<div class="logowrap"><img class="logo" src="logos/${logo}" alt="${esc(d.brand)} logo" loading="lazy"></div>`:``}
       <div>
         <div class="brand">${esc(d.brand)}</div>
         <div class="model">${esc(d.model)}</div>
