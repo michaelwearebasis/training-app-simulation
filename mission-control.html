@@ -185,6 +185,22 @@ svg.chart{display:block;width:100%}
 .wchart .wread .rms{color:var(--d500)} .wchart .wread .cur{color:var(--d600)}
 .wchart svg{display:block;width:100%;height:150px;cursor:crosshair}
 
+/* savings */
+.rlogo{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex:0 0 auto}
+.slabel{font-size:15px;font-weight:600;color:var(--d600);margin-bottom:8px}
+.planbar{display:grid;grid-template-columns:220px 1fr 128px;align-items:center;gap:14px}
+.planbar.cur{background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.28);border-radius:9px;padding:8px 10px;margin:-4px -2px}
+.planbar .pl{display:flex;align-items:center;gap:10px;min-width:0}
+.planbar .pn{font-weight:500;font-size:13px;display:flex;align-items:center;gap:6px}
+.planbar .ps{font-size:12px;color:var(--d500);margin-top:1px}
+.planbar .track{height:12px;background:var(--card3);border-radius:6px;overflow:hidden}
+.planbar .fill{height:100%;background:var(--d400);border-radius:6px}
+.planbar .fill.best{background:var(--success)}
+.planbar .fill.curfill{background:var(--primary)}
+.planbar .amt{text-align:right;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:flex-end;gap:7px}
+.planbar .amt .mo{font-size:11px;color:var(--d500);font-weight:400}
+@media(max-width:720px){.planbar{grid-template-columns:1fr auto}.planbar .track{grid-column:1/-1;order:3}}
+
 /* coach */
 .coach{position:fixed;z-index:60;left:50%;bottom:26px;transform:translateX(-50%);width:min(560px,calc(100% - 32px));background:#0C0A09;border:1px solid var(--line2);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.6);padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
 .coach .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#39E581,#0EA5E9);color:#0C0A09;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
@@ -299,6 +315,18 @@ const ROUTINES=[
    ]},
 ];
 const RUN_STATUS={COMPLETED:["flat-success","Completed"],FAILED:["flat-danger","Failed"],MISSED:["flat-warning","Missed"],PENDING:["flat-primary","Pending"],SCHEDULED:["flat-default","Scheduled"]};
+/* Savings — retail plan comparison (app-domain; representative NZ plans, based on this home's usage) */
+const SAVINGS={ current:"Contact Energy",
+ plans:[
+   {retailer:"Electric Kiwi",plan:"MoveMaster",monthly:198,free1h:true},
+   {retailer:"Frank Energy",plan:"Simple",monthly:221},
+   {retailer:"Meridian",plan:"Simply Power",monthly:231},
+   {retailer:"Contact Energy",plan:"Basic",monthly:242,current:true},
+   {retailer:"Mercury",plan:"Open Term",monthly:249},
+   {retailer:"Genesis",plan:"Energy Plus",monthly:256},
+ ]};
+function initials(s){return s.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();}
+function logoColor(s){const c=["#0EA5E9","#22C55E","#F59E0B","#8B5CF6","#EC4899","#14B8A6"];let h=0;for(const ch of s)h=(h*31+ch.charCodeAt(0))>>>0;return c[h%c.length];}
 /* Waveform synthesis — realistic AFDD/RCD capture. Cached per fault id. */
 const _waveCache={};
 function genWave(id){
@@ -349,7 +377,7 @@ const app=document.getElementById('app');
 const money=n=>"$"+n.toLocaleString();
 
 /* ---- coach steps ---- */
-const GROUPS=[1,2,2,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6]; // which of the 7 demo steps each coach micro-step belongs to
+const GROUPS=[1,2,2,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7,7]; // which of the 7 demo steps each coach micro-step belongs to
 const STEPS=[
  {screen:"sites",   msg:'This is <b>Sites</b> — every property where you’ve installed a Basis panel. We’ll open <b>1B Northumberland Avenue</b>. Click its row.', target:"#row-nrthmbld", advanceOn:"click"},
  {screen:"site", tab:"property", msg:'You’re on the site. Open the <b>Property</b> tab, then choose <b>Users</b> to see the sparkies and customers connected to this panel.', target:"#subtab-users", advanceOn:"click"},
@@ -370,6 +398,8 @@ const STEPS=[
  {screen:"site", tab:"insights", msg:'Voltage touched <b>253.5 V</b> (over the 253 V limit) and frequency dipped to <b>48.1 Hz</b>. A wandering grid can be the real cause of a “panel problem”.', advanceOn:"next"},
  {screen:"site", tab:"insights", msg:'Now open <b>Temperature</b>.', target:"#itab-temp", advanceOn:"click"},
  {screen:"site", tab:"insights", msg:'One module spiked to <b>71.8 °C</b> — over the 65 °C alert line — during heavy evening load. A one‑off is fine; a repeat points to a loose termination worth re‑checking.', advanceOn:"next"},
+ {screen:"site", tab:"savings", msg:'Last one — open <b>Savings</b> for the <b>retail plan comparison</b>.', target:"#tab-savings", advanceOn:"click"},
+ {screen:"site", tab:"savings", msg:'Against this home’s real usage, moving from <b>Contact Basic</b> to <b>Electric Kiwi MoveMaster</b> saves about <b>$44/month</b>. That’s how you tell a client whether they’re on the best plan for them. <b>That’s the full walkthrough — nice work!</b>', advanceOn:"next"},
 ];
 
 /* ============================ RENDER ============================ */
@@ -452,6 +482,7 @@ function tabContent(){
     case "faults": return faultsTab();
     case "routines": return routinesTab();
     case "insights": return insightsTab();
+    case "savings": return savingsTab();
     case "overview": return `<div class="card"><div class="cbd sub">Overview — site summary.</div></div>`;
     default: return `<div class="card"><div class="cbd" style="padding:40px;text-align:center;color:var(--d500)">Building the <b style="color:var(--fg)">${cap(S.tab)}</b> section next…</div></div>`;
   }
@@ -811,6 +842,42 @@ function temperatureView(){
   return `<div class="card"><div class="chd"><span class="t">Circuit module temperature</span><span class="sub" style="font-size:12px">Hottest module · last 90 days</span></div>
      <div class="cbd">${bandChart({id:"tempchart",series:d.temp,ymin:30,ymax:80,color:"#FBBF24",bands:tbands,nominal:{v:65,label:"Alert · 65 °C"},height:250,marker:{i:d.tempI,label:"71.8 °C event",color:"#FCA5A5"},yfmt:v=>v.toFixed(0)})}
      <p class="sub" style="font-size:12.5px;margin-top:6px">Modules normally run ~40 °C. On 18 Jul one module spiked to <b style="color:#FCA5A5">71.8 °C</b> — over the 65 °C alert line — during that evening’s heavy load. A one‑off, but a repeat would point to a loose termination worth re‑checking.</p></div></div>`;
+}
+
+/* ---------- Savings · retail comparison ---------- */
+function sCard(label,row,cur){
+  const save=cur.monthly-row.monthly, pct=Math.round(save/cur.monthly*100);
+  const badge = row.current ? '<span class="chip flat-default">Current plan</span>'
+    : save>0 ? `<span class="chip flat-success">Save $${save}/mo · ${pct}%</span>`
+    : `<span class="chip flat-danger">$${-save}/mo more</span>`;
+  return `<div><div class="slabel">${label}</div>
+    <div class="card"><div class="cbd">
+      <div style="display:flex;align-items:center;gap:11px"><span class="rlogo" style="background:${logoColor(row.retailer)}">${initials(row.retailer)}</span>
+        <div><div style="font-weight:600">${row.retailer}</div><div class="sub" style="font-size:12.5px">${row.plan}${row.free1h?' · 1h free':''}</div></div></div>
+      <div style="font-size:27px;font-weight:600;margin-top:12px;letter-spacing:-.01em">$${row.monthly}<span style="font-size:14px;color:var(--d500);font-weight:400"> /mo</span></div>
+      <div style="margin-top:7px">${badge}</div>
+    </div></div></div>`;
+}
+function savingsTab(){
+  const sorted=[...SAVINGS.plans].sort((a,b)=>a.monthly-b.monthly);
+  const cur=SAVINGS.plans.find(p=>p.current), best=sorted[0], worst=sorted[sorted.length-1], max=worst.monthly;
+  const bars=sorted.map(p=>{
+    const isBest=p===best, w=(p.monthly/max*100).toFixed(1), save=cur.monthly-p.monthly;
+    return `<div class="planbar ${p.current?'cur':''}">
+      <div class="pl"><span class="rlogo" style="background:${logoColor(p.retailer)}">${initials(p.retailer)}</span>
+        <div><div class="pn">${p.retailer} · ${p.plan}${p.free1h?' <span class="chip flat-success sm">1h free</span>':''}</div>
+          <div class="ps">${p.current?'On this plan now':save>0?`$${save}/mo cheaper`:`$${-save}/mo dearer`}</div></div></div>
+      <div class="track"><div class="fill ${isBest?'best':p.current?'curfill':''}" style="width:${w}%"></div></div>
+      <div class="amt">${isBest?'<span class="chip flat-success sm">Best</span>':''}<span>$${p.monthly}<span class="mo"> /mo</span></span></div>
+    </div>`;
+  }).join("");
+  const bestSave=cur.monthly-best.monthly, bestPct=Math.round(bestSave/cur.monthly*100);
+  return `<div style="display:flex;align-items:center;gap:10px;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.28);border-radius:11px;padding:12px 15px;margin-bottom:16px">
+      <span class="chip flat-success">Save up to $${bestSave}/mo</span>
+      <span style="font-size:13px;color:var(--d600)">Switching from <b style="color:var(--fg)">${cur.retailer} ${cur.plan}</b> to <b style="color:var(--fg)">${best.retailer} ${best.plan}</b> would save this home about <b style="color:#4ADE80">$${bestSave}/month (${bestPct}%)</b> on the same usage.</span></div>
+    <div class="grid3" style="margin-bottom:16px">${sCard("Best",best,cur)}${sCard("Current",cur,cur)}${sCard("Worst",worst,cur)}</div>
+    <div class="card"><div class="chd"><span class="t">Estimated monthly cost by plan</span><span class="sub" style="font-size:12px">Based on this home’s actual usage</span></div>
+      <div class="cbd" style="display:flex;flex-direction:column;gap:14px">${bars}</div></div>`;
 }
 
 /* ============================ COACH ============================ */
