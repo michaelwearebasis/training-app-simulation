@@ -280,6 +280,25 @@ const FAULTS=[
 ];
 const FAULT_ALL=FAULTS.flatMap(g=>g.items);
 const FAULT_COUNT=FAULT_ALL.length;
+/* Routines (app-domain — representative). Includes a Failed run to investigate. */
+const ROUTINES=[
+ {id:"r1",cn:15,cl:"Hot water",schedule:"Heat off-peak · 11:00 pm – 7:00 am, daily",status:"Active",action:"Set standby",lastRun:{when:"Today, 7:00 am",outcome:"COMPLETED"},nextRun:"Tonight, 11:00 pm",
+   history:[
+     {sched:"11 Aug, 7:00 am",exec:"11 Aug, 7:00 am (+2s)",action:"Set standby",status:"COMPLETED"},
+     {sched:"10 Aug, 7:00 am",exec:"10 Aug, 7:00 am (+1s)",action:"Set standby",status:"COMPLETED"},
+     {sched:"9 Aug, 7:00 am",exec:"9 Aug, 7:00 am (+3s)",action:"Set standby",status:"COMPLETED"},
+     {sched:"8 Aug, 7:00 am",exec:"8 Aug, 7:00 am (+2s)",action:"Set standby",status:"COMPLETED"},
+   ]},
+ {id:"r2",cn:8,cl:"Underfloor heating",schedule:"Weekday mornings · 5:00 am – 8:00 am",status:"Active",action:"Resume",lastRun:{when:"Today, 5:00 am",outcome:"FAILED"},nextRun:"Tomorrow, 5:00 am",
+   history:[
+     {sched:"11 Aug, 5:00 am",exec:"11 Aug, 5:00 am",action:"Resume circuit",status:"FAILED",error:"CMD_TIMEOUT · module 8204…0046"},
+     {sched:"10 Aug, 5:00 am",exec:"10 Aug, 5:00 am (+2s)",action:"Resume circuit",status:"COMPLETED"},
+     {sched:"9 Aug, 5:00 am",exec:"—",action:"Resume circuit",status:"MISSED"},
+     {sched:"8 Aug, 5:00 am",exec:"8 Aug, 5:00 am (+1s)",action:"Resume circuit",status:"COMPLETED"},
+     {sched:"7 Aug, 5:00 am",exec:"7 Aug, 5:00 am (+2s)",action:"Resume circuit",status:"COMPLETED"},
+   ]},
+];
+const RUN_STATUS={COMPLETED:["flat-success","Completed"],FAILED:["flat-danger","Failed"],MISSED:["flat-warning","Missed"],PENDING:["flat-primary","Pending"],SCHEDULED:["flat-default","Scheduled"]};
 /* Waveform synthesis — realistic AFDD/RCD capture. Cached per fault id. */
 const _waveCache={};
 function genWave(id){
@@ -323,14 +342,14 @@ const I={
 };
 
 /* ============================ STATE ============================ */
-let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null };
+let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null, routineOpen:null };
 // debug/deep-link: #screen=site&tab=panel&panelTab=connectivity&coach=6
 (function(){const h=location.hash.slice(1); if(!h)return; h.split("&").forEach(kv=>{const[k,v]=kv.split("=");if(k in S)S[k]=(k==="coach"?+v:v);});})();
 const app=document.getElementById('app');
 const money=n=>"$"+n.toLocaleString();
 
 /* ---- coach steps ---- */
-const GROUPS=[1,2,2,3,3,3,4,4,4,4]; // which of the 7 demo steps each coach micro-step belongs to
+const GROUPS=[1,2,2,3,3,3,4,4,4,4,5,5,5]; // which of the 7 demo steps each coach micro-step belongs to
 const STEPS=[
  {screen:"sites",   msg:'This is <b>Sites</b> — every property where you’ve installed a Basis panel. We’ll open <b>1B Northumberland Avenue</b>. Click its row.', target:"#row-nrthmbld", advanceOn:"click"},
  {screen:"site", tab:"property", msg:'You’re on the site. Open the <b>Property</b> tab, then choose <b>Users</b> to see the sparkies and customers connected to this panel.', target:"#subtab-users", advanceOn:"click"},
@@ -342,6 +361,9 @@ const STEPS=[
  {screen:"site", tab:"faults", msg:'Click the <b>top fault</b> — an <b>AFDD trip on C1 Lights</b> — to expand its details.', target:"#fault-f1", advanceOn:"click"},
  {screen:"site", tab:"faults", msg:'Now open <b>Waveforms</b> to see exactly what the panel captured the instant it tripped.', target:'[data-wave="f1"]', advanceOn:"click"},
  {screen:"site", tab:"faults", msg:'These are the capture channels — <b>voltage, current, the AFDD Rogowski HF signal and the model state</b>. <b>Hover across</b> any chart to read the exact value at that moment. Close it when you’re done.', advanceOn:"next"},
+ {screen:"site", tab:"routines", msg:'Open <b>Routines</b> — the automations set up on this panel (like heating hot water off‑peak).', target:"#tab-routines", advanceOn:"click"},
+ {screen:"site", tab:"routines", msg:'Click <b>View</b> on the <b>Underfloor heating</b> routine to see its run history.', target:'[data-view="r2"]', advanceOn:"click"},
+ {screen:"site", tab:"routines", msg:'Every run is logged. Notice the <b>Failed</b> run on 11 Aug — the module didn’t acknowledge the resume in time (<span style="color:#FCA5A5">CMD_TIMEOUT</span>). It recovered next schedule — that’s what you’d investigate.', advanceOn:"next"},
 ];
 
 /* ============================ RENDER ============================ */
@@ -422,6 +444,7 @@ function tabContent(){
     case "property": return propertyTab();
     case "panel": return panelTab();
     case "faults": return faultsTab();
+    case "routines": return routinesTab();
     case "overview": return `<div class="card"><div class="cbd sub">Overview — site summary.</div></div>`;
     default: return `<div class="card"><div class="cbd" style="padding:40px;text-align:center;color:var(--d500)">Building the <b style="color:var(--fg)">${cap(S.tab)}</b> section next…</div></div>`;
   }
@@ -656,6 +679,56 @@ function waveChart(c,idx,w,reserve){
   </div>`;
 }
 
+/* ---------- Routines ---------- */
+function runStatusChip(st){ const [cls,label]=RUN_STATUS[st]||["flat-default",st]; return `<span class="chip ${cls}">${label}</span>`; }
+function routinesTab(){
+  if(S.routineOpen) return routineDetail(S.routineOpen);
+  const rows=ROUTINES.map(r=>`<tr>
+    <td><span class="scpill"><b class="tnum">${r.cn}</b>${r.cl}</span></td>
+    <td>${r.schedule}</td>
+    <td><span class="chip flat-success">${r.status}</span></td>
+    <td><div>${r.lastRun.when}</div><div style="margin-top:3px">${runStatusChip(r.lastRun.outcome)}</div></td>
+    <td style="color:var(--d500)">${r.nextRun}</td>
+    <td style="text-align:right"><button class="wbtn" data-view="${r.id}">View →</button></td>
+  </tr>`).join("");
+  return `<div class="card pad0"><div class="cbd">
+    <div style="padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px">
+      <span class="idbadge">Panel <b class="mono">${SITE.panelSerial}</b></span>
+      <span class="sub" style="font-size:12.5px">${ROUTINES.length} routines configured</span></div>
+    <div class="thwrap"><table class="hu"><thead><tr>
+      <th>Circuit</th><th>Schedule</th><th>Status</th><th>Last run</th><th>Next run</th><th></th>
+    </tr></thead><tbody>${rows}</tbody></table></div>
+  </div></div>`;
+}
+function routineDetail(id){
+  const r=ROUTINES.find(x=>x.id===id); if(!r) return routinesTab();
+  const c=CIRCUITS.find(x=>x.n===r.cn)||{};
+  const rows=r.history.map(h=>`<tr>
+    <td style="white-space:nowrap">${h.sched}</td>
+    <td style="white-space:nowrap;color:${h.exec==='—'?'var(--d400)':'var(--fg)'}">${h.exec}</td>
+    <td>${h.action}</td>
+    <td><span style="display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap">${runStatusChip(h.status)}${h.error?`<span style="font-size:12px;color:#FCA5A5">${h.error}</span>`:''}</span></td>
+  </tr>`).join("");
+  const failed=r.history.find(h=>h.status==="FAILED");
+  return `<div style="margin-bottom:14px"><button class="wbtn" data-back="routines">← All routines</button></div>
+   <div class="card" style="margin-bottom:16px"><div class="cbd">
+     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+       <div><div style="font-size:17px;font-weight:600">${r.cl} routine</div>
+         <div class="metarow" style="margin-top:8px">
+           <span><span class="scpill"><b class="tnum">${r.cn}</b>${r.cl}</span></span>
+           <span>${r.schedule}</span><span>Action <b>${r.action}</b></span>
+           <span>MCB <b>${c.mcbC||''}${c.mcbA||''}</b></span></div></div>
+       <span class="chip flat-success" style="font-size:12px">${r.status}</span>
+     </div></div></div>
+   ${failed?`<div style="display:flex;gap:10px;align-items:flex-start;background:rgba(222,15,0,.10);border:1px solid rgba(222,15,0,.3);border-radius:11px;padding:12px 14px;margin-bottom:14px">
+      <span class="chip flat-danger" style="flex:0 0 auto">1 failed run</span>
+      <span style="font-size:13px;color:var(--d600)">The 11 Aug run <b style="color:var(--fg)">failed</b> — <span class="mono" style="font-size:12px">${failed.error}</span>. The circuit module didn’t acknowledge the resume command in time. It recovered on the next schedule.</span></div>`:''}
+   <div class="card pad0"><div class="cbd">
+     <div style="padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600">Run history</div>
+     <div class="thwrap"><table class="hu"><thead><tr><th>Scheduled</th><th>Executed</th><th>Action</th><th>Status</th></tr></thead>
+     <tbody>${rows}</tbody></table></div></div></div>`;
+}
+
 /* ============================ COACH ============================ */
 function renderCoach(){
   const root=document.getElementById('coachRoot');
@@ -693,11 +766,13 @@ function nav(action,sel){ if(action)action(); if(coachStepMatches(sel))coachDoAd
 function wire(){
   app.querySelectorAll('[data-nav="sites"]').forEach(b=>b.onclick=()=>{S.screen="sites";render();});
   app.querySelectorAll('tr[data-site]').forEach(tr=>tr.onclick=()=>{ const id=tr.getAttribute('data-site'); if(id!==SITE.id)return; nav(()=>S.screen="site",'#row-'+id); });
-  app.querySelectorAll('.tabs button[data-tab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-tab'); nav(()=>S.tab=k,'#tab-'+k); });
+  app.querySelectorAll('.tabs button[data-tab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-tab'); nav(()=>{S.tab=k;S.routineOpen=null;},'#tab-'+k); });
   app.querySelectorAll('[data-ptab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-ptab'); nav(()=>S.propertyTab=k,'#subtab-'+k); });
   app.querySelectorAll('[data-ntab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-ntab'); nav(()=>S.panelTab=k,'#subtab-'+k); });
   app.querySelectorAll('[data-fault]').forEach(el=>el.onclick=(e)=>{ if(e.target.closest('[data-wave]'))return; const id=el.getAttribute('data-fault'); nav(()=>{S.faultOpen[id]=!S.faultOpen[id];},'#fault-'+id); });
   app.querySelectorAll('[data-wave]').forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); const id=b.getAttribute('data-wave'); nav(()=>{S.wave=id;},'[data-wave="'+id+'"]'); });
+  app.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ const id=b.getAttribute('data-view'); nav(()=>{S.routineOpen=id;},'[data-view="'+id+'"]'); });
+  app.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{ S.routineOpen=null; render(); });
   const wm=document.getElementById('waveModal'); if(wm){ document.getElementById('waveClose').onclick=()=>{S.wave=null;render();}; wm.onclick=(e)=>{ if(e.target===wm){S.wave=null;render();} }; wireWave(); }
   document.getElementById('coachRoot').querySelectorAll('[data-coach="next"]').forEach(b=>b.onclick=()=>coachNext());
   wireSignal();
