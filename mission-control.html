@@ -342,14 +342,14 @@ const I={
 };
 
 /* ============================ STATE ============================ */
-let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null, routineOpen:null };
+let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null, routineOpen:null, insTab:"peak" };
 // debug/deep-link: #screen=site&tab=panel&panelTab=connectivity&coach=6
 (function(){const h=location.hash.slice(1); if(!h)return; h.split("&").forEach(kv=>{const[k,v]=kv.split("=");if(k in S)S[k]=(k==="coach"?+v:v);});})();
 const app=document.getElementById('app');
 const money=n=>"$"+n.toLocaleString();
 
 /* ---- coach steps ---- */
-const GROUPS=[1,2,2,3,3,3,4,4,4,4,5,5,5]; // which of the 7 demo steps each coach micro-step belongs to
+const GROUPS=[1,2,2,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6]; // which of the 7 demo steps each coach micro-step belongs to
 const STEPS=[
  {screen:"sites",   msg:'This is <b>Sites</b> — every property where you’ve installed a Basis panel. We’ll open <b>1B Northumberland Avenue</b>. Click its row.', target:"#row-nrthmbld", advanceOn:"click"},
  {screen:"site", tab:"property", msg:'You’re on the site. Open the <b>Property</b> tab, then choose <b>Users</b> to see the sparkies and customers connected to this panel.', target:"#subtab-users", advanceOn:"click"},
@@ -364,6 +364,12 @@ const STEPS=[
  {screen:"site", tab:"routines", msg:'Open <b>Routines</b> — the automations set up on this panel (like heating hot water off‑peak).', target:"#tab-routines", advanceOn:"click"},
  {screen:"site", tab:"routines", msg:'Click <b>View</b> on the <b>Underfloor heating</b> routine to see its run history.', target:'[data-view="r2"]', advanceOn:"click"},
  {screen:"site", tab:"routines", msg:'Every run is logged. Notice the <b>Failed</b> run on 11 Aug — the module didn’t acknowledge the resume in time (<span style="color:#FCA5A5">CMD_TIMEOUT</span>). It recovered next schedule — that’s what you’d investigate.', advanceOn:"next"},
+ {screen:"site", tab:"insights", msg:'Open <b>Insights</b> — it lands on <b>Peak load</b>: the biggest demand this house has ever drawn.', target:"#tab-insights", advanceOn:"click"},
+ {screen:"site", tab:"insights", msg:'This home peaked at <b>13.3 kW</b> — evening cooking overlapping hot‑water heating — well under the 63 A supply. <b>Hover</b> the curve to read any point.', advanceOn:"next"},
+ {screen:"site", tab:"insights", msg:'Open <b>Power quality</b> to check whether the grid itself is misbehaving.', target:"#itab-pq", advanceOn:"click"},
+ {screen:"site", tab:"insights", msg:'Voltage touched <b>253.5 V</b> (over the 253 V limit) and frequency dipped to <b>48.1 Hz</b>. A wandering grid can be the real cause of a “panel problem”.', advanceOn:"next"},
+ {screen:"site", tab:"insights", msg:'Now open <b>Temperature</b>.', target:"#itab-temp", advanceOn:"click"},
+ {screen:"site", tab:"insights", msg:'One module spiked to <b>71.8 °C</b> — over the 65 °C alert line — during heavy evening load. A one‑off is fine; a repeat points to a loose termination worth re‑checking.', advanceOn:"next"},
 ];
 
 /* ============================ RENDER ============================ */
@@ -445,6 +451,7 @@ function tabContent(){
     case "panel": return panelTab();
     case "faults": return faultsTab();
     case "routines": return routinesTab();
+    case "insights": return insightsTab();
     case "overview": return `<div class="card"><div class="cbd sub">Overview — site summary.</div></div>`;
     default: return `<div class="card"><div class="cbd" style="padding:40px;text-align:center;color:var(--d500)">Building the <b style="color:var(--fg)">${cap(S.tab)}</b> section next…</div></div>`;
   }
@@ -729,6 +736,83 @@ function routineDetail(id){
      <tbody>${rows}</tbody></table></div></div></div>`;
 }
 
+/* ---------- Insights ---------- */
+let _ins=null;
+function genInsights(){
+  if(_ins) return _ins;
+  const H=48, hr=i=>i/2, rnd=(a,b)=>a+Math.random()*(b-a);
+  const peak=[],volt=[],freq=[],temp=[];
+  for(let i=0;i<H;i++){ const h=hr(i);
+    let p; if(h>=5&&h<8.5) p=2.2+2.4*Math.sin((h-5)/3.5*Math.PI)+rnd(0,.4);
+      else if(h>=17&&h<20) p=3.5+4.5*Math.sin((h-17)/3*Math.PI)+rnd(0,.5);
+      else if(h>=9&&h<17) p=0.9+rnd(0,.9); else p=0.32+rnd(0,.22);
+    peak.push({t:h,v:+p.toFixed(2)});
+    volt.push({t:h,v:+(235+6*Math.sin(i/5)+rnd(-3,3)).toFixed(1)});
+    freq.push({t:h,v:+(50+rnd(-0.12,0.12)).toFixed(2)});
+    temp.push({t:h,v:+(38+4*Math.sin((h-15)/6)+rnd(-1,1)).toFixed(1)});
+  }
+  peak[38]={t:19,v:13.35}; peak[37]={t:18.5,v:9.4}; peak[39]={t:19.5,v:8.1};
+  volt[25]={t:12.5,v:253.5}; freq[13]={t:6.5,v:48.14};
+  temp[36]={t:18,v:71.8}; temp[35]={t:17.5,v:52}; temp[37]={t:18.5,v:49};
+  _ins={peak,volt,freq,temp,peakI:38,voltI:25,freqI:13,tempI:36};
+  return _ins;
+}
+const INS_CFG={peakchart:{key:"peak",fmt:v=>v.toFixed(2)+" kW"},voltchart:{key:"volt",fmt:v=>v.toFixed(1)+" V"},freqchart:{key:"freq",fmt:v=>v.toFixed(2)+" Hz"},tempchart:{key:"temp",fmt:v=>v.toFixed(1)+" °C"}};
+function bandChart(o){
+  const W=900,padL=46,padR=14,padT=12,padB=26,H=o.height||230;
+  const iW=W-padL-padR,iH=H-padT-padB, s=o.series;
+  const X=i=>padL+i/(s.length-1)*iW, Y=v=>padT+(o.ymax-v)/(o.ymax-o.ymin)*iH;
+  const bands=(o.bands||[]).map(b=>`<rect x="${padL}" y="${Y(b.to).toFixed(1)}" width="${iW}" height="${(Y(b.from)-Y(b.to)).toFixed(1)}" fill="${b.fill}"/>${b.label?`<text x="${W-padR-6}" y="${(Y(b.to)+13).toFixed(1)}" text-anchor="end" font-size="10" fill="${b.lc||'var(--d400)'}">${b.label}</text>`:''}`).join("");
+  const nt=o.yticks||5; let yt=""; for(let k=0;k<=nt;k++){const v=o.ymin+(o.ymax-o.ymin)*k/nt; yt+=`<line x1="${padL}" x2="${W-padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="rgba(250,250,249,.06)"/><text x="${padL-7}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--d400)">${(o.yfmt||(x=>Math.round(x)))(v)}</text>`;}
+  const nom=o.nominal?`<line x1="${padL}" x2="${W-padR}" y1="${Y(o.nominal.v).toFixed(1)}" y2="${Y(o.nominal.v).toFixed(1)}" stroke="var(--d400)" stroke-dasharray="5 4"/><text x="${W-padR-4}" y="${(Y(o.nominal.v)-4).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--d500)">${o.nominal.label}</text>`:'';
+  const line=s.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(p.v).toFixed(1)}`).join(" ");
+  const area=o.area?`<path d="${line} L${X(s.length-1).toFixed(1)} ${Y(o.ymin).toFixed(1)} L${padL} ${Y(o.ymin).toFixed(1)} Z" fill="${o.color}" opacity=".13"/>`:'';
+  const mk=o.marker!=null?`<circle cx="${X(o.marker.i).toFixed(1)}" cy="${Y(s[o.marker.i].v).toFixed(1)}" r="4" fill="${o.marker.color||o.color}"/><text x="${X(o.marker.i).toFixed(1)}" y="${(Y(s[o.marker.i].v)-9).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="600" fill="${o.marker.color||o.color}">${o.marker.label}</text>`:'';
+  const dots=o.id?s.map((p,i)=>`<circle class="pt" data-i="${i}" cx="${X(i).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="6" fill="transparent"/>`).join(""):'';
+  const xl=["00:00","06:00","12:00","18:00","24:00"].map((l,k)=>`<text x="${(padL+k/4*iW).toFixed(1)}" y="${H-8}" text-anchor="${k===0?'start':k===4?'end':'middle'}" font-size="10" fill="var(--d400)">${l}</text>`).join("");
+  return `<div class="chartwrap" ${o.id?`id="${o.id}"`:''}>
+    <svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:${H}px">
+      ${bands}${yt}${nom}${area}
+      <path d="${line}" fill="none" stroke="${o.color}" stroke-width="1.6"/>${mk}${xl}
+      <line class="crosshair ch" x1="0" y1="${padT}" x2="0" y2="${H-padB}" style="opacity:0"/>
+      <circle class="mk" r="3.5" fill="${o.color}" style="opacity:0"/>${dots}
+    </svg>${o.id?'<div class="tip" data-tip></div>':''}</div>`;
+}
+function insightsTab(){
+  const sub=[["peak","Peak load"],["pq","Power quality"],["temp","Temperature"]].map(([k,l])=>`<button id="itab-${k}" class="${S.insTab===k?'on':''}" data-itab="${k}">${l}</button>`).join("");
+  const body=S.insTab==="peak"?peakLoadView():S.insTab==="pq"?powerQualityView():temperatureView();
+  return `<div class="subtabs">${sub}</div>${body}`;
+}
+function peakLoadView(){
+  const d=genInsights();
+  return `<div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+     <div class="kpi"><div class="k">Peak demand</div><div class="v">13.3 kW</div><div class="s">whole house · evening</div></div>
+     <div class="kpi"><div class="k">99.9th percentile</div><div class="v">6.0 kW</div><div class="s">rarely above this</div></div>
+     <div class="kpi"><div class="k">Supply</div><div class="v">63 A</div><div class="s">≈ 14.5 kW single‑phase</div></div>
+   </div>
+   <div class="card"><div class="chd"><span class="t">Whole‑house demand</span><span class="sub" style="font-size:12px">Typical day · hover to read</span></div>
+     <div class="cbd">${bandChart({id:"peakchart",series:d.peak,ymin:0,ymax:14,color:"#4ADE80",area:true,height:250,marker:{i:d.peakI,label:"13.3 kW",color:"#4ADE80"},yfmt:v=>v.toFixed(0)})}
+     <p class="sub" style="font-size:12.5px;margin-top:8px">The biggest simultaneous demand this house has drawn is <b style="color:var(--fg)">13.3 kW</b> — evening cooking (oven + hob) overlapping with hot‑water heating — comfortably under the 63 A (~14.5 kW) supply.</p></div></div>`;
+}
+function powerQualityView(){
+  const d=genInsights();
+  const vbands=[{from:253,to:260,fill:"rgba(222,15,0,.14)",label:"High",lc:"#FCA5A5"},{from:216,to:253,fill:"rgba(34,197,94,.10)",label:"In range",lc:"#4ADE80"},{from:200,to:216,fill:"rgba(222,15,0,.14)",label:"Low",lc:"#FCA5A5"}];
+  const fbands=[{from:50.5,to:52.5,fill:"rgba(222,15,0,.14)"},{from:49.5,to:50.5,fill:"rgba(34,197,94,.10)",label:"In range",lc:"#4ADE80"},{from:47.5,to:49.5,fill:"rgba(222,15,0,.14)"}];
+  return `<div class="card" style="margin-bottom:16px"><div class="chd"><span class="t">Voltage · panel</span><span class="sub" style="font-size:12px">Last 90 days</span></div>
+     <div class="cbd">${bandChart({id:"voltchart",series:d.volt,ymin:200,ymax:260,color:"#FAFAF9",bands:vbands,nominal:{v:230,label:"Nominal · 230"},height:230,marker:{i:d.voltI,label:"253.5 V",color:"#FCA5A5"},yfmt:v=>v.toFixed(0)})}
+     <p class="sub" style="font-size:12.5px;margin-top:6px">Sits around <b style="color:var(--fg)">236 V</b>, but has touched <b style="color:#FCA5A5">253.5 V</b> — just over the 253 V (230 V +10%) limit. Worth watching if the customer reports flickering or gear tripping.</p></div></div>
+   <div class="card"><div class="chd"><span class="t">Frequency · panel</span><span class="sub" style="font-size:12px">Last 90 days</span></div>
+     <div class="cbd">${bandChart({id:"freqchart",series:d.freq,ymin:47.5,ymax:52.5,color:"#FAFAF9",bands:fbands,nominal:{v:50,label:"Nominal · 50"},height:220,yticks:5,marker:{i:d.freqI,label:"48.1 Hz",color:"#FCA5A5"},yfmt:v=>v.toFixed(1)})}
+     <p class="sub" style="font-size:12.5px;margin-top:6px">Normally rock‑steady at 50 Hz; one grid dip to <b style="color:#FCA5A5">48.1 Hz</b>. A wandering grid can be the real source of a “panel problem”.</p></div></div>`;
+}
+function temperatureView(){
+  const d=genInsights();
+  const tbands=[{from:65,to:80,fill:"rgba(222,15,0,.14)",label:"Over‑range",lc:"#FCA5A5"},{from:30,to:65,fill:"rgba(34,197,94,.08)",label:"Normal",lc:"#4ADE80"}];
+  return `<div class="card"><div class="chd"><span class="t">Circuit module temperature</span><span class="sub" style="font-size:12px">Hottest module · last 90 days</span></div>
+     <div class="cbd">${bandChart({id:"tempchart",series:d.temp,ymin:30,ymax:80,color:"#FBBF24",bands:tbands,nominal:{v:65,label:"Alert · 65 °C"},height:250,marker:{i:d.tempI,label:"71.8 °C event",color:"#FCA5A5"},yfmt:v=>v.toFixed(0)})}
+     <p class="sub" style="font-size:12.5px;margin-top:6px">Modules normally run ~40 °C. On 18 Jul one module spiked to <b style="color:#FCA5A5">71.8 °C</b> — over the 65 °C alert line — during that evening’s heavy load. A one‑off, but a repeat would point to a loose termination worth re‑checking.</p></div></div>`;
+}
+
 /* ============================ COACH ============================ */
 function renderCoach(){
   const root=document.getElementById('coachRoot');
@@ -766,7 +850,7 @@ function nav(action,sel){ if(action)action(); if(coachStepMatches(sel))coachDoAd
 function wire(){
   app.querySelectorAll('[data-nav="sites"]').forEach(b=>b.onclick=()=>{S.screen="sites";render();});
   app.querySelectorAll('tr[data-site]').forEach(tr=>tr.onclick=()=>{ const id=tr.getAttribute('data-site'); if(id!==SITE.id)return; nav(()=>S.screen="site",'#row-'+id); });
-  app.querySelectorAll('.tabs button[data-tab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-tab'); nav(()=>{S.tab=k;S.routineOpen=null;},'#tab-'+k); });
+  app.querySelectorAll('.tabs button[data-tab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-tab'); nav(()=>{S.tab=k;S.routineOpen=null;S.insTab="peak";},'#tab-'+k); });
   app.querySelectorAll('[data-ptab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-ptab'); nav(()=>S.propertyTab=k,'#subtab-'+k); });
   app.querySelectorAll('[data-ntab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-ntab'); nav(()=>S.panelTab=k,'#subtab-'+k); });
   app.querySelectorAll('[data-fault]').forEach(el=>el.onclick=(e)=>{ if(e.target.closest('[data-wave]'))return; const id=el.getAttribute('data-fault'); nav(()=>{S.faultOpen[id]=!S.faultOpen[id];},'#fault-'+id); });
@@ -774,9 +858,29 @@ function wire(){
   app.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ const id=b.getAttribute('data-view'); nav(()=>{S.routineOpen=id;},'[data-view="'+id+'"]'); });
   app.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{ S.routineOpen=null; render(); });
   const wm=document.getElementById('waveModal'); if(wm){ document.getElementById('waveClose').onclick=()=>{S.wave=null;render();}; wm.onclick=(e)=>{ if(e.target===wm){S.wave=null;render();} }; wireWave(); }
+  app.querySelectorAll('[data-itab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-itab'); nav(()=>{S.insTab=k;},'#itab-'+k); });
   document.getElementById('coachRoot').querySelectorAll('[data-coach="next"]').forEach(b=>b.onclick=()=>coachNext());
-  wireSignal();
+  wireSignal(); wireInsCharts();
   reportHeight();
+}
+function wireInsCharts(){
+  const d=genInsights();
+  Object.keys(INS_CFG).forEach(id=>{
+    const wrap=document.getElementById(id); if(!wrap) return;
+    const cfg=INS_CFG[id], series=d[cfg.key];
+    const svg=wrap.querySelector('svg'), tip=wrap.querySelector('[data-tip]'), ch=wrap.querySelector('.ch'), mk=wrap.querySelector('.mk');
+    const vh=svg.viewBox.baseVal.height;
+    wrap.querySelectorAll('.pt').forEach(pt=>pt.addEventListener('mouseenter',()=>{
+      const cx=+pt.getAttribute('cx'),cy=+pt.getAttribute('cy'),i=+pt.getAttribute('data-i');
+      const r=svg.getBoundingClientRect(), px=cx/900*r.width, py=cy/vh*r.height;
+      ch.setAttribute('x1',cx);ch.setAttribute('x2',cx);ch.style.opacity=.5;
+      mk.setAttribute('cx',cx);mk.setAttribute('cy',cy);mk.style.opacity=1;
+      const h=series[i].t, hh=String(Math.floor(h)).padStart(2,'0'), mm=(h%1)?'30':'00';
+      tip.innerHTML=`<div class="tt">${hh}:${mm}</div><b>${cfg.fmt(series[i].v)}</b>`;
+      tip.style.left=px+'px';tip.style.top=py+'px';tip.style.opacity=1;
+    }));
+    wrap.addEventListener('mouseleave',()=>{tip.style.opacity=0;ch.style.opacity=0;mk.style.opacity=0;});
+  });
 }
 function wireWave(){
   const body=document.getElementById('waveBody'); if(!body) return;
