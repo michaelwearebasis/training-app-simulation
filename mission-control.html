@@ -137,6 +137,54 @@ svg.chart{display:block;width:100%}
 .tip .tt{color:var(--d500);font-size:11px;margin-bottom:2px}
 .tip b{font-weight:600}
 
+/* faults */
+.faultbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.rangechip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line2);border-radius:8px;padding:6px 11px;font-size:13px;color:var(--fg)}
+.sevlegend{display:flex;gap:14px;margin-left:auto;font-size:12px;color:var(--d500)}
+.sevlegend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px}
+.daygroup{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--d400);padding:12px 12px 6px}
+.fault{border-bottom:1px solid var(--line)}
+.fault .frow{display:flex;align-items:center;gap:12px;padding:10px 12px 10px 9px;border-left:3px solid transparent;cursor:pointer;transition:background .12s}
+.fault .frow:hover{background:var(--card2)}
+.fault.critical .frow{border-left-color:#DE0F00}
+.fault.error .frow{border-left-color:#F97316}
+.fault.warning .frow{border-left-color:#EAB308}
+.fault .ftime{width:82px;flex:0 0 auto;font-size:12px;color:var(--d600)}
+.sevchip{display:inline-flex;align-items:center;gap:5px;width:78px;justify-content:center;height:20px;border-radius:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;flex:0 0 auto}
+.sevchip i{width:6px;height:6px;border-radius:50%}
+.sevchip.critical{background:rgba(222,15,0,.16);color:#FCA5A5} .sevchip.critical i{background:#DE0F00}
+.sevchip.error{background:rgba(249,115,22,.16);color:#FDBA74} .sevchip.error i{background:#F97316}
+.sevchip.warning{background:rgba(234,179,8,.16);color:#FDE047} .sevchip.warning i{background:#EAB308}
+.fsource{width:150px;flex:0 0 auto;font-size:13.5px;font-weight:500;color:var(--fg)}
+.fmid{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+.scpill{display:inline-flex;align-items:center;gap:6px;background:var(--card3);border-radius:6px;padding:2px 8px;font-size:12px}
+.scpill b{font-size:11px;background:var(--card);border-radius:4px;padding:0 5px}
+.fwave{flex:0 0 auto}
+.fwave .wbtn{display:inline-flex;align-items:center;gap:6px;background:var(--card3);border:1px solid var(--line2);border-radius:7px;padding:5px 11px;font-size:12.5px;font-weight:500;color:var(--fg)}
+.fwave .wbtn:hover{background:var(--card2)}
+.fchev{width:16px;height:16px;color:var(--d400);transition:transform .18s;flex:0 0 auto}
+.fault.open .fchev{transform:rotate(180deg)}
+.fexpand{background:rgba(41,37,36,.5);border-left:3px solid transparent;padding:14px 16px}
+.dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 22px}
+.dl .k{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--d400)}
+.dl .v{font-size:13.5px;margin-top:2px}
+
+/* waveform modal */
+.modal{position:fixed;inset:0;z-index:70;background:rgba(4,6,10,.72);display:flex;align-items:center;justify-content:center;padding:24px}
+.modal .sheet{background:var(--card);border:1px solid var(--line2);border-radius:14px;width:min(920px,100%);max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.modal .mhd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:2}
+.modal .mhd .t{font-size:16px;font-weight:600}
+.modal .mhd .x{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--d500)}
+.modal .mhd .x:hover{background:var(--card2);color:var(--fg)}
+.modal .mbd{padding:14px 18px 20px;display:flex;flex-direction:column;gap:10px}
+.wchart{border:1px solid var(--line);border-radius:9px;background:rgba(41,37,36,.35);padding:10px 12px}
+.wchart .whd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:2px}
+.wchart .wlab{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600}
+.wchart .wsw{width:9px;height:9px;border-radius:2px}
+.wchart .wread{text-align:right;font-size:11.5px;font-family:ui-monospace,Menlo,monospace;line-height:1.3}
+.wchart .wread .rms{color:var(--d500)} .wchart .wread .cur{color:var(--d600)}
+.wchart svg{display:block;width:100%;height:150px;cursor:crosshair}
+
 /* coach */
 .coach{position:fixed;z-index:60;left:50%;bottom:26px;transform:translateX(-50%);width:min(560px,calc(100% - 32px));background:#0C0A09;border:1px solid var(--line2);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.6);padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
 .coach .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#39E581,#0EA5E9);color:#0C0A09;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
@@ -216,6 +264,50 @@ const OTHER_SITES=[
  {address:"3/27 Kelburn Parade",suburb:"Kelburn, Wellington",online:true,circuits:20,faults:0},
  {address:"64 Onslow Road",suburb:"Johnsonville, Wellington",online:true,circuits:16,faults:0},
 ];
+/* Faults (app-domain — representative, consistent with this panel; last 90 days) */
+const FAULTS=[
+ {day:"3 days ago · Fri 8 Aug", items:[
+   {id:"f1",time:"19:12:47",sev:"critical",source:"AFDD trip",cn:1,cl:"Lights",summary:"Series arc detected — circuit isolated",err:"AFD_SERIES_ARC",wave:true},
+ ]},
+ {day:"12 days ago · Wed 30 Jul", items:[
+   {id:"f2",time:"07:41:02",sev:"error",source:"RCD trip",cn:5,cl:"Power",summary:"Residual current 12 mA — over the 10 mA threshold",err:"RCD_TRIP",wave:true},
+   {id:"f3",time:"18:05:33",sev:"warning",source:"Overtemperature",cn:15,cl:"Hot water",summary:"Module temperature 68 °C — elevated, no trip",err:"OT_WARN",wave:false},
+ ]},
+ {day:"34 days ago · Tue 8 Jul", items:[
+   {id:"f4",time:"12:20:09",sev:"error",source:"MCB trip",cn:16,cl:"Hob",summary:"Overcurrent — 24 A on a 20 A B‑curve breaker",err:"MCB_OVERCURRENT",wave:false},
+   {id:"f5",time:"21:58:14",sev:"warning",source:"AFDD informative",cn:2,cl:"Lights",summary:"Arc signature observed, below trip threshold",err:"AFD_INFO",wave:true},
+ ]},
+];
+const FAULT_ALL=FAULTS.flatMap(g=>g.items);
+const FAULT_COUNT=FAULT_ALL.length;
+/* Waveform synthesis — realistic AFDD/RCD capture. Cached per fault id. */
+const _waveCache={};
+function genWave(id){
+  if(_waveCache[id]) return _waveCache[id];
+  const N=500, windowMs=200, t=i=>i/(N-1)*windowMs;
+  const arr=fn=>{const a=new Array(N);for(let i=0;i<N;i++)a[i]=fn(t(i),i);return a;};
+  const V=arr(ms=>230*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000));
+  let ch;
+  if(id==="f2"){ // RCD trip — residual current rises then trips
+    const I=arr(ms=>{const base=6*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000);const leak=ms>70?Math.min(1,(ms-70)/40)*0.02*Math.sin(2*Math.PI*50*ms/1000+0.6):0;return base+base*leak*30;});
+    const RES=arr((ms)=>{const g=ms>70?Math.min(12,(ms-70)/50*12):0.4; return g*Math.abs(Math.sin(2*Math.PI*50*ms/1000))+ (Math.random()-0.5)*0.4;});
+    ch=[cV(V),cI(I,"Current"),{key:"res",label:"Residual current",unit:"mA",color:"#F59E0B",samples:RES,range:null},cModel(arr(ms=>ms>70?Math.min(1.4,(ms-70)/60):0.15+ Math.random()*0.03))];
+  } else { // AFDD trip / informative — arcing current + Rogowski HF + model state
+    const trip = id==="f1";
+    const I=arr((ms)=>{let s=9*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000);
+      if(ms>60){const arcs=(Math.random()<0.35?1:0)*(Math.random()*6-3)*(ms>100?1.6:1);const flat=Math.sign(s)*Math.min(Math.abs(s),9);s=flat+arcs;}return s;});
+    const CROG=arr((ms)=>{const burst=ms>60?(Math.random()<0.5?Math.random()* (ms>100?22:12):Math.random()*4):Math.random()*2;return Math.min(25,burst);});
+    const MOD=arr((ms)=>{const base= ms<60?0.1+Math.random()*0.05 : Math.min(trip?1.35:0.92,(ms-60)/(trip?70:110))+Math.random()*0.04; return Math.max(0,base);});
+    ch=[cV(V),cI(I,"Current"),{key:"crog",label:"AFDD Rogowski",unit:null,range:{min:0,max:25},color:"#22D3EE",samples:CROG},cModel(MOD)];
+  }
+  const res={windowMs,N,channels:ch.map(c=>({...c,rms:rmsOf(c)}))};
+  _waveCache[id]=res; return res;
+}
+function cV(V){return {key:"v",label:"Voltage",unit:"V",color:"#7DD3FC",samples:V,range:null};}
+function cI(I,label){return {key:"i",label:label,unit:"A",color:"#FDE047",samples:I,range:null};}
+function cModel(M){return {key:"model",label:"AFDD model state",unit:null,range:{min:0,max:1.5},color:"#F472B6",samples:M,trip:1.0};}
+function rmsOf(c){ if(c.key==="crog"||c.key==="model") return null; const w=Math.round(c.samples.length*0.2); let s=0,n=0; for(let i=0;i<w;i++){s+=c.samples[i]*c.samples[i];n++;} const r=Math.sqrt(s/n); return c.unit==="V"?r.toFixed(1)+" V":c.unit==="A"?r.toFixed(2)+" A":c.unit==="mA"?r.toFixed(1)+" mA":r.toFixed(2); }
+Math.SQRT2=Math.SQRT2||1.41421356;
 
 /* ============================ ICONS ============================ */
 const I={
@@ -226,29 +318,35 @@ const I={
  boltslash:'<svg viewBox="0 0 20 20" fill="currentColor"><path d="M11.983 1.907a.75.75 0 0 0-1.354-.31L6.633 8H9.5a.75.75 0 0 1 .676 1.073l-.53 1.1 5.4 5.4 1.42-6.24A.75.75 0 0 0 15.75 8H12.9l-.917-6.093Z" opacity=".55"/><path d="M3.28 2.22a.75.75 0 0 0-1.06 1.06l14.5 14.5a.75.75 0 1 0 1.06-1.06L3.28 2.22Z"/></svg>',
  power:'<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1a.75.75 0 0 1 .75.75v6.5a.75.75 0 0 1-1.5 0v-6.5A.75.75 0 0 1 10 1Zm-3.4 3.1a.75.75 0 0 1 .1 1.06 5 5 0 1 0 6.6 0 .75.75 0 1 1 .96-1.15 6.5 6.5 0 1 1-8.52 0 .75.75 0 0 1 1.06.09Z"/></svg>',
  clock:'<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm.75 4.5a.75.75 0 0 0-1.5 0V10c0 .2.08.39.22.53l2 2a.75.75 0 1 0 1.06-1.06l-1.78-1.78V6.5Z"/></svg>',
+ chevd:'<svg class="fchev" viewBox="0 0 20 20" fill="none"><path d="M5 7.5 10 12.5 15 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ wave:'<svg viewBox="0 0 24 24" fill="none" width="15" height="15" style="flex:0 0 auto"><path d="M2 12h3l2-6 3 14 3-11 2 4h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
 
 /* ============================ STATE ============================ */
-let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0 };
+let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null };
 // debug/deep-link: #screen=site&tab=panel&panelTab=connectivity&coach=6
 (function(){const h=location.hash.slice(1); if(!h)return; h.split("&").forEach(kv=>{const[k,v]=kv.split("=");if(k in S)S[k]=(k==="coach"?+v:v);});})();
 const app=document.getElementById('app');
 const money=n=>"$"+n.toLocaleString();
 
 /* ---- coach steps ---- */
-const GROUPS=[1,2,2,3,3,3]; // which of the 7 demo steps each coach micro-step belongs to
+const GROUPS=[1,2,2,3,3,3,4,4,4,4]; // which of the 7 demo steps each coach micro-step belongs to
 const STEPS=[
  {screen:"sites",   msg:'This is <b>Sites</b> — every property where you’ve installed a Basis panel. We’ll open <b>1B Northumberland Avenue</b>. Click its row.', target:"#row-nrthmbld", advanceOn:"click"},
  {screen:"site", tab:"property", msg:'You’re on the site. Open the <b>Property</b> tab, then choose <b>Users</b> to see the sparkies and customers connected to this panel.', target:"#subtab-users", advanceOn:"click"},
  {screen:"site", tab:"property", propertyTab:"users", msg:'These are the accounts linked to the panel — the <b>homeowner</b> (Home) and the <b>electrician</b> (Trade, with approval status). Next we’ll check the panel itself.', advanceOn:"next"},
  {screen:"site", tab:"panel", panelTab:"configuration", msg:'Open the <b>Panel</b> tab — <b>Configuration</b> shows every circuit’s MCB, RCD and AFDD, exactly as commissioned.', target:"#tab-panel", advanceOn:"click"},
  {screen:"site", tab:"panel", panelTab:"connectivity", msg:'Now <b>Connectivity</b> — is the panel on <b>wired or Wi‑Fi</b>, what’s the signal, and have there been any internet drops?', target:"#subtab-connectivity", advanceOn:"click"},
- {screen:"site", tab:"panel", panelTab:"connectivity", msg:'It’s on <b>Wi‑Fi</b> at <b>−59 dBm</b> (channel 6). The drops in the history were <b>brief keep‑alive timeouts that self‑recovered</b> — 99.94% uptime, so not a real problem. More steps coming next.', advanceOn:"next"},
+ {screen:"site", tab:"panel", panelTab:"connectivity", msg:'It’s on <b>Wi‑Fi</b> at <b>−59 dBm</b> (channel 6). The drops in the history were <b>brief keep‑alive timeouts that self‑recovered</b> — 99.94% uptime, so not a real problem for this home.', advanceOn:"next"},
+ {screen:"site", tab:"faults", msg:'Open the <b>Faults</b> tab — it defaults to the <b>last 90 days</b>. Every trip and warning the panel has logged.', target:"#tab-faults", advanceOn:"click"},
+ {screen:"site", tab:"faults", msg:'Click the <b>top fault</b> — an <b>AFDD trip on C1 Lights</b> — to expand its details.', target:"#fault-f1", advanceOn:"click"},
+ {screen:"site", tab:"faults", msg:'Now open <b>Waveforms</b> to see exactly what the panel captured the instant it tripped.', target:'[data-wave="f1"]', advanceOn:"click"},
+ {screen:"site", tab:"faults", msg:'These are the capture channels — <b>voltage, current, the AFDD Rogowski HF signal and the model state</b>. <b>Hover across</b> any chart to read the exact value at that moment. Close it when you’re done.', advanceOn:"next"},
 ];
 
 /* ============================ RENDER ============================ */
 function render(){
-  app.innerHTML = topbar() + (S.screen==="sites" ? sitesScreen() : siteScreen());
+  app.innerHTML = topbar() + (S.screen==="sites" ? sitesScreen() : siteScreen()) + waveModalHTML();
   renderCoach();
   wire();
 }
@@ -268,7 +366,7 @@ function topbar(){
 /* ---------- Sites list ---------- */
 function sitesScreen(){
   const rows=[
-    siteRow({id:SITE.id,address:SITE.address,suburb:SITE.suburb,online:true,circuits:20,faults:1,highlight:true}),
+    siteRow({id:SITE.id,address:SITE.address,suburb:SITE.suburb,online:true,circuits:20,faults:FAULT_COUNT,highlight:true}),
     ...OTHER_SITES.map((s,i)=>siteRow({id:"o"+i,...s,faults:s.faults}))
   ].join("");
   return `<div class="wrap">
@@ -296,7 +394,7 @@ function siteRow(s){
 
 /* ---------- Site shell ---------- */
 function siteScreen(){
-  const tabs=[["overview","Overview"],["property","Property"],["panel","Panel"],["faults","Faults",1],["events","Events"],["routines","Routines",2],["insights","Insights"],["savings","Savings"]];
+  const tabs=[["overview","Overview"],["property","Property"],["panel","Panel"],["faults","Faults",FAULT_COUNT],["events","Events"],["routines","Routines",2],["insights","Insights"],["savings","Savings"]];
   const tabhtml=tabs.map(([k,label,cnt])=>`<button id="tab-${k}" class="${S.tab===k?'on':''}" data-tab="${k}">${label}${cnt?` <span class="chip sm flat-default">${cnt}</span>`:''}</button>`).join("");
   return `<div class="wrap">
     <div class="crumbs"><a data-nav="sites">Sites</a><span class="sep">${I.chev}</span><span>${SITE.address}</span></div>
@@ -323,6 +421,7 @@ function tabContent(){
   switch(S.tab){
     case "property": return propertyTab();
     case "panel": return panelTab();
+    case "faults": return faultsTab();
     case "overview": return `<div class="card"><div class="cbd sub">Overview — site summary.</div></div>`;
     default: return `<div class="card"><div class="cbd" style="padding:40px;text-align:center;color:var(--d500)">Building the <b style="color:var(--fg)">${cap(S.tab)}</b> section next…</div></div>`;
   }
@@ -472,6 +571,91 @@ function connHistory(){
   </svg>`;
 }
 
+/* ---------- Faults ---------- */
+function faultsTab(){
+  const sevN={critical:0,error:0,warning:0}; FAULT_ALL.forEach(f=>sevN[f.sev]++);
+  const groups=FAULTS.map(g=>`<div class="daygroup">${g.day}</div>${g.items.map(faultRow).join("")}`).join("");
+  return `<div class="faultbar">
+      <span class="rangechip">Last 90 days ${I.chev}</span>
+      <span class="sub" style="font-size:13px">${FAULT_COUNT} faults · ${sevN.critical} critical · ${sevN.error} errors · ${sevN.warning} warnings</span>
+      <span class="sevlegend"><span><i style="background:#DE0F00"></i>Critical</span><span><i style="background:#F97316"></i>Error</span><span><i style="background:#EAB308"></i>Warning</span></span>
+    </div>
+    <div class="card pad0"><div class="cbd">${groups}</div></div>`;
+}
+function faultRow(f){
+  const open=S.faultOpen[f.id];
+  return `<div class="fault ${f.sev} ${open?'open':''}" id="fault-${f.id}">
+    <div class="frow" data-fault="${f.id}">
+      <span class="ftime mono">${f.time}</span>
+      <span class="sevchip ${f.sev}"><i></i>${f.sev}</span>
+      <span class="fsource">${f.source}</span>
+      <span class="fmid"><span class="scpill"><b class="tnum">${f.cn}</b>${f.cl}</span><span style="color:var(--d500);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${f.summary}</span></span>
+      <span class="fwave">${f.wave?`<button class="wbtn" data-wave="${f.id}">${I.wave} Waveforms</button>`:'<span style="color:var(--d400);font-size:12px">No capture</span>'}</span>
+      ${I.chevd}
+    </div>
+    ${open?faultExpanded(f):''}
+  </div>`;
+}
+function faultExpanded(f){
+  const c=CIRCUITS.find(x=>x.n===f.cn)||{};
+  return `<div class="fexpand">
+    <div class="dl">
+      <div><div class="k">Circuit</div><div class="v">${f.cn} · ${LABELS[c.label]||f.cl}</div></div>
+      <div><div class="k">Source</div><div class="v">${f.source}</div></div>
+      <div><div class="k">Severity</div><div class="v" style="text-transform:capitalize">${f.sev}</div></div>
+      <div><div class="k">Error code</div><div class="v mono">${f.err}</div></div>
+      <div><div class="k">Protection</div><div class="v">${c.mcbC?`MCB ${c.mcbC}${c.mcbA} · RCD ${c.rcd} ${c.ma}mA${c.afd?' · AFDD':''}`:'—'}</div></div>
+      <div style="grid-column:1/-1"><div class="k">Summary</div><div class="v">${f.summary}</div></div>
+    </div>
+    ${f.wave?`<div style="margin-top:12px"><button class="wbtn" data-wave="${f.id}">${I.wave} View waveforms</button></div>`:''}
+  </div>`;
+}
+
+/* ---------- Waveform modal (interactive) ---------- */
+function niceScale(lo,hi){ if(lo===hi){lo-=1;hi+=1;} const span=hi-lo; let step=Math.pow(10,Math.floor(Math.log10(span/4))); const err=span/4/step; const mult=err>=7.5?10:err>=3?5:err>=1.5?2:1; const s=step*mult; const nlo=Math.floor(lo/s)*s, nhi=Math.ceil(hi/s)*s; const ticks=[]; for(let v=nlo;v<=nhi+1e-9;v+=s)ticks.push(+v.toFixed(6)); return {lo:nlo,hi:nhi,ticks}; }
+function fmtTick(c,v){ if(c.unit==="V")return Math.round(v); if(c.unit==="A")return v.toFixed(0); if(c.unit==="mA")return v.toFixed(0); if(c.key==="model")return v.toFixed(1); if(c.key==="crog")return v.toFixed(0); return v.toFixed(1);}
+function fmtVal(c,v){ if(c.unit==="V")return v.toFixed(1)+" V"; if(c.unit==="A")return v.toFixed(2)+" A"; if(c.unit==="mA")return v.toFixed(1)+" mA"; if(c.key==="model")return v.toFixed(2); if(c.key==="crog")return v.toFixed(1); return v.toFixed(2);}
+function waveModalHTML(){
+  if(!S.wave) return "";
+  const f=FAULT_ALL.find(x=>x.id===S.wave); if(!f) return "";
+  const w=genWave(f.id); const reserve=w.channels.some(c=>c.trip);
+  const charts=w.channels.map((c,i)=>waveChart(c,i,w,reserve)).join("");
+  return `<div class="modal" id="waveModal"><div class="sheet">
+    <div class="mhd"><div><div class="t">Waveform capture</div><div class="sub" style="font-size:12.5px">${f.source} · Circuit ${f.cn} ${f.cl} · ${f.time} · hover to read values</div></div>
+      <button class="x" id="waveClose">✕</button></div>
+    <div class="mbd" id="waveBody">${charts}</div></div></div>`;
+}
+function waveChart(c,idx,w,reserve){
+  const W=1180,H=160,padL=58,padR=reserve?52:12,padT=10,padB=24;
+  const innerW=W-padL-padR, innerH=H-padT-padB;
+  let sc; if(c.range) sc=niceScale(c.range.min,c.range.max);
+  else{let mn=Infinity,mx=-Infinity;c.samples.forEach(v=>{if(v<mn)mn=v;if(v>mx)mx=v;});sc=niceScale(mn,mx);}
+  const yr=sc.hi-sc.lo;
+  const X=i=>padL+i/(c.samples.length-1)*innerW;
+  const Y=v=>padT+(1-(v-sc.lo)/yr)*innerH;
+  const path=c.samples.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" ");
+  const grid=sc.ticks.map(v=>`<line x1="${padL}" x2="${W-padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="rgba(250,250,249,.13)"/><text x="${padL-6}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--d400)">${fmtTick(c,v)}</text>`).join("");
+  const trip=c.trip!=null?`<line x1="${padL}" x2="${W-padR}" y1="${Y(c.trip).toFixed(1)}" y2="${Y(c.trip).toFixed(1)}" stroke="#DE0F00" stroke-width="1" stroke-dasharray="4 3"/><text x="${W-padR-4}" y="${(Y(c.trip)-4).toFixed(1)}" text-anchor="end" font-size="10" fill="#FCA5A5">trip 1.0</text>`:'';
+  const rTicks=c.trip!=null?sc.ticks.map(v=>`<text x="${W-padR+6}" y="${(Y(v)+3).toFixed(1)}" font-size="11" fill="var(--d400)">${v.toFixed(1)}</text>`).join(""):'';
+  const axisTitle=c.unit?`${c.label} (${c.unit})`:c.key==='crog'?`${c.label} (0–25)`:c.label;
+  return `<div class="wchart" data-ch="${idx}" data-padl="${padL}" data-innerw="${innerW}" data-w="${W}" data-window="${w.windowMs}" data-n="${c.samples.length}">
+    <div class="whd">
+      <div class="wlab"><span class="wsw" style="background:${c.color}"></span>${c.label}</div>
+      <div class="wread">${c.rms?`<div class="rms">RMS (first 40 ms): ${c.rms}</div>`:'<div class="rms">&nbsp;</div>'}<div class="cur" data-read>&nbsp;</div></div>
+    </div>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+      ${grid}${trip}${rTicks}
+      <line x1="${padL}" x2="${padL}" y1="${padT}" y2="${padT+innerH}" stroke="rgba(250,250,249,.13)"/>
+      <line x1="${W-padR}" x2="${W-padR}" y1="${padT}" y2="${padT+innerH}" stroke="rgba(250,250,249,.13)"/>
+      <path d="${path}" fill="none" stroke="${c.color}" stroke-width="1.4"/>
+      <line class="wcursor" x1="0" x2="0" y1="${padT}" y2="${padT+innerH}" stroke="var(--fg)" stroke-opacity=".5" style="opacity:0"/>
+      <text transform="rotate(-90 12 ${H/2})" x="12" y="${H/2}" text-anchor="middle" font-size="12" font-weight="600" fill="${c.color}">${axisTitle}</text>
+      <text x="${padL}" y="${H-6}" font-size="10" fill="var(--d400)">0 ms</text>
+      <text x="${W-padR}" y="${H-6}" text-anchor="end" font-size="10" fill="var(--d400)">${w.windowMs} ms</text>
+    </svg>
+  </div>`;
+}
+
 /* ============================ COACH ============================ */
 function renderCoach(){
   const root=document.getElementById('coachRoot');
@@ -500,55 +684,44 @@ function spotlight(sel){
   document.getElementById('coachRoot').appendChild(s);
   el.classList.add('pointing');
 }
-function coachAdvance(viaTarget){
-  const st=STEPS[S.coach];
-  S.coach++;
-  const nx=STEPS[S.coach];
-  if(nx){ if(nx.tab)S.tab=nx.tab; if(nx.propertyTab)S.propertyTab=nx.propertyTab; if(nx.panelTab)S.panelTab=nx.panelTab;
-    if(nx.screen==="site"&&S.screen!=="site")S.screen="site"; }
-  render();
-}
-function maybeCoachClick(sel){
-  const st=STEPS[S.coach];
-  if(st && st.advanceOn==="click" && st.target===sel){ coachAdvance(true); return true; }
-  return false;
-}
+function coachStepMatches(sel){ const st=STEPS[S.coach]; return !!st && st.advanceOn==="click" && st.target===sel; }
+function coachDoAdvance(){ S.coach++; const nx=STEPS[S.coach]; if(nx){ if(nx.tab)S.tab=nx.tab; if(nx.propertyTab)S.propertyTab=nx.propertyTab; if(nx.panelTab)S.panelTab=nx.panelTab; if(nx.screen==="site"&&S.screen!=="site")S.screen="site"; } }
+function coachNext(){ coachDoAdvance(); render(); }
+function nav(action,sel){ if(action)action(); if(coachStepMatches(sel))coachDoAdvance(); render(); }
 
 /* ============================ WIRING ============================ */
 function wire(){
-  // top nav / crumbs back to sites
   app.querySelectorAll('[data-nav="sites"]').forEach(b=>b.onclick=()=>{S.screen="sites";render();});
-  // site rows
-  app.querySelectorAll('tr[data-site]').forEach(tr=>tr.onclick=()=>{
-    const id=tr.getAttribute('data-site');
-    if(id!==SITE.id){ /* filler sites never open */ return; }
-    if(maybeCoachClick('#row-'+id)) return;
-    S.screen="site"; render();
-  });
-  // main tabs
-  app.querySelectorAll('.tabs button[data-tab]').forEach(b=>b.onclick=()=>{
-    const k=b.getAttribute('data-tab');
-    if(maybeCoachClick('#tab-'+k)) return;
-    S.tab=k; render();
-  });
-  // property subtabs
-  app.querySelectorAll('[data-ptab]').forEach(b=>b.onclick=()=>{
-    const k=b.getAttribute('data-ptab');
-    if(maybeCoachClick('#subtab-'+k)) return;
-    S.propertyTab=k; render();
-  });
-  // panel subtabs
-  app.querySelectorAll('[data-ntab]').forEach(b=>b.onclick=()=>{
-    const k=b.getAttribute('data-ntab');
-    if(maybeCoachClick('#subtab-'+k)) return;
-    S.panelTab=k; render();
-  });
-  // coach next
-  document.getElementById('coachRoot').querySelectorAll('[data-coach="next"]').forEach(b=>b.onclick=()=>coachAdvance(false));
-  // signal chart interactivity
+  app.querySelectorAll('tr[data-site]').forEach(tr=>tr.onclick=()=>{ const id=tr.getAttribute('data-site'); if(id!==SITE.id)return; nav(()=>S.screen="site",'#row-'+id); });
+  app.querySelectorAll('.tabs button[data-tab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-tab'); nav(()=>S.tab=k,'#tab-'+k); });
+  app.querySelectorAll('[data-ptab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-ptab'); nav(()=>S.propertyTab=k,'#subtab-'+k); });
+  app.querySelectorAll('[data-ntab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-ntab'); nav(()=>S.panelTab=k,'#subtab-'+k); });
+  app.querySelectorAll('[data-fault]').forEach(el=>el.onclick=(e)=>{ if(e.target.closest('[data-wave]'))return; const id=el.getAttribute('data-fault'); nav(()=>{S.faultOpen[id]=!S.faultOpen[id];},'#fault-'+id); });
+  app.querySelectorAll('[data-wave]').forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); const id=b.getAttribute('data-wave'); nav(()=>{S.wave=id;},'[data-wave="'+id+'"]'); });
+  const wm=document.getElementById('waveModal'); if(wm){ document.getElementById('waveClose').onclick=()=>{S.wave=null;render();}; wm.onclick=(e)=>{ if(e.target===wm){S.wave=null;render();} }; wireWave(); }
+  document.getElementById('coachRoot').querySelectorAll('[data-coach="next"]').forEach(b=>b.onclick=()=>coachNext());
   wireSignal();
-  // report height
   reportHeight();
+}
+function wireWave(){
+  const body=document.getElementById('waveBody'); if(!body) return;
+  const f=FAULT_ALL.find(x=>x.id===S.wave); if(!f) return; const w=genWave(f.id);
+  const charts=[...body.querySelectorAll('.wchart')];
+  function update(frac){
+    charts.forEach(ch=>{
+      const idx=+ch.getAttribute('data-ch'), c=w.channels[idx];
+      const padL=+ch.getAttribute('data-padl'), innerW=+ch.getAttribute('data-innerw'), win=+ch.getAttribute('data-window'), n=+ch.getAttribute('data-n');
+      const cursor=ch.querySelector('.wcursor'), read=ch.querySelector('[data-read]');
+      if(frac==null){ cursor.style.opacity=0; read.innerHTML='&nbsp;'; return; }
+      const x=padL+frac*innerW; cursor.setAttribute('x1',x); cursor.setAttribute('x2',x); cursor.style.opacity=1;
+      const i=Math.round(frac*(n-1)), v=c.samples[i], ms=frac*win;
+      read.textContent=`${ms.toFixed(1)} ms · ${fmtVal(c,v)}`;
+    });
+  }
+  charts.forEach(ch=>{ const svg=ch.querySelector('svg');
+    svg.addEventListener('pointermove',(e)=>{ const r=svg.getBoundingClientRect(); if(!r.width)return; const Wv=+ch.getAttribute('data-w'), padL=+ch.getAttribute('data-padl'), innerW=+ch.getAttribute('data-innerw'); const viewX=(e.clientX-r.left)/r.width*Wv; update(Math.max(0,Math.min(1,(viewX-padL)/innerW))); });
+  });
+  body.addEventListener('pointerleave',()=>update(null));
 }
 function wireSignal(){
   const wrap=document.getElementById('sigwrap'); if(!wrap) return;
