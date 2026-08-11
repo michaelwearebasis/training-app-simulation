@@ -175,7 +175,8 @@ svg.chart{display:block;width:100%}
 
 /* waveform modal */
 .modal{position:fixed;inset:0;z-index:70;background:rgba(4,6,10,.72);display:flex;align-items:center;justify-content:center;padding:24px}
-.modal .sheet{background:var(--card);border:1px solid var(--line2);border-radius:14px;width:min(920px,100%);max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.modal .sheet{background:var(--card);border:1px solid var(--line2);border-radius:14px;width:min(920px,100%);max-height:92vh;overflow:auto;overscroll-behavior:contain;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+html.modal-open{overflow:hidden}
 .modal .mhd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:2}
 .modal .mhd .t{font-size:16px;font-weight:600}
 .modal .mhd .x{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--d500)}
@@ -712,6 +713,7 @@ const STEPS=[
 /* ============================ RENDER ============================ */
 function render(){
   app.innerHTML = topbar() + (S.screen==="sites" ? sitesScreen() : siteScreen()) + waveModalHTML();
+  document.documentElement.classList.toggle('modal-open', !!S.wave); // lock the page behind an open modal so scrolling stays inside it
   renderCoach();
   wire();
 }
@@ -1487,9 +1489,11 @@ function placeCoachPill(st){
   if(st.target){
     const t=document.querySelector(st.target);
     if(t){ const rr=t.getBoundingClientRect();
+      const fx=!!(t.closest&&t.closest('.modal')); // target lives in a fixed modal → track the viewport, not the document
       const s=document.createElement('div'); s.className='spot';
-      s.style.left=(rr.left-6)+'px'; s.style.top=(rr.top-6+window.scrollY)+'px';
+      s.style.left=(rr.left-6)+'px'; s.style.top=(rr.top-6+(fx?0:window.scrollY))+'px';
       s.style.width=(rr.width+12)+'px'; s.style.height=(rr.height+12)+'px';
+      if(fx){ s.style.position='fixed'; s.style.zIndex='95'; }
       root.appendChild(s); t.classList.add('pointing'); }
   }
   const el=anchorSel?document.querySelector(anchorSel):null;
@@ -1502,18 +1506,19 @@ function placeCoachPill(st){
   const b=pill.querySelector('[data-coach="next"]'); if(b) b.onclick=coachNext;
   if(st.overlay){ pill.classList.add('cp-fixed','cp-down'); return; }
   if(!el){ pill.classList.add('cp-fixed'); return; }
-  positionPill(pill, el.getBoundingClientRect(), st.place||'bottom');
+  positionPill(pill, el.getBoundingClientRect(), st.place||'bottom', !!(el.closest&&el.closest('.modal')));
 }
-function positionPill(pill,r,place){
+function positionPill(pill,r,place,fixed){
   const pw=pill.offsetWidth, ph=pill.offsetHeight, gap=14, vw=document.documentElement.clientWidth;
-  const cx=r.left+r.width/2, cy=r.top+r.height/2; let left, top, ax=null;
-  if(place==='bottom'){ top=r.bottom+gap+window.scrollY; left=cx-pw/2; }
-  else if(place==='top'){ top=r.top-gap-ph+window.scrollY; left=cx-pw/2; }
-  else if(place==='right'){ left=r.right+gap; top=cy-ph/2+window.scrollY; }
-  else { left=r.left-gap-pw; top=cy-ph/2+window.scrollY; }
+  const cx=r.left+r.width/2, cy=r.top+r.height/2, sy=fixed?0:window.scrollY; let left, top, ax=null;
+  if(place==='bottom'){ top=r.bottom+gap+sy; left=cx-pw/2; }
+  else if(place==='top'){ top=r.top-gap-ph+sy; left=cx-pw/2; }
+  else if(place==='right'){ left=r.right+gap; top=cy-ph/2+sy; }
+  else { left=r.left-gap-pw; top=cy-ph/2+sy; }
   const cl=Math.max(10,Math.min(left,vw-pw-10));
   if(place==='bottom'||place==='top'){ ax=Math.max(16,Math.min(cx-cl,pw-16)); pill.style.setProperty('--ax',ax+'px'); }
-  pill.style.left=cl+'px'; pill.style.top=Math.max(6+window.scrollY,top)+'px';
+  if(fixed){ pill.style.position='fixed'; pill.style.zIndex='94'; }
+  pill.style.left=cl+'px'; pill.style.top=Math.max(6+sy,top)+'px';
   pill.classList.add('pl-'+place);
 }
 function coachStepMatches(sel){ const st=STEPS[S.coach]; return !S.intro && !!st && st.advanceOn==="click" && st.target===sel; }
