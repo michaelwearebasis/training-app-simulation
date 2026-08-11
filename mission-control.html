@@ -274,6 +274,32 @@ table.hu.sites th:nth-child(2),table.hu.sites td:nth-child(2){width:34%}
 .livefill{height:100%;border-radius:6px}
 .livev{text-align:right;font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
 
+/* property — users */
+.userrow{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line)}
+.userrow:last-child{border-bottom:none}
+.userrow .nm{font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px}
+.userrow .de{font-size:12px;color:var(--d500);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eyebtn{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--primary);flex-shrink:0}
+.eyebtn svg{width:17px;height:17px}
+.eyebtn:hover{background:rgba(2,132,199,.10)}
+
+/* routine detail */
+.drow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;gap:12px}
+.drow:last-child{border-bottom:none}
+.dk{color:var(--d500)}
+.dv{text-align:right}
+.schwin{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:8px}
+.schd{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--d500);font-weight:600}
+.scht{font-size:14px;font-weight:600;margin-top:2px}
+.schh{font-size:12px;color:var(--d500)}
+
+/* waveform channel pills */
+.wpills{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.wpill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:4px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--d500)}
+.wpill.on{color:var(--fg);background:var(--card2)}
+.wpill i{width:8px;height:8px;border-radius:50%}
+.wpill.more{color:var(--primary)}
+
 /* savings — retail comparison */
 .sgrid{align-items:stretch}
 .scol{display:flex;flex-direction:column}
@@ -419,8 +445,8 @@ const CONN={type:"wireless",signalDbm:-59,channel:6,freqMhz:2437,wiredMB:0,wirel
 const USERS=[
  {name:"The Homeowner",email:"homeowner@example.com",home:true,trade:false,reg:"14 Mar 2026",av:"H"},
  {name:"Partner Account",email:"partner@example.com",home:true,trade:false,reg:"14 Mar 2026",av:"P"},
- {name:"The Electrician",email:"sparky@example.com",home:false,trade:true,company:"Northside Electrical",reg:"12 Mar 2026",tradeApproved:true,av:"E"},
- {name:"Apprentice",email:"apprentice@example.com",home:false,trade:true,company:"Northside Electrical",reg:"2 Aug 2026",tradeApproved:false,av:"A"},
+ {name:"The Electrician",email:"sparky@example.com",home:false,trade:true,company:"Northside Electrical",tradeId:"E262713",reg:"12 Mar 2026",tradeApproved:true,av:"E"},
+ {name:"Apprentice",email:"apprentice@example.com",home:false,trade:true,company:"Northside Electrical",tradeId:"E675432",reg:"2 Aug 2026",tradeApproved:false,av:"A"},
 ];
 /* 5 filler sites (never clicked) */
 const OTHER_SITES=[
@@ -449,6 +475,7 @@ const FAULT_COUNT=FAULT_ALL.length;
 /* Routines (app-domain — representative). Includes a Failed run to investigate. */
 const ROUTINES=[
  {id:"r1",cn:15,cl:"Hot water",schedule:"Heat off-peak · 11:00 pm – 7:00 am, daily",status:"Active",action:"Set standby",lastRun:{when:"Today, 7:00 am",outcome:"COMPLETED"},nextRun:"Tonight, 11:00 pm",
+   scheduleId:"5daa473b-34cb-4cc0-9f82-ca9cf8c98804",circuitState:"LIVE",circuitW:"0 W",comingNext:"Standby in 4 hours",activePeriod:"Not currently active",nextWindow:"Tue, 11 Aug, 11:00 PM → Wed, 12 Aug, 7:00 AM",windows:[{d:"Daily",t:"11:00 PM – 7:00 AM",h:"8h"}],
    history:[
      {sched:"11 Aug, 7:00 am",exec:"11 Aug, 7:00 am (+2s)",action:"Set standby",status:"COMPLETED"},
      {sched:"10 Aug, 7:00 am",exec:"10 Aug, 7:00 am (+1s)",action:"Set standby",status:"COMPLETED"},
@@ -456,6 +483,7 @@ const ROUTINES=[
      {sched:"8 Aug, 7:00 am",exec:"8 Aug, 7:00 am (+2s)",action:"Set standby",status:"COMPLETED"},
    ]},
  {id:"r2",cn:8,cl:"Underfloor heating",schedule:"Weekday mornings · 5:00 am – 8:00 am",status:"Active",action:"Resume",lastRun:{when:"Today, 5:00 am",outcome:"FAILED"},nextRun:"Tomorrow, 5:00 am",
+   scheduleId:"7c14e0a9-91b2-4de1-a5b7-2f6631aa1c3d",circuitState:"STANDBY",circuitW:"0 W",comingNext:"Resume tomorrow, 5:00 AM",activePeriod:"Not currently active",nextWindow:"Wed, 12 Aug, 5:00 AM → 8:00 AM",windows:[{d:"Weekdays",t:"5:00 AM – 8:00 AM",h:"3h"}],
    history:[
      {sched:"11 Aug, 5:00 am",exec:"11 Aug, 5:00 am",action:"Resume circuit",status:"FAILED",error:"CMD_TIMEOUT · module 8204…0046"},
      {sched:"10 Aug, 5:00 am",exec:"10 Aug, 5:00 am (+2s)",action:"Resume circuit",status:"COMPLETED"},
@@ -514,21 +542,21 @@ function genWave(id){
   if(id==="f2"){ // RCD trip — residual current rises then trips
     const I=arr(ms=>{const base=6*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000);const leak=ms>70?Math.min(1,(ms-70)/40)*0.02*Math.sin(2*Math.PI*50*ms/1000+0.6):0;return base+base*leak*30;});
     const RES=arr((ms)=>{const g=ms>70?Math.min(12,(ms-70)/50*12):0.4; return g*Math.abs(Math.sin(2*Math.PI*50*ms/1000))+ (Math.random()-0.5)*0.4;});
-    ch=[cV(V),cI(I,"Current"),{key:"res",label:"Residual current",unit:"mA",color:"#F59E0B",samples:RES,range:null},cModel(arr(ms=>ms>70?Math.min(1.4,(ms-70)/60):0.15+ Math.random()*0.03))];
+    ch=[cV(V),cI(I,"Primary Current"),{key:"res",label:"Residual current",unit:"mA",color:"#F59E0B",samples:RES,range:null},cModel(arr(ms=>ms>70?Math.min(1.4,(ms-70)/60):0.15+ Math.random()*0.03))];
   } else { // AFDD trip / informative — arcing current + Rogowski HF + model state
     const trip = id==="f1";
     const I=arr((ms)=>{let s=9*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000);
       if(ms>60){const arcs=(Math.random()<0.35?1:0)*(Math.random()*6-3)*(ms>100?1.6:1);const flat=Math.sign(s)*Math.min(Math.abs(s),9);s=flat+arcs;}return s;});
     const CROG=arr((ms)=>{const burst=ms>60?(Math.random()<0.5?Math.random()* (ms>100?22:12):Math.random()*4):Math.random()*2;return Math.min(25,burst);});
     const MOD=arr((ms)=>{const base= ms<60?0.1+Math.random()*0.05 : Math.min(trip?1.35:0.92,(ms-60)/(trip?70:110))+Math.random()*0.04; return Math.max(0,base);});
-    ch=[cV(V),cI(I,"Current"),{key:"crog",label:"AFDD Rogowski",unit:null,range:{min:0,max:25},color:"#22D3EE",samples:CROG},cModel(MOD)];
+    ch=[cV(V),cI(I,"Primary Current"),{key:"crog",label:"AFDD Rogowski",unit:null,range:{min:0,max:25},color:"#16A34A",samples:CROG},cModel(MOD)];
   }
   const res={windowMs,N,channels:ch.map(c=>({...c,rms:rmsOf(c)}))};
   _waveCache[id]=res; return res;
 }
-function cV(V){return {key:"v",label:"Voltage",unit:"V",color:"#0369A1",samples:V,range:null};}
-function cI(I,label){return {key:"i",label:label,unit:"A",color:"#CA8A04",samples:I,range:null};}
-function cModel(M){return {key:"model",label:"AFDD model state",unit:null,range:{min:0,max:1.5},color:"#F472B6",samples:M,trip:1.0};}
+function cV(V){return {key:"v",label:"Phase Voltage",unit:"V",color:"#7C3AED",samples:V,range:null};}
+function cI(I,label){return {key:"i",label:label,unit:"A",color:"#2563EB",samples:I,range:null};}
+function cModel(M){return {key:"model",label:"AFD Model",unit:null,range:{min:0,max:1.5},color:"#DB2777",samples:M,trip:1.0};}
 function rmsOf(c){ if(c.key==="crog"||c.key==="model") return null; const w=Math.round(c.samples.length*0.2); let s=0,n=0; for(let i=0;i<w;i++){s+=c.samples[i]*c.samples[i];n++;} const r=Math.sqrt(s/n); return c.unit==="V"?r.toFixed(1)+" V":c.unit==="A"?r.toFixed(2)+" A":c.unit==="mA"?r.toFixed(1)+" mA":r.toFixed(2); }
 Math.SQRT2=Math.SQRT2||1.41421356;
 
@@ -665,20 +693,23 @@ function tabContent(){
 }
 
 /* ---------- Property ---------- */
+const _eye='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+function userRow(u){
+  const meta = u.trade ? [u.email,u.company,u.tradeId].filter(Boolean).join(" · ") : u.email;
+  const chip = (u.trade && !u.tradeApproved) ? ' <span class="chip flat-warning sm">awaiting approval</span>' : '';
+  return `<div class="userrow"><div class="av">${u.av}</div>
+    <div style="flex:1;min-width:0"><div class="nm">${u.name}${chip}</div><div class="de">${meta}</div></div>
+    <span class="eyebtn">${_eye}</span></div>`;
+}
 function propertyTab(){
-  const sub=[["overview","Overview"],["users","Users"],["retailer","Energy retailer"]]
+  const sub=[["overview","Overview"],["retailer","Energy retailer"],["users","Users"]]
     .map(([k,l])=>`<button id="subtab-${k}" class="${S.propertyTab===k?'on':''}" data-ptab="${k}">${l}</button>`).join("");
   let body;
   if(S.propertyTab==="users"){
-    const rows=USERS.map(u=>`<tr>
-      <td><div class="usercell"><div class="av">${u.av}</div><div><div class="nm">${u.name}</div><div class="de">${u.trade?[u.email,u.company].filter(Boolean).join(" • "):u.email}</div></div></div></td>
-      <td>${u.home?'<span class="chip home">Home</span>':''}</td>
-      <td>${u.trade?`<span style="display:inline-flex;gap:8px;align-items:center"><span class="chip trade">Trade</span>${u.tradeApproved?'<span class="chip flat-success">Approved</span>':'<span class="chip flat-warning">Awaiting approval</span>'}</span>`:''}</td>
-      <td style="color:var(--d500)">${u.reg}</td>
-    </tr>`).join("");
-    body=`<div class="card pad0"><div class="cbd"><div class="thwrap">
-      <table class="hu"><thead><tr><th>User</th><th>Home</th><th>Trade</th><th>Registered</th></tr></thead>
-      <tbody>${rows}</tbody></table></div></div></div>`;
+    const trade=USERS.filter(u=>u.trade).map(userRow).join("");
+    const home=USERS.filter(u=>u.home).map(userRow).join("");
+    const card=(title,list)=>`<div class="card" style="margin-bottom:16px"><div class="chd"><span class="t">${title}</span></div><div class="cbd" style="padding-top:6px">${list}</div></div>`;
+    body=card("Trade Users",trade)+card("Home Users",home);
   } else {
     body=`<div class="card"><div class="cbd sub">${cap(S.propertyTab)} — (open <b style="color:var(--fg)">Users</b>).</div></div>`;
   }
@@ -879,8 +910,16 @@ function waveModalHTML(){
   const f=FAULT_ALL.find(x=>x.id===S.wave); if(!f) return "";
   const w=genWave(f.id); const reserve=w.channels.some(c=>c.trip);
   const charts=w.channels.map((c,i)=>waveChart(c,i,w,reserve)).join("");
+  const c0=CIRCUITS.find(x=>x.n===f.cn)||{};
+  const prot=c0.rcd?`RCD: ${c0.ma}mA Type ${c0.rcd}`:(c0.mcbC?`MCB ${c0.mcbC}${c0.mcbA}`:'');
+  const title=f.source.replace(/\b\w/g,m=>m.toUpperCase());
+  const pills=w.channels.map(c=>`<span class="wpill on"><i style="background:${c.color}"></i>${c.label}</span>`).join("")
+    +`<span class="wpill">MCB Model</span><span class="wpill">RCD Model</span><span class="wpill more">More (12)</span>`;
   return `<div class="modal" id="waveModal"><div class="sheet">
-    <div class="mhd"><div><div class="t">Waveform capture</div><div class="sub" style="font-size:12.5px">${f.source} · Circuit ${f.cn} ${f.cl} · ${f.time} · hover to read values</div></div>
+    <div class="mhd"><div style="min-width:0">
+        <div class="t" style="display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" fill="#DE0F00" width="15" height="15"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> Event Waveform — ${title}</div>
+        <div class="sub" style="font-size:12px;margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="scpill"><b class="tnum">${f.cn}</b>${f.cl}</span> <span>${prot} · ${f.time}</span> <span style="color:var(--d400)">· No tags</span></div>
+        <div class="wpills">${pills}</div></div>
       <button class="x" id="waveClose">✕</button></div>
     <div class="mbd" id="waveBody">${charts}</div></div></div>`;
 }
@@ -946,21 +985,38 @@ function routineDetail(id){
     <td><span style="display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap">${runStatusChip(h.status)}${h.error?`<span style="font-size:12px;color:#DC2626">${h.error}</span>`:''}</span></td>
   </tr>`).join("");
   const failed=r.history.find(h=>h.status==="FAILED");
+  const dl=(k,v)=>`<div class="drow"><span class="dk">${k}</span><span class="dv">${v}</span></div>`;
+  const windows=(r.windows||[]).map(w=>`<div class="schwin"><div><div class="schd">${w.d}</div><div class="scht">${w.t}</div></div><div class="schh">${w.h}</div></div>`).join("");
   return `<div style="margin-bottom:14px"><button class="wbtn" data-back="routines">← All routines</button></div>
-   <div class="card" style="margin-bottom:16px"><div class="cbd">
-     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
-       <div><div style="font-size:17px;font-weight:600">${r.cl} routine</div>
-         <div class="metarow" style="margin-top:8px">
-           <span><span class="scpill"><b class="tnum">${r.cn}</b>${r.cl}</span></span>
-           <span>${r.schedule}</span><span>Action <b>${r.action}</b></span>
-           <span>MCB <b>${c.mcbC||''}${c.mcbA||''}</b></span></div></div>
-       <span class="chip flat-success" style="font-size:12px">${r.status}</span>
-     </div></div></div>
+   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+     <span class="scpill"><b class="tnum">${r.cn}</b>${(c.label||r.cl||'').toUpperCase()}</span>
+     <span class="mono" style="font-size:12.5px;color:var(--d500)">${SITE.panelSerial}</span>
+     <span class="chip flat-success sm">● Connected</span></div>
+   <div class="grid2" style="margin-bottom:16px;align-items:start">
+     <div style="display:flex;flex-direction:column;gap:16px">
+       <div class="card"><div class="chd"><span class="t">Details</span></div><div class="cbd">
+         ${dl("Status",`<span class="chip flat-primary sm">${r.status==='Active'?'Enabled':r.status}</span>`)}
+         ${dl("Circuit State",`<span style="display:inline-flex;gap:8px;align-items:center"><span class="chip ${r.circuitState==='LIVE'?'flat-danger':'flat-default'} sm">${r.circuitState}</span><span style="color:var(--d500)">${r.circuitW}</span></span>`)}
+         ${dl("Schedule ID",`<span class="mono" style="font-size:12px;color:var(--d500)">${r.scheduleId}</span>`)}
+       </div></div>
+       <div class="card"><div class="chd"><span class="t">Timing</span></div><div class="cbd">
+         ${dl("Coming next",r.comingNext)}
+         ${dl("Active period",r.activePeriod)}
+         ${dl("Next scheduled",r.nextWindow)}
+       </div></div>
+     </div>
+     <div class="card"><div class="chd"><span class="t">Schedule</span></div><div class="cbd">
+       ${windows}
+       <p class="sub" style="font-size:11.5px;margin-top:10px">Schedules use the site timezone, which is <span class="mono">Pacific/Auckland</span>.</p>
+     </div></div>
+   </div>
    ${failed?`<div style="display:flex;gap:10px;align-items:flex-start;background:rgba(222,15,0,.10);border:1px solid rgba(222,15,0,.3);border-radius:11px;padding:12px 14px;margin-bottom:14px">
       <span class="chip flat-danger" style="flex:0 0 auto">1 failed run</span>
       <span style="font-size:13px;color:var(--d600)">The 11 Aug run <b style="color:var(--fg)">failed</b> — <span class="mono" style="font-size:12px">${failed.error}</span>. The circuit module didn’t acknowledge the resume command in time. It recovered on the next schedule.</span></div>`:''}
    <div class="card pad0"><div class="cbd">
-     <div style="padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600">Run history</div>
+     <div style="padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px">
+       <span style="font-size:13px;font-weight:600">History</span>
+       <span class="frange"><span>7d</span><span class="on">14d</span><span>30d</span><span>90d</span><span>Custom</span></span></div>
      <div class="thwrap"><table class="hu"><thead><tr><th>Scheduled</th><th>Executed</th><th>Action</th><th>Status</th></tr></thead>
      <tbody>${rows}</tbody></table></div></div></div>`;
 }
