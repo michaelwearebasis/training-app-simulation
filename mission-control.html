@@ -4,23 +4,26 @@
 <style>
 /* ---- Basis Mission Control (dark theme, stone palette) ---- */
 :root{
-  --bg:#0C0A09; --card:#1C1917; --card2:#292524; --card3:#44403C;
-  --line:rgba(250,250,249,.09); --line2:rgba(250,250,249,.14);
-  --fg:#FAFAF9; --d600:#D6D3D1; --d500:#A8A29E; --d400:#78716C; --d300:#57534E;
-  --primary:#0EA5E9; --primary600:#0284C7; --success:#22C55E; --warning:#EAB308; --danger:#DE0F00;
+  /* Basis light theme (stone palette) */
+  --bg:#FAFAF8; --card:#FFFFFF; --card2:#F5F5F4; --card3:#E7E5E4;
+  --line:rgba(28,25,23,.10); --line2:rgba(28,25,23,.16);
+  --fg:#1C1917; --d600:#44403C; --d500:#78716C; --d400:#A8A29E; --d300:#D6D3D1;
+  --primary:#0284C7; --primary600:#0369A1; --success:#16A34A; --warning:#CA8A04; --danger:#DE0F00;
   --homebg:#88EFB3; --homefg:#1E1E1F; --tradebg:#212629;
-  --coach:#0EA5E9;
+  --grid:rgba(28,25,23,.08); --gridfaint:rgba(28,25,23,.05); --line-dark:#292524;
+  --coach:#0EA5E9; --lime:#98FFAB; --coal:#212629; --bubfg:#16301F;
 }
+@font-face{font-family:'Oracle';src:url('oracle.woff2') format('woff2');font-weight:300 600;font-display:swap;font-style:normal}
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:transparent}
-body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;line-height:1.5;font-size:14px}
+body{font-family:'Oracle','Inter',-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;line-height:1.5;font-size:14px}
 .app{min-height:100vh;display:flex;flex-direction:column}
 button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 .mono{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .tnum{font-variant-numeric:tabular-nums}
 
 /* top bar */
-.topbar{display:flex;align-items:center;gap:20px;height:56px;padding:0 20px;border-bottom:1px solid var(--line);background:#0C0A09;position:sticky;top:0;z-index:30}
+.topbar{display:flex;align-items:center;gap:20px;height:56px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:30}
 .brand{display:flex;align-items:center;gap:9px;font-weight:600;letter-spacing:-.01em}
 .brand .dot{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#39E581,#0EA5E9);display:flex;align-items:center;justify-content:center;color:#0C0A09;font-weight:800;font-size:13px}
 .brand .mc{color:var(--d500);font-weight:500}
@@ -49,10 +52,10 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 /* chips */
 .chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;border-radius:7px;padding:2px 8px;white-space:nowrap;line-height:1.4}
 .chip.flat-default{background:var(--card3);color:var(--d600)}
-.chip.flat-success{background:rgba(34,197,94,.16);color:#4ADE80}
-.chip.flat-warning{background:rgba(234,179,8,.16);color:#FDE047}
-.chip.flat-danger{background:rgba(222,15,0,.18);color:#FCA5A5}
-.chip.flat-primary{background:rgba(14,165,233,.16);color:#7DD3FC}
+.chip.flat-success{background:rgba(34,197,94,.15);color:#15803D}
+.chip.flat-warning{background:rgba(234,179,8,.18);color:#A16207}
+.chip.flat-danger{background:rgba(222,15,0,.12);color:#B91C1C}
+.chip.flat-primary{background:rgba(14,165,233,.14);color:#0369A1}
 .chip.solid-danger{background:var(--danger);color:#fff}
 .chip.home{background:var(--homebg);color:var(--homefg);font-weight:600}
 .chip.trade{background:var(--tradebg);color:#fff;border:1px solid var(--line2);font-weight:600}
@@ -133,8 +136,8 @@ table.hu tbody tr.dim{opacity:.5}
 .chartwrap{position:relative}
 svg.chart{display:block;width:100%}
 .crosshair{stroke:var(--d400);stroke-width:1;stroke-dasharray:3 3}
-.tip{position:absolute;pointer-events:none;background:#0C0A09;border:1px solid var(--line2);border-radius:8px;padding:7px 10px;font-size:12px;box-shadow:0 6px 20px rgba(0,0,0,.5);transform:translate(-50%,-115%);white-space:nowrap;z-index:5;opacity:0;transition:opacity .08s}
-.tip .tt{color:var(--d500);font-size:11px;margin-bottom:2px}
+.tip{position:absolute;pointer-events:none;background:var(--coal);color:#fff;border:1px solid rgba(0,0,0,.15);border-radius:8px;padding:7px 10px;font-size:12px;box-shadow:0 8px 22px rgba(33,38,41,.3);transform:translate(-50%,-115%);white-space:nowrap;z-index:5;opacity:0;transition:opacity .08s}
+.tip .tt{color:rgba(255,255,255,.6);font-size:11px;margin-bottom:2px}
 .tip b{font-weight:600}
 
 /* faults */
@@ -152,9 +155,9 @@ svg.chart{display:block;width:100%}
 .fault .ftime{width:82px;flex:0 0 auto;font-size:12px;color:var(--d600)}
 .sevchip{display:inline-flex;align-items:center;gap:5px;width:78px;justify-content:center;height:20px;border-radius:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;flex:0 0 auto}
 .sevchip i{width:6px;height:6px;border-radius:50%}
-.sevchip.critical{background:rgba(222,15,0,.16);color:#FCA5A5} .sevchip.critical i{background:#DE0F00}
-.sevchip.error{background:rgba(249,115,22,.16);color:#FDBA74} .sevchip.error i{background:#F97316}
-.sevchip.warning{background:rgba(234,179,8,.16);color:#FDE047} .sevchip.warning i{background:#EAB308}
+.sevchip.critical{background:rgba(222,15,0,.12);color:#B91C1C} .sevchip.critical i{background:#DE0F00}
+.sevchip.error{background:rgba(249,115,22,.14);color:#C2410C} .sevchip.error i{background:#F97316}
+.sevchip.warning{background:rgba(234,179,8,.18);color:#A16207} .sevchip.warning i{background:#CA8A04}
 .fsource{width:150px;flex:0 0 auto;font-size:13.5px;font-weight:500;color:var(--fg)}
 .fmid{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
 .scpill{display:inline-flex;align-items:center;gap:6px;background:var(--card3);border-radius:6px;padding:2px 8px;font-size:12px}
@@ -164,7 +167,7 @@ svg.chart{display:block;width:100%}
 .fwave .wbtn:hover{background:var(--card2)}
 .fchev{width:16px;height:16px;color:var(--d400);transition:transform .18s;flex:0 0 auto}
 .fault.open .fchev{transform:rotate(180deg)}
-.fexpand{background:rgba(41,37,36,.5);border-left:3px solid transparent;padding:14px 16px}
+.fexpand{background:var(--card2);border-left:3px solid transparent;padding:14px 16px}
 .dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 22px}
 .dl .k{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--d400)}
 .dl .v{font-size:13.5px;margin-top:2px}
@@ -177,7 +180,7 @@ svg.chart{display:block;width:100%}
 .modal .mhd .x{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--d500)}
 .modal .mhd .x:hover{background:var(--card2);color:var(--fg)}
 .modal .mbd{padding:14px 18px 20px;display:flex;flex-direction:column;gap:10px}
-.wchart{border:1px solid var(--line);border-radius:9px;background:rgba(41,37,36,.35);padding:10px 12px}
+.wchart{border:1px solid var(--line);border-radius:9px;background:var(--card2);padding:10px 12px}
 .wchart .whd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:2px}
 .wchart .wlab{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600}
 .wchart .wsw{width:9px;height:9px;border-radius:2px}
@@ -202,21 +205,21 @@ svg.chart{display:block;width:100%}
 @media(max-width:720px){.planbar{grid-template-columns:1fr auto}.planbar .track{grid-column:1/-1;order:3}}
 
 /* coach */
-.coach{position:fixed;z-index:60;left:50%;bottom:26px;transform:translateX(-50%);width:min(560px,calc(100% - 32px));background:#0C0A09;border:1px solid var(--line2);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.6);padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
-.coach .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#39E581,#0EA5E9);color:#0C0A09;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.coach{position:fixed;z-index:60;left:50%;bottom:24px;transform:translateX(-50%);width:min(560px,calc(100% - 32px));background:#fff;border:1px solid var(--line2);border-radius:16px;box-shadow:0 18px 50px rgba(33,38,41,.22);padding:15px 18px;display:flex;gap:14px;align-items:flex-start}
+.coach .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--lime);color:var(--bubfg);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
 .coach .body{flex:1;min-width:0}
-.coach .step{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--d500);font-weight:600}
+.coach .step{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--d500);font-weight:700}
 .coach .msg{margin-top:3px;font-size:14px;color:var(--fg)}
-.coach .msg b{color:#7DD3FC;font-weight:600}
+.coach .msg b{color:#0F7A3D;font-weight:700}
 .coach .actions{display:flex;align-items:center;gap:10px;margin-top:12px}
-.coach .btn{background:var(--primary);color:#fff;border-radius:9px;padding:8px 16px;font-weight:600;font-size:13px}
-.coach .btn:hover{background:var(--primary600)}
+.coach .btn{background:var(--lime);color:var(--bubfg);border-radius:999px;padding:8px 18px;font-weight:700;font-size:13px}
+.coach .btn:hover{filter:brightness(.96)}
 .coach .btn.ghost{background:transparent;color:var(--d500);padding:8px 6px}
 .coach .prog{margin-left:auto;font-size:12px;color:var(--d400)}
-.coach.hint .msg b{color:#FDE047}
-/* spotlight */
-.spot{position:absolute;border-radius:12px;box-shadow:0 0 0 3px rgba(14,165,233,.9),0 0 0 9999px rgba(4,6,10,.55);pointer-events:none;z-index:20;transition:all .25s ease;animation:coachpulse 1.8s ease-in-out infinite}
-@keyframes coachpulse{0%,100%{box-shadow:0 0 0 3px rgba(14,165,233,.95),0 0 0 9999px rgba(4,6,10,.55)}50%{box-shadow:0 0 0 6px rgba(14,165,233,.5),0 0 0 9999px rgba(4,6,10,.55)}}
+.coach.hint .msg b{color:#A16207}
+/* spotlight — lime "hot" ring, matching the Trade/Home demos */
+.spot{position:absolute;border-radius:12px;box-shadow:0 0 0 2.5px var(--lime),0 0 18px rgba(152,255,171,.6);pointer-events:none;z-index:20;transition:all .2s ease;animation:coachpulse 1.7s ease-in-out infinite}
+@keyframes coachpulse{0%,100%{box-shadow:0 0 0 2.5px var(--lime),0 0 12px rgba(152,255,171,.45)}50%{box-shadow:0 0 0 4px var(--lime),0 0 22px rgba(152,255,171,.8)}}
 .locked{position:relative}
 .locked::after{content:"";position:absolute;inset:0;z-index:15}
 .pointing{position:relative;z-index:22}
@@ -226,9 +229,9 @@ svg.chart{display:block;width:100%}
 <div id="coachRoot"></div>
 
 <script>
-/* ============================ REAL DATA — 1B Northumberland Avenue ============================ */
+/* ============================ REAL DATA — 1 B Northumberland Avenue ============================ */
 const SITE={
-  id:"nrthmbld", address:"1B Northumberland Avenue", suburb:"Karori, Wellington 6012",
+  id:"nrthmbld", address:"1 B Northumberland Avenue", suburb:"Belmont, Auckland 0622",
   icp:"1002057214UN96F", panelSerial:"FALUBX3KR9RSQCNQ0G5E", smSerial:"FALMECO2XCJZS",
   hardware:"HW_CLYDE", smVersion:"2.9.3", circuits:20, online:true,
 };
@@ -274,11 +277,11 @@ const USERS=[
 ];
 /* 5 filler sites (never clicked) */
 const OTHER_SITES=[
- {address:"42 Rimu Road",suburb:"Khandallah, Wellington",online:true,circuits:16,faults:0},
- {address:"8 Seaview Terrace",suburb:"Island Bay, Wellington",online:true,circuits:20,faults:2},
- {address:"115 Ohiro Road",suburb:"Brooklyn, Wellington",online:false,circuits:12,faults:1},
- {address:"3/27 Kelburn Parade",suburb:"Kelburn, Wellington",online:true,circuits:20,faults:0},
- {address:"64 Onslow Road",suburb:"Johnsonville, Wellington",online:true,circuits:16,faults:0},
+ {address:"42 Rimu Road",suburb:"Devonport, Auckland",online:true,circuits:16,faults:0},
+ {address:"8 Seaview Terrace",suburb:"Takapuna, Auckland",online:true,circuits:20,faults:2},
+ {address:"115 Ohiro Road",suburb:"Hauraki, Auckland",online:false,circuits:12,faults:1},
+ {address:"3/27 Kelburn Parade",suburb:"Milford, Auckland",online:true,circuits:20,faults:0},
+ {address:"64 Onslow Road",suburb:"Bayswater, Auckland",online:true,circuits:16,faults:0},
 ];
 /* Faults (app-domain — representative, consistent with this panel; last 90 days) */
 const FAULTS=[
@@ -350,8 +353,8 @@ function genWave(id){
   const res={windowMs,N,channels:ch.map(c=>({...c,rms:rmsOf(c)}))};
   _waveCache[id]=res; return res;
 }
-function cV(V){return {key:"v",label:"Voltage",unit:"V",color:"#7DD3FC",samples:V,range:null};}
-function cI(I,label){return {key:"i",label:label,unit:"A",color:"#FDE047",samples:I,range:null};}
+function cV(V){return {key:"v",label:"Voltage",unit:"V",color:"#0369A1",samples:V,range:null};}
+function cI(I,label){return {key:"i",label:label,unit:"A",color:"#CA8A04",samples:I,range:null};}
 function cModel(M){return {key:"model",label:"AFDD model state",unit:null,range:{min:0,max:1.5},color:"#F472B6",samples:M,trip:1.0};}
 function rmsOf(c){ if(c.key==="crog"||c.key==="model") return null; const w=Math.round(c.samples.length*0.2); let s=0,n=0; for(let i=0;i<w;i++){s+=c.samples[i]*c.samples[i];n++;} const r=Math.sqrt(s/n); return c.unit==="V"?r.toFixed(1)+" V":c.unit==="A"?r.toFixed(2)+" A":c.unit==="mA"?r.toFixed(1)+" mA":r.toFixed(2); }
 Math.SQRT2=Math.SQRT2||1.41421356;
@@ -379,7 +382,7 @@ const money=n=>"$"+n.toLocaleString();
 /* ---- coach steps ---- */
 const GROUPS=[1,2,2,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7,7]; // which of the 7 demo steps each coach micro-step belongs to
 const STEPS=[
- {screen:"sites",   msg:'This is <b>Sites</b> — every property where you’ve installed a Basis panel. We’ll open <b>1B Northumberland Avenue</b>. Click its row.', target:"#row-nrthmbld", advanceOn:"click"},
+ {screen:"sites",   msg:'This is <b>Sites</b> — every property where you’ve installed a Basis panel. We’ll open <b>1 B Northumberland Avenue</b>. Click its row.', target:"#row-nrthmbld", advanceOn:"click"},
  {screen:"site", tab:"property", msg:'You’re on the site. Open the <b>Property</b> tab, then choose <b>Users</b> to see the sparkies and customers connected to this panel.', target:"#subtab-users", advanceOn:"click"},
  {screen:"site", tab:"property", propertyTab:"users", msg:'These are the accounts linked to the panel — the <b>homeowner</b> (Home) and the <b>electrician</b> (Trade, with approval status). Next we’ll check the panel itself.', advanceOn:"next"},
  {screen:"site", tab:"panel", panelTab:"configuration", msg:'Open the <b>Panel</b> tab — <b>Configuration</b> shows every circuit’s MCB, RCD and AFDD, exactly as commissioned.', target:"#tab-panel", advanceOn:"click"},
@@ -391,7 +394,7 @@ const STEPS=[
  {screen:"site", tab:"faults", msg:'These are the capture channels — <b>voltage, current, the AFDD Rogowski HF signal and the model state</b>. <b>Hover across</b> any chart to read the exact value at that moment. Close it when you’re done.', advanceOn:"next"},
  {screen:"site", tab:"routines", msg:'Open <b>Routines</b> — the automations set up on this panel (like heating hot water off‑peak).', target:"#tab-routines", advanceOn:"click"},
  {screen:"site", tab:"routines", msg:'Click <b>View</b> on the <b>Underfloor heating</b> routine to see its run history.', target:'[data-view="r2"]', advanceOn:"click"},
- {screen:"site", tab:"routines", msg:'Every run is logged. Notice the <b>Failed</b> run on 11 Aug — the module didn’t acknowledge the resume in time (<span style="color:#FCA5A5">CMD_TIMEOUT</span>). It recovered next schedule — that’s what you’d investigate.', advanceOn:"next"},
+ {screen:"site", tab:"routines", msg:'Every run is logged. Notice the <b>Failed</b> run on 11 Aug — the module didn’t acknowledge the resume in time (<span style="color:#DC2626">CMD_TIMEOUT</span>). It recovered next schedule — that’s what you’d investigate.', advanceOn:"next"},
  {screen:"site", tab:"insights", msg:'Open <b>Insights</b> — it lands on <b>Peak load</b>: the biggest demand this house has ever drawn.', target:"#tab-insights", advanceOn:"click"},
  {screen:"site", tab:"insights", msg:'This home peaked at <b>13.3 kW</b> — evening cooking overlapping hot‑water heating — well under the 63 A supply. <b>Hover</b> the curve to read any point.', advanceOn:"next"},
  {screen:"site", tab:"insights", msg:'Open <b>Power quality</b> to check whether the grid itself is misbehaving.', target:"#itab-pq", advanceOn:"click"},
@@ -603,7 +606,7 @@ function signalChart(){
   const ymin=-80,ymax=-40;
   const x=i=> pad.l + i/(N-1)*(W-pad.l-pad.r);
   const y=val=> pad.t + (ymax-val)/(ymax-ymin)*(H-pad.t-pad.b);
-  const bands=[["Poor",-80,-70,"rgba(243,18,96,.10)","#F87088"],["Fair",-70,-60,"rgba(245,165,36,.10)","#F5A524"],["Good",-60,-50,"rgba(6,182,212,.10)","#22D3EE"],["Excellent",-50,-40,"rgba(23,201,100,.10)","#4ADE80"]];
+  const bands=[["Poor",-80,-70,"rgba(243,18,96,.10)","#F87088"],["Fair",-70,-60,"rgba(245,165,36,.10)","#F5A524"],["Good",-60,-50,"rgba(6,182,212,.10)","#22D3EE"],["Excellent",-50,-40,"rgba(23,201,100,.10)","#16A34A"]];
   let bandRects=bands.map(([nm,a,b,fill,col])=>`<rect x="${pad.l}" y="${y(b)}" width="${W-pad.l-pad.r}" height="${y(a)-y(b)}" fill="${fill}"/><text x="${W-pad.r-6}" y="${y(b)+13}" text-anchor="end" fill="${col}" font-size="10" opacity=".85">${nm}</text>`).join("");
   let yaxis=""; for(let g=-80;g<=-40;g+=10){ yaxis+=`<text x="${pad.l-8}" y="${y(g)+3}" text-anchor="end" fill="var(--d400)" font-size="10">${g}</text>`; }
   const line=pts.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(p).toFixed(1)}`).join(" ");
@@ -612,9 +615,9 @@ function signalChart(){
     <svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:230px">
       ${bandRects}${yaxis}
       <text x="${pad.l}" y="10" fill="var(--d400)" font-size="10">dBm</text>
-      <path d="${line}" fill="none" stroke="#FAFAF9" stroke-width="1.6"/>
+      <path d="${line}" fill="none" stroke="#1C1917" stroke-width="1.6"/>
       <line class="crosshair" id="sigch" x1="0" y1="${pad.t}" x2="0" y2="${H-pad.b}" style="opacity:0"/>
-      <circle id="sigmk" r="3.5" fill="#FAFAF9" style="opacity:0"/>
+      <circle id="sigmk" r="3.5" fill="#1C1917" style="opacity:0"/>
       ${dots}
     </svg>
     <div class="tip" id="sigtip"></div>
@@ -695,8 +698,8 @@ function waveChart(c,idx,w,reserve){
   const X=i=>padL+i/(c.samples.length-1)*innerW;
   const Y=v=>padT+(1-(v-sc.lo)/yr)*innerH;
   const path=c.samples.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" ");
-  const grid=sc.ticks.map(v=>`<line x1="${padL}" x2="${W-padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="rgba(250,250,249,.13)"/><text x="${padL-6}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--d400)">${fmtTick(c,v)}</text>`).join("");
-  const trip=c.trip!=null?`<line x1="${padL}" x2="${W-padR}" y1="${Y(c.trip).toFixed(1)}" y2="${Y(c.trip).toFixed(1)}" stroke="#DE0F00" stroke-width="1" stroke-dasharray="4 3"/><text x="${W-padR-4}" y="${(Y(c.trip)-4).toFixed(1)}" text-anchor="end" font-size="10" fill="#FCA5A5">trip 1.0</text>`:'';
+  const grid=sc.ticks.map(v=>`<line x1="${padL}" x2="${W-padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="rgba(28,25,23,.13)"/><text x="${padL-6}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--d400)">${fmtTick(c,v)}</text>`).join("");
+  const trip=c.trip!=null?`<line x1="${padL}" x2="${W-padR}" y1="${Y(c.trip).toFixed(1)}" y2="${Y(c.trip).toFixed(1)}" stroke="#DE0F00" stroke-width="1" stroke-dasharray="4 3"/><text x="${W-padR-4}" y="${(Y(c.trip)-4).toFixed(1)}" text-anchor="end" font-size="10" fill="#DC2626">trip 1.0</text>`:'';
   const rTicks=c.trip!=null?sc.ticks.map(v=>`<text x="${W-padR+6}" y="${(Y(v)+3).toFixed(1)}" font-size="11" fill="var(--d400)">${v.toFixed(1)}</text>`).join(""):'';
   const axisTitle=c.unit?`${c.label} (${c.unit})`:c.key==='crog'?`${c.label} (0–25)`:c.label;
   return `<div class="wchart" data-ch="${idx}" data-padl="${padL}" data-innerw="${innerW}" data-w="${W}" data-window="${w.windowMs}" data-n="${c.samples.length}">
@@ -706,8 +709,8 @@ function waveChart(c,idx,w,reserve){
     </div>
     <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
       ${grid}${trip}${rTicks}
-      <line x1="${padL}" x2="${padL}" y1="${padT}" y2="${padT+innerH}" stroke="rgba(250,250,249,.13)"/>
-      <line x1="${W-padR}" x2="${W-padR}" y1="${padT}" y2="${padT+innerH}" stroke="rgba(250,250,249,.13)"/>
+      <line x1="${padL}" x2="${padL}" y1="${padT}" y2="${padT+innerH}" stroke="rgba(28,25,23,.13)"/>
+      <line x1="${W-padR}" x2="${W-padR}" y1="${padT}" y2="${padT+innerH}" stroke="rgba(28,25,23,.13)"/>
       <path d="${path}" fill="none" stroke="${c.color}" stroke-width="1.4"/>
       <line class="wcursor" x1="0" x2="0" y1="${padT}" y2="${padT+innerH}" stroke="var(--fg)" stroke-opacity=".5" style="opacity:0"/>
       <text transform="rotate(-90 12 ${H/2})" x="12" y="${H/2}" text-anchor="middle" font-size="12" font-weight="600" fill="${c.color}">${axisTitle}</text>
@@ -745,7 +748,7 @@ function routineDetail(id){
     <td style="white-space:nowrap">${h.sched}</td>
     <td style="white-space:nowrap;color:${h.exec==='—'?'var(--d400)':'var(--fg)'}">${h.exec}</td>
     <td>${h.action}</td>
-    <td><span style="display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap">${runStatusChip(h.status)}${h.error?`<span style="font-size:12px;color:#FCA5A5">${h.error}</span>`:''}</span></td>
+    <td><span style="display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap">${runStatusChip(h.status)}${h.error?`<span style="font-size:12px;color:#DC2626">${h.error}</span>`:''}</span></td>
   </tr>`).join("");
   const failed=r.history.find(h=>h.status==="FAILED");
   return `<div style="margin-bottom:14px"><button class="wbtn" data-back="routines">← All routines</button></div>
@@ -794,7 +797,7 @@ function bandChart(o){
   const iW=W-padL-padR,iH=H-padT-padB, s=o.series;
   const X=i=>padL+i/(s.length-1)*iW, Y=v=>padT+(o.ymax-v)/(o.ymax-o.ymin)*iH;
   const bands=(o.bands||[]).map(b=>`<rect x="${padL}" y="${Y(b.to).toFixed(1)}" width="${iW}" height="${(Y(b.from)-Y(b.to)).toFixed(1)}" fill="${b.fill}"/>${b.label?`<text x="${W-padR-6}" y="${(Y(b.to)+13).toFixed(1)}" text-anchor="end" font-size="10" fill="${b.lc||'var(--d400)'}">${b.label}</text>`:''}`).join("");
-  const nt=o.yticks||5; let yt=""; for(let k=0;k<=nt;k++){const v=o.ymin+(o.ymax-o.ymin)*k/nt; yt+=`<line x1="${padL}" x2="${W-padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="rgba(250,250,249,.06)"/><text x="${padL-7}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--d400)">${(o.yfmt||(x=>Math.round(x)))(v)}</text>`;}
+  const nt=o.yticks||5; let yt=""; for(let k=0;k<=nt;k++){const v=o.ymin+(o.ymax-o.ymin)*k/nt; yt+=`<line x1="${padL}" x2="${W-padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="rgba(28,25,23,.06)"/><text x="${padL-7}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--d400)">${(o.yfmt||(x=>Math.round(x)))(v)}</text>`;}
   const nom=o.nominal?`<line x1="${padL}" x2="${W-padR}" y1="${Y(o.nominal.v).toFixed(1)}" y2="${Y(o.nominal.v).toFixed(1)}" stroke="var(--d400)" stroke-dasharray="5 4"/><text x="${W-padR-4}" y="${(Y(o.nominal.v)-4).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--d500)">${o.nominal.label}</text>`:'';
   const line=s.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(p.v).toFixed(1)}`).join(" ");
   const area=o.area?`<path d="${line} L${X(s.length-1).toFixed(1)} ${Y(o.ymin).toFixed(1)} L${padL} ${Y(o.ymin).toFixed(1)} Z" fill="${o.color}" opacity=".13"/>`:'';
@@ -822,26 +825,26 @@ function peakLoadView(){
      <div class="kpi"><div class="k">Supply</div><div class="v">63 A</div><div class="s">≈ 14.5 kW single‑phase</div></div>
    </div>
    <div class="card"><div class="chd"><span class="t">Whole‑house demand</span><span class="sub" style="font-size:12px">Typical day · hover to read</span></div>
-     <div class="cbd">${bandChart({id:"peakchart",series:d.peak,ymin:0,ymax:14,color:"#4ADE80",area:true,height:250,marker:{i:d.peakI,label:"13.3 kW",color:"#4ADE80"},yfmt:v=>v.toFixed(0)})}
+     <div class="cbd">${bandChart({id:"peakchart",series:d.peak,ymin:0,ymax:14,color:"#16A34A",area:true,height:250,marker:{i:d.peakI,label:"13.3 kW",color:"#16A34A"},yfmt:v=>v.toFixed(0)})}
      <p class="sub" style="font-size:12.5px;margin-top:8px">The biggest simultaneous demand this house has drawn is <b style="color:var(--fg)">13.3 kW</b> — evening cooking (oven + hob) overlapping with hot‑water heating — comfortably under the 63 A (~14.5 kW) supply.</p></div></div>`;
 }
 function powerQualityView(){
   const d=genInsights();
-  const vbands=[{from:253,to:260,fill:"rgba(222,15,0,.14)",label:"High",lc:"#FCA5A5"},{from:216,to:253,fill:"rgba(34,197,94,.10)",label:"In range",lc:"#4ADE80"},{from:200,to:216,fill:"rgba(222,15,0,.14)",label:"Low",lc:"#FCA5A5"}];
-  const fbands=[{from:50.5,to:52.5,fill:"rgba(222,15,0,.14)"},{from:49.5,to:50.5,fill:"rgba(34,197,94,.10)",label:"In range",lc:"#4ADE80"},{from:47.5,to:49.5,fill:"rgba(222,15,0,.14)"}];
+  const vbands=[{from:253,to:260,fill:"rgba(222,15,0,.14)",label:"High",lc:"#DC2626"},{from:216,to:253,fill:"rgba(34,197,94,.10)",label:"In range",lc:"#16A34A"},{from:200,to:216,fill:"rgba(222,15,0,.14)",label:"Low",lc:"#DC2626"}];
+  const fbands=[{from:50.5,to:52.5,fill:"rgba(222,15,0,.14)"},{from:49.5,to:50.5,fill:"rgba(34,197,94,.10)",label:"In range",lc:"#16A34A"},{from:47.5,to:49.5,fill:"rgba(222,15,0,.14)"}];
   return `<div class="card" style="margin-bottom:16px"><div class="chd"><span class="t">Voltage · panel</span><span class="sub" style="font-size:12px">Last 90 days</span></div>
-     <div class="cbd">${bandChart({id:"voltchart",series:d.volt,ymin:200,ymax:260,color:"#FAFAF9",bands:vbands,nominal:{v:230,label:"Nominal · 230"},height:230,marker:{i:d.voltI,label:"253.5 V",color:"#FCA5A5"},yfmt:v=>v.toFixed(0)})}
-     <p class="sub" style="font-size:12.5px;margin-top:6px">Sits around <b style="color:var(--fg)">236 V</b>, but has touched <b style="color:#FCA5A5">253.5 V</b> — just over the 253 V (230 V +10%) limit. Worth watching if the customer reports flickering or gear tripping.</p></div></div>
+     <div class="cbd">${bandChart({id:"voltchart",series:d.volt,ymin:200,ymax:260,color:"#1C1917",bands:vbands,nominal:{v:230,label:"Nominal · 230"},height:230,marker:{i:d.voltI,label:"253.5 V",color:"#DC2626"},yfmt:v=>v.toFixed(0)})}
+     <p class="sub" style="font-size:12.5px;margin-top:6px">Sits around <b style="color:var(--fg)">236 V</b>, but has touched <b style="color:#DC2626">253.5 V</b> — just over the 253 V (230 V +10%) limit. Worth watching if the customer reports flickering or gear tripping.</p></div></div>
    <div class="card"><div class="chd"><span class="t">Frequency · panel</span><span class="sub" style="font-size:12px">Last 90 days</span></div>
-     <div class="cbd">${bandChart({id:"freqchart",series:d.freq,ymin:47.5,ymax:52.5,color:"#FAFAF9",bands:fbands,nominal:{v:50,label:"Nominal · 50"},height:220,yticks:5,marker:{i:d.freqI,label:"48.1 Hz",color:"#FCA5A5"},yfmt:v=>v.toFixed(1)})}
-     <p class="sub" style="font-size:12.5px;margin-top:6px">Normally rock‑steady at 50 Hz; one grid dip to <b style="color:#FCA5A5">48.1 Hz</b>. A wandering grid can be the real source of a “panel problem”.</p></div></div>`;
+     <div class="cbd">${bandChart({id:"freqchart",series:d.freq,ymin:47.5,ymax:52.5,color:"#1C1917",bands:fbands,nominal:{v:50,label:"Nominal · 50"},height:220,yticks:5,marker:{i:d.freqI,label:"48.1 Hz",color:"#DC2626"},yfmt:v=>v.toFixed(1)})}
+     <p class="sub" style="font-size:12.5px;margin-top:6px">Normally rock‑steady at 50 Hz; one grid dip to <b style="color:#DC2626">48.1 Hz</b>. A wandering grid can be the real source of a “panel problem”.</p></div></div>`;
 }
 function temperatureView(){
   const d=genInsights();
-  const tbands=[{from:65,to:80,fill:"rgba(222,15,0,.14)",label:"Over‑range",lc:"#FCA5A5"},{from:30,to:65,fill:"rgba(34,197,94,.08)",label:"Normal",lc:"#4ADE80"}];
+  const tbands=[{from:65,to:80,fill:"rgba(222,15,0,.14)",label:"Over‑range",lc:"#DC2626"},{from:30,to:65,fill:"rgba(34,197,94,.08)",label:"Normal",lc:"#16A34A"}];
   return `<div class="card"><div class="chd"><span class="t">Circuit module temperature</span><span class="sub" style="font-size:12px">Hottest module · last 90 days</span></div>
-     <div class="cbd">${bandChart({id:"tempchart",series:d.temp,ymin:30,ymax:80,color:"#FBBF24",bands:tbands,nominal:{v:65,label:"Alert · 65 °C"},height:250,marker:{i:d.tempI,label:"71.8 °C event",color:"#FCA5A5"},yfmt:v=>v.toFixed(0)})}
-     <p class="sub" style="font-size:12.5px;margin-top:6px">Modules normally run ~40 °C. On 18 Jul one module spiked to <b style="color:#FCA5A5">71.8 °C</b> — over the 65 °C alert line — during that evening’s heavy load. A one‑off, but a repeat would point to a loose termination worth re‑checking.</p></div></div>`;
+     <div class="cbd">${bandChart({id:"tempchart",series:d.temp,ymin:30,ymax:80,color:"#FBBF24",bands:tbands,nominal:{v:65,label:"Alert · 65 °C"},height:250,marker:{i:d.tempI,label:"71.8 °C event",color:"#DC2626"},yfmt:v=>v.toFixed(0)})}
+     <p class="sub" style="font-size:12.5px;margin-top:6px">Modules normally run ~40 °C. On 18 Jul one module spiked to <b style="color:#DC2626">71.8 °C</b> — over the 65 °C alert line — during that evening’s heavy load. A one‑off, but a repeat would point to a loose termination worth re‑checking.</p></div></div>`;
 }
 
 /* ---------- Savings · retail comparison ---------- */
@@ -874,7 +877,7 @@ function savingsTab(){
   const bestSave=cur.monthly-best.monthly, bestPct=Math.round(bestSave/cur.monthly*100);
   return `<div style="display:flex;align-items:center;gap:10px;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.28);border-radius:11px;padding:12px 15px;margin-bottom:16px">
       <span class="chip flat-success">Save up to $${bestSave}/mo</span>
-      <span style="font-size:13px;color:var(--d600)">Switching from <b style="color:var(--fg)">${cur.retailer} ${cur.plan}</b> to <b style="color:var(--fg)">${best.retailer} ${best.plan}</b> would save this home about <b style="color:#4ADE80">$${bestSave}/month (${bestPct}%)</b> on the same usage.</span></div>
+      <span style="font-size:13px;color:var(--d600)">Switching from <b style="color:var(--fg)">${cur.retailer} ${cur.plan}</b> to <b style="color:var(--fg)">${best.retailer} ${best.plan}</b> would save this home about <b style="color:#16A34A">$${bestSave}/month (${bestPct}%)</b> on the same usage.</span></div>
     <div class="grid3" style="margin-bottom:16px">${sCard("Best",best,cur)}${sCard("Current",cur,cur)}${sCard("Worst",worst,cur)}</div>
     <div class="card"><div class="chd"><span class="t">Estimated monthly cost by plan</span><span class="sub" style="font-size:12px">Based on this home’s actual usage</span></div>
       <div class="cbd" style="display:flex;flex-direction:column;gap:14px">${bars}</div></div>`;
