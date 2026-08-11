@@ -204,6 +204,83 @@ svg.chart{display:block;width:100%}
 .planbar .amt .mo{font-size:11px;color:var(--d500);font-weight:400}
 @media(max-width:720px){.planbar{grid-template-columns:1fr auto}.planbar .track{grid-column:1/-1;order:3}}
 
+/* savings — retail comparison */
+.sgrid{align-items:stretch}
+.scol{display:flex;flex-direction:column}
+.scard{flex:1;margin:0}
+.scard.bestmsg{background:rgba(22,163,74,.06);border-color:rgba(22,163,74,.25)}
+.mlink{color:var(--primary);font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap}
+.scen{border:1px solid var(--line);border-radius:11px;padding:14px 16px;background:var(--card2)}
+.scenrow{display:flex;justify-content:space-between;margin-bottom:9px}
+.scenrow .c{text-align:center}.scenrow .r{text-align:right}
+.scen .sk{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--d500);font-weight:600}
+.scen .sv{font-size:15px;font-weight:600;margin-top:2px}
+.scentrack{position:relative;height:8px;border-radius:5px;background:var(--card3);overflow:visible}
+.scenfill{position:absolute;inset:0;border-radius:5px;background:linear-gradient(90deg,#16A34A,#4ADE80)}
+.scendot{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid #16A34A;transform:translate(-50%,-50%)}
+.scencap{text-align:center;font-size:12px;color:var(--d500);margin-top:9px}
+.lolli-tbl{width:100%;border-collapse:collapse}
+.lolli-tbl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.lolli-tbl tr:last-child td{border-bottom:none}
+.lrow.iscur{background:rgba(14,165,233,.06)}
+.lc-name{width:1%;white-space:nowrap}
+.lc-bar{width:100%}
+.lc-amt{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lc-delta{text-align:right;white-space:nowrap;font-size:12px}
+.lc-status{text-align:right;white-space:nowrap}
+.dbase{color:var(--d400)}
+.ddelta.up{color:#C2410C}.ddelta.dn{color:#15803D}
+.lolli{position:relative;height:14px}
+.lolli-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line2)}
+.lolli-fill{position:absolute;top:50%;height:3px;transform:translateY(-50%);border-radius:2px;background:var(--d500)}
+.lolli-fill.cur{background:var(--primary)}.lolli-fill.best{background:var(--success)}
+.lolli-dot{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);background:var(--d500);border:2px solid var(--card)}
+.lolli-dot.cur{background:var(--primary)}.lolli-dot.best{background:var(--success)}
+/* savings — overview */
+.kover{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--d500);font-weight:700}
+.vbig{font-size:30px;font-weight:700;letter-spacing:-.02em;margin-top:4px}
+.segset{display:inline-flex;align-items:center;gap:0;background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:3px}
+.seg{font-size:12px;padding:4px 10px;border-radius:6px;color:var(--d500);font-weight:500}
+.seg.on{background:var(--primary);color:#fff}
+.upwrap{display:flex;gap:8px}
+.upyl{display:flex;flex-direction:column;justify-content:space-between;height:140px;font-size:10px;color:var(--d400);text-align:right;padding-top:2px}
+.upplotwrap{flex:1;min-width:0}
+.upplot{position:relative;display:flex;align-items:flex-end;gap:2px;border-bottom:1px solid var(--line2);padding:0 2px}
+.upgl{position:absolute;left:0;right:0;height:1px;background:var(--gridfaint,rgba(0,0,0,.05))}
+.upcol{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:1px;position:relative;z-index:1}
+.upbar{width:45%;border-radius:2px 2px 0 0}
+.uphot{background:#0EA5E9}.upoth{background:#D6D3D1}
+.upx{display:flex;justify-content:space-between;font-size:10px;color:var(--d400);margin-top:5px}
+.uplegend{display:flex;gap:16px;justify-content:center;margin-top:12px;font-size:12px;color:var(--d500)}
+.uplegend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.wwrap{margin-top:12px}
+.wplot{position:relative;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid var(--line2);padding:0 4px}
+.wcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.wbar{width:60%;max-width:34px;border-radius:3px 3px 0 0}
+.wlbl{font-size:10px;color:var(--d400);margin-top:6px;white-space:nowrap}
+.wavg{position:absolute;left:0;right:0;border-top:2px dashed #D97706}
+.wavg span{position:absolute;right:0;top:-16px;font-size:11px;color:#B45309;background:var(--card);padding:0 4px}
+/* projections */
+.banner{display:flex;align-items:center;gap:9px;border-radius:11px;padding:11px 15px;font-size:13px}
+.banner.amber{background:rgba(202,138,4,.10);border:1px solid rgba(202,138,4,.28)}
+.projgrid{display:flex;align-items:center;gap:26px}
+.donutwrap{flex:0 0 auto}
+.projrows{flex:1;display:flex;flex-direction:column;gap:16px;min-width:0}
+.projrow .projhd{display:flex;justify-content:space-between;align-items:baseline}
+.projrow .pl{font-weight:600;font-size:14px}
+.projrow .pa{font-weight:600;font-variant-numeric:tabular-nums}
+.projtrack{height:9px;border-radius:5px;background:var(--card3);margin-top:6px;overflow:hidden}
+.projfill{height:100%;border-radius:5px}
+@media(max-width:720px){.projgrid{flex-direction:column}}
+.chargewrap{display:flex;flex-direction:column;gap:12px}
+.crow{display:grid;grid-template-columns:110px 1fr 64px;align-items:center;gap:12px}
+.crow .cl{font-size:13px}
+.crow .cbar{height:10px;background:var(--card3);border-radius:5px;overflow:hidden}
+.crow .cfill{height:100%;border-radius:5px}
+.crow .cfill.neg{background:#16A34A}.crow .cfill.pos{background:#DC2626}
+.crow .cv{text-align:right;font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
+
 /* coach */
 .coach{position:fixed;z-index:60;left:50%;bottom:24px;transform:translateX(-50%);width:min(560px,calc(100% - 32px));background:#fff;border:1px solid var(--line2);border-radius:16px;box-shadow:0 18px 50px rgba(33,38,41,.22);padding:15px 18px;display:flex;gap:14px;align-items:flex-start}
 .coach .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--lime);color:var(--bubfg);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
@@ -319,15 +396,41 @@ const ROUTINES=[
 ];
 const RUN_STATUS={COMPLETED:["flat-success","Completed"],FAILED:["flat-danger","Failed"],MISSED:["flat-warning","Missed"],PENDING:["flat-primary","Pending"],SCHEDULED:["flat-default","Scheduled"]};
 /* Savings — retail plan comparison (app-domain; representative NZ plans, based on this home's usage) */
-const SAVINGS={ current:"Contact Energy",
+const RETAILERS={
+  mercury:{name:"Mercury",logo:"mercury"},
+  meridian:{name:"Meridian Energy",logo:"meridian"},
+  genesis:{name:"Genesis Energy",logo:"genesis"},
+  octopus:{name:"Octopus Energy",logo:"octopus"},
+  contact:{name:"Contact Energy",logo:"contact"},
+  powershop:{name:"Powershop",logo:"powershop"},
+  ek:{name:"Electric Kiwi",logo:"electrickiwi"},
+};
+function rlogo(rk,px){px=px||32;const r=RETAILERS[rk]; return `<img class="rlg" src="logos/retailers/fav_${r?r.logo:'mercury'}.png" alt="" width="${px}" height="${px}" style="width:${px}px;height:${px}px;object-fit:contain;flex-shrink:0">`;}
+/* Retail comparison — modelled against this home's actual usage (Mercury Open Term is both current AND cheapest) */
+const SAVINGS={ currentId:"mercury_ot",
  plans:[
-   {retailer:"Electric Kiwi",plan:"MoveMaster",monthly:198,free1h:true},
-   {retailer:"Frank Energy",plan:"Simple",monthly:221},
-   {retailer:"Meridian",plan:"Simply Power",monthly:231},
-   {retailer:"Contact Energy",plan:"Basic",monthly:242,current:true},
-   {retailer:"Mercury",plan:"Open Term",monthly:249},
-   {retailer:"Genesis",plan:"Energy Plus",monthly:256},
+   {id:"mercury_ot",   r:"mercury",  plan:"Open Term",     monthly:336},
+   {id:"meridian_free",r:"meridian", plan:"Freedom",       monthly:346},
+   {id:"genesis_ev",   r:"genesis",  plan:"EVHome",        monthly:353},
+   {id:"octopus_flexi",r:"octopus",  plan:"OctopusFlexi",  monthly:366},
+   {id:"genesis_ph",   r:"genesis",  plan:"PowerHome",     monthly:366},
+   {id:"contact_gw",   r:"contact",  plan:"Good Weekends", monthly:369},
+   {id:"contact_basic",r:"contact",  plan:"Basic",         monthly:379},
+   {id:"contact_gc",   r:"contact",  plan:"Good Charge",   monthly:380},
+   {id:"contact_gn",   r:"contact",  plan:"Good Nights",   monthly:391},
+   {id:"powershop_gs", r:"powershop",plan:"Get Shifty",    monthly:394},
+   {id:"ek_mm",        r:"ek",       plan:"MoveMaster",    monthly:395, free1h:true},
+   {id:"ek_ss",        r:"ek",       plan:"Sunday Saver",  monthly:406, free1h:true},
+   {id:"ek_everyday",  r:"ek",       plan:"Everyday",      monthly:439, free1h:true},
  ]};
+/* Savings overview + projections */
+const SAV_OVER={ uncaptured:35, perWeek:3,
+  weeks:["17 May","24 May","31 May","7 Jun","14 Jun","21 Jun","28 Jun","5 Jul","12 Jul","19 Jul","26 Jul","2 Aug"],
+  uncap:[7,10,13,16,19,22,25,28,30,30,34,36], uncapAvg:23,
+  score:[92,94,93,95,92,94,93,95,93,94,92,96], scoreAvg:93 };
+const PROJ={ saved:1196, baseline:5117, you:3921, rec:3822, planSave:99,
+  baselinePlan:{r:"ek",plan:"Everyday"}, youPlan:{r:"mercury",plan:"Open Term"}, recPlan:{r:"octopus",plan:"OctopusFlexi"},
+  energyDelta:-805, dailyDelta:706 };
 function initials(s){return s.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();}
 function logoColor(s){const c=["#0EA5E9","#22C55E","#F59E0B","#8B5CF6","#EC4899","#14B8A6"];let h=0;for(const ch of s)h=(h*31+ch.charCodeAt(0))>>>0;return c[h%c.length];}
 /* Waveform synthesis — realistic AFDD/RCD capture. Cached per fault id. */
@@ -373,7 +476,7 @@ const I={
 };
 
 /* ============================ STATE ============================ */
-let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null, routineOpen:null, insTab:"peak" };
+let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null, routineOpen:null, insTab:"peak", savTab:"retail" };
 // debug/deep-link: #screen=site&tab=panel&panelTab=connectivity&coach=6
 (function(){const h=location.hash.slice(1); if(!h)return; h.split("&").forEach(kv=>{const[k,v]=kv.split("=");if(k in S)S[k]=(k==="coach"?+v:v);});})();
 const app=document.getElementById('app');
@@ -847,40 +950,145 @@ function temperatureView(){
      <p class="sub" style="font-size:12.5px;margin-top:6px">Modules normally run ~40 °C. On 18 Jul one module spiked to <b style="color:#DC2626">71.8 °C</b> — over the 65 °C alert line — during that evening’s heavy load. A one‑off, but a repeat would point to a loose termination worth re‑checking.</p></div></div>`;
 }
 
-/* ---------- Savings · retail comparison ---------- */
-function sCard(label,row,cur){
-  const save=cur.monthly-row.monthly, pct=Math.round(save/cur.monthly*100);
-  const badge = row.current ? '<span class="chip flat-default">Current plan</span>'
-    : save>0 ? `<span class="chip flat-success">Save $${save}/mo · ${pct}%</span>`
-    : `<span class="chip flat-danger">$${-save}/mo more</span>`;
-  return `<div><div class="slabel">${label}</div>
-    <div class="card"><div class="cbd">
-      <div style="display:flex;align-items:center;gap:11px"><span class="rlogo" style="background:${logoColor(row.retailer)}">${initials(row.retailer)}</span>
-        <div><div style="font-weight:600">${row.retailer}</div><div class="sub" style="font-size:12.5px">${row.plan}${row.free1h?' · 1h free':''}</div></div></div>
-      <div style="font-size:27px;font-weight:600;margin-top:12px;letter-spacing:-.01em">$${row.monthly}<span style="font-size:14px;color:var(--d500);font-weight:400"> /mo</span></div>
-      <div style="margin-top:7px">${badge}</div>
+/* ---------- Savings (Savings / Retail comparison / Projections) ---------- */
+function savingsTab(){
+  const sub=[["overview","Savings"],["retail","Retail comparison"],["projections","Projections"]]
+    .map(([k,l])=>`<button id="stab-${k}" class="${S.savTab===k?'on':''}" data-stab="${k}">${l}</button>`).join("");
+  const body=S.savTab==="retail"?retailCompare():S.savTab==="projections"?projectionsView():savingsOverview();
+  return `<div class="subtabs">${sub}</div>${body}`;
+}
+/* Retail comparison — frame 15 */
+function sPlanCard(label,p,cur,tone){
+  const r=RETAILERS[p.r], delta=p.monthly-cur.monthly, pct=cur.monthly?Math.round(Math.abs(delta)/cur.monthly*100):0;
+  const free=p.free1h?'<span class="chip flat-warning sm">1hr free</span>':'';
+  const badge = tone==="worst"&&delta>0?`<span class="chip flat-danger sm">$${delta}/mo more (${pct}%)</span>`
+    : tone==="current"?'<span class="chip flat-primary sm">current</span>':'';
+  return `<div class="scol"><div class="slabel">${label}</div>
+    <div class="card scard"><div class="cbd">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px">${rlogo(p.r,30)}
+          <div><div style="font-weight:600;line-height:1.15">${r.name}</div><div class="sub" style="font-size:12px">${p.plan}</div></div></div>
+        ${free}
+      </div>
+      <div style="font-size:25px;font-weight:600;margin-top:11px;letter-spacing:-.01em">$${p.monthly}<span style="font-size:13px;color:var(--d500);font-weight:400"> / month</span></div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:8px;justify-content:space-between">${badge||'<span></span>'}<a class="mlink">More details ›</a></div>
     </div></div></div>`;
 }
-function savingsTab(){
+function scenarioBar(lo,cur,hi){
+  const span=Math.max(1,hi-lo), curPct=(cur-lo)/span*100;
+  return `<div class="scen">
+    <div class="scenrow"><div class="l"><div class="sk">Cheapest</div><div class="sv">$${lo}</div></div>
+      <div class="c"><div class="sk">Current</div><div class="sv">$${cur}</div></div>
+      <div class="r"><div class="sk">Worst</div><div class="sv">$${hi}</div></div></div>
+    <div class="scentrack"><div class="scenfill"></div><div class="scendot" style="left:${curPct}%"></div></div>
+    <div class="scencap">100% below the cost ceiling</div></div>`;
+}
+function retailCompare(){
   const sorted=[...SAVINGS.plans].sort((a,b)=>a.monthly-b.monthly);
-  const cur=SAVINGS.plans.find(p=>p.current), best=sorted[0], worst=sorted[sorted.length-1], max=worst.monthly;
-  const bars=sorted.map(p=>{
-    const isBest=p===best, w=(p.monthly/max*100).toFixed(1), save=cur.monthly-p.monthly;
-    return `<div class="planbar ${p.current?'cur':''}">
-      <div class="pl"><span class="rlogo" style="background:${logoColor(p.retailer)}">${initials(p.retailer)}</span>
-        <div><div class="pn">${p.retailer} · ${p.plan}${p.free1h?' <span class="chip flat-success sm">1h free</span>':''}</div>
-          <div class="ps">${p.current?'On this plan now':save>0?`$${save}/mo cheaper`:`$${-save}/mo dearer`}</div></div></div>
-      <div class="track"><div class="fill ${isBest?'best':p.current?'curfill':''}" style="width:${w}%"></div></div>
-      <div class="amt">${isBest?'<span class="chip flat-success sm">Best</span>':''}<span>$${p.monthly}<span class="mo"> /mo</span></span></div>
-    </div>`;
+  const cur=SAVINGS.plans.find(p=>p.id===SAVINGS.currentId), best=sorted[0], worst=sorted[sorted.length-1];
+  const curIsBest=cur.id===best.id;
+  const bestCol = curIsBest
+    ? `<div class="scol"><div class="slabel">Best</div><div class="card scard bestmsg"><div class="cbd" style="display:flex;flex-direction:column;justify-content:center;min-height:112px">
+         <div style="font-weight:600;color:#0F7A3D">You're on the cheapest plan available.</div>
+         <div class="sub" style="font-size:12px;margin-top:6px">Click any plan in the list to compare it with your current plan.</div></div></div></div>`
+    : sPlanCard("Best",best,cur,"best");
+  const deltas=sorted.map(p=>Math.abs(p.monthly-cur.monthly)), pad=Math.max(50,Math.max(...deltas))*1.08;
+  const rows=sorted.map(p=>{
+    const r=RETAILERS[p.r], isCur=p.id===cur.id, isBest=p.id===best.id&&!isCur, delta=p.monthly-cur.monthly;
+    const dot=50+(delta/pad)*50, fl=Math.min(50,dot), fw=Math.abs(dot-50), tone=isCur?"cur":isBest?"best":"def";
+    const dtxt=isCur?'<span class="dbase">base</span>':`<span class="ddelta ${delta>0?'up':'dn'}">${delta>0?'+':'−'}$${Math.abs(delta)}</span>`;
+    const st=isCur?'<span class="chip flat-primary sm">current</span>':isBest?'<span class="chip flat-success sm">best</span>':'';
+    return `<tr class="lrow${isCur?' iscur':''}">
+      <td class="lc-name"><div style="display:flex;align-items:center;gap:9px">${rlogo(p.r,28)}
+        <div><div class="sub" style="font-size:11px">${r.name}</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap">${p.plan}${p.free1h?'<span class="chip flat-warning sm">1hr free</span>':''}</div></div></div></td>
+      <td class="lc-bar"><div class="lolli"><div class="lolli-mid"></div><div class="lolli-fill ${tone}" style="left:${fl}%;width:${fw}%"></div><div class="lolli-dot ${tone}" style="left:${dot}%"></div></div></td>
+      <td class="lc-amt">$${p.monthly}</td><td class="lc-delta">${dtxt}</td><td class="lc-status">${st}</td></tr>`;
   }).join("");
-  const bestSave=cur.monthly-best.monthly, bestPct=Math.round(bestSave/cur.monthly*100);
-  return `<div style="display:flex;align-items:center;gap:10px;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.28);border-radius:11px;padding:12px 15px;margin-bottom:16px">
-      <span class="chip flat-success">Save up to $${bestSave}/mo</span>
-      <span style="font-size:13px;color:var(--d600)">Switching from <b style="color:var(--fg)">${cur.retailer} ${cur.plan}</b> to <b style="color:var(--fg)">${best.retailer} ${best.plan}</b> would save this home about <b style="color:#16A34A">$${bestSave}/month (${bestPct}%)</b> on the same usage.</span></div>
-    <div class="grid3" style="margin-bottom:16px">${sCard("Best",best,cur)}${sCard("Current",cur,cur)}${sCard("Worst",worst,cur)}</div>
-    <div class="card"><div class="chd"><span class="t">Estimated monthly cost by plan</span><span class="sub" style="font-size:12px">Based on this home’s actual usage</span></div>
-      <div class="cbd" style="display:flex;flex-direction:column;gap:14px">${bars}</div></div>`;
+  return `<div class="card" style="margin-bottom:16px"><div class="chd"><span class="t">Retail comparison</span></div>
+    <div class="cbd"><div class="grid3 sgrid">${bestCol}${sPlanCard("Current",cur,cur,"current")}${sPlanCard("Worst",worst,cur,"worst")}</div>
+      <div style="margin-top:16px">${scenarioBar(best.monthly,cur.monthly,worst.monthly)}</div></div></div>
+    <div class="card"><div class="chd"><span class="t">Plan comparison</span><span class="sub" style="font-size:12px">Based on this home's actual usage</span></div>
+      <div class="cbd"><table class="lolli-tbl"><tbody>${rows}</tbody></table>
+      <div class="sub" style="font-size:11.5px;margin-top:10px">Click a row to compare it with your current plan.</div></div></div>`;
+}
+/* Savings overview — frame 14 */
+function usageProfile(kind){
+  const other=[],hot=[]; for(let h=0;h<24;h++){ let o=0.3;
+    if(kind==="weekday"){ if(h>=6&&h<=9)o+=0.7*(1-Math.abs(h-7.5)/2.5); if(h>=17&&h<=21)o+=1.0*(1-Math.abs(h-19)/3.2); }
+    else { o=0.45; if(h>=9&&h<=21)o+=0.85*(1-Math.abs(h-15)/8); }
+    other.push(Math.max(0.15,o)); hot.push(0); }
+  if(kind==="weekday"){hot[6]=3.1;hot[7]=3.2;hot[18]=3.0;hot[19]=3.1;} else {hot[7]=1.1;hot[8]=1.0;hot[17]=1.2;hot[18]=1.1;}
+  const H=140,ymax=5;
+  const cols=other.map((o,h)=>`<div class="upcol">${hot[h]>0?`<div class="upbar uphot" style="height:${hot[h]/ymax*H}px"></div>`:''}<div class="upbar upoth" style="height:${o/ymax*H}px"></div></div>`).join("");
+  return `<div class="upwrap"><div class="upyl">${[5,4,3,2,1,0].map(v=>`<span>${v}</span>`).join("")}</div>
+    <div class="upplotwrap"><div class="upplot" style="height:${H}px">${[1,2,3,4].map(v=>`<div class="upgl" style="bottom:${v/ymax*H}px"></div>`).join("")}${cols}</div>
+      <div class="upx">${["00:00","06:00","12:00","18:00","00:00"].map(t=>`<span>${t}</span>`).join("")}</div></div></div>`;
+}
+function weeklyBars(vals,max,avg,color,unit){
+  const H=140;
+  const cols=vals.map((v,i)=>`<div class="wcol"><div class="wbar" style="height:${v/max*H}px;background:${color}"></div><div class="wlbl">${SAV_OVER.weeks[i]}</div></div>`).join("");
+  return `<div class="wwrap"><div class="wplot" style="height:${H}px">${cols}<div class="wavg" style="bottom:${avg/max*H}px"><span>${unit==='%'?'Average '+avg+'%':'Average $'+avg}</span></div></div></div>`;
+}
+function savingsOverview(){
+  return `<div class="grid2" style="margin-bottom:16px">
+     <div class="card"><div class="cbd"><div class="kover">UNCAPTURED SAVINGS</div><div class="vbig">$${SAV_OVER.uncaptured}</div><div class="sub" style="font-size:12px">Last 12 weeks</div>
+       <div style="font-size:12px;color:#A16207;margin-top:4px">Low confidence: Reconstructed baseline</div></div></div>
+     <div class="card"><div class="cbd"><div class="kover">AVERAGE SAVINGS PER WEEK</div><div class="vbig">$${SAV_OVER.perWeek}</div></div></div>
+   </div>
+   <div class="card" style="margin-bottom:16px"><div class="chd"><span class="t">Usage Profiles</span>
+      <span class="segset"><span class="seg on">Current</span><span class="seg">Basis Recommended</span></span></div>
+     <div class="cbd"><div class="sub" style="font-size:12.5px;margin-top:-4px">How usage would shift with the recommended plan and routine.</div>
+       <div style="display:flex;align-items:center;gap:10px;margin:12px 0 4px">${rlogo("mercury",30)}<div><div style="font-weight:600">Mercury</div><div class="sub" style="font-size:12px">Open Term</div></div></div>
+       <div class="grid2">
+         <div><div class="sub" style="font-size:12px;margin-bottom:6px">Weekday</div>${usageProfile("weekday")}</div>
+         <div><div class="sub" style="font-size:12px;margin-bottom:6px">Weekend</div>${usageProfile("weekend")}</div>
+       </div>
+       <div class="uplegend"><span><i class="sw" style="background:#0EA5E9"></i>Hot water</span><span><i class="sw" style="background:#D6D3D1"></i>Other</span></div>
+     </div></div>
+   <div class="card" style="margin-bottom:16px"><div class="chd"><span class="t">Uncaptured savings</span></div>
+     <div class="cbd"><div class="sub" style="font-size:12.5px;margin-top:-4px">What the site paid over the 12 weeks ending each week, less what the cheapest plan and hot‑water routine combination would have cost.</div>
+       ${weeklyBars(SAV_OVER.uncap,40,SAV_OVER.uncapAvg,"#7DBBEA","$")}</div></div>
+   <div class="card"><div class="chd"><span class="t">Savings score</span></div>
+     <div class="cbd"><div class="sub" style="font-size:12.5px;margin-top:-4px">How close the site came to the cheapest plan and routine combination over the 12 weeks ending each week.</div>
+       ${weeklyBars(SAV_OVER.score,100,SAV_OVER.scoreAvg,"#86D8A6","%")}</div></div>`;
+}
+/* Projections — frame 16 */
+function projScenario(label,amount,plan,tone,frac){
+  const r=RETAILERS[plan.r], col=tone==="you"?"#0EA5E9":tone==="rec"?"#16A34A":"#D6D3D1";
+  return `<div class="projrow"><div class="projhd"><span class="pl">${label}</span><span class="pa">$${amount.toLocaleString()}</span></div>
+    <div class="projtrack"><div class="projfill" style="width:${(frac*100).toFixed(0)}%;background:${col}"></div></div>
+    <div class="sub" style="font-size:11.5px;margin-top:3px">${r.name} · ${plan.plan}</div></div>`;
+}
+function projectionsView(){
+  const P=PROJ, max=P.baseline;
+  const donutPct=78; const circ=2*Math.PI*52;
+  return `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px">
+      <div></div><span class="segset"><span style="font-size:12px;color:var(--d500);margin-right:8px">Compare vs</span><span class="seg on">Worst</span><span class="seg">Median</span></span></div>
+    <div class="banner amber" style="margin-bottom:16px"><span style="font-weight:600;color:#A16207">Low confidence estimate</span> <span class="chip flat-warning sm">Reconstructed baseline</span></div>
+    <div class="card" style="margin-bottom:16px"><div class="chd"><span class="t">365‑day cost scenarios</span></div>
+      <div class="cbd"><div class="projgrid">
+        <div class="donutwrap"><svg viewBox="0 0 120 120" width="150" height="150">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#E7E5E4" stroke-width="14"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#16A34A" stroke-width="14" stroke-linecap="round"
+            stroke-dasharray="${(circ*donutPct/100).toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 60 60)"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#F59E0B" stroke-width="14"
+            stroke-dasharray="${(circ*(100-donutPct)/100).toFixed(1)} ${circ.toFixed(1)}" stroke-dashoffset="${(-circ*donutPct/100).toFixed(1)}" transform="rotate(-90 60 60)"/>
+          <text x="60" y="57" text-anchor="middle" font-size="15" font-weight="700" fill="#1C1917">$${P.saved.toLocaleString()}</text>
+          <text x="60" y="73" text-anchor="middle" font-size="10" fill="#78716C">saved</text></svg></div>
+        <div class="projrows">
+          ${projScenario("Baseline",P.baseline,P.baselinePlan,"base",P.baseline/max)}
+          ${projScenario("You",P.you,P.youPlan,"you",P.you/max)}
+          ${projScenario("Basis Recommendation",P.rec,P.recPlan,"rec",P.rec/max)}
+        </div></div></div></div>
+    <div class="card"><div class="chd"><span class="t">Where the $${P.planSave} saving vs your plan comes from</span></div>
+      <div class="cbd">
+        <div class="chargewrap">
+          <div class="crow"><div class="cl">Energy usage</div><div class="cbar"><div class="cfill neg" style="width:72%"></div></div><div class="cv" style="color:#16A34A">−$${Math.abs(P.energyDelta)}</div></div>
+          <div class="crow"><div class="cl">Daily charges</div><div class="cbar"><div class="cfill pos" style="width:63%"></div></div><div class="cv" style="color:#DC2626">+$${P.dailyDelta}</div></div>
+        </div>
+        <p class="sub" style="font-size:12px;margin-top:10px">Switching to <b style="color:var(--fg)">${RETAILERS[P.recPlan.r].name} ${P.recPlan.plan}</b> plus the recommended hot‑water routine nets <b style="color:#16A34A">$${P.planSave}/yr</b> versus your current plan — cheaper energy (−$${Math.abs(P.energyDelta)}) outweighs the higher daily charge (+$${P.dailyDelta}).</p>
+      </div></div>`;
 }
 
 /* ============================ COACH ============================ */
@@ -929,6 +1137,7 @@ function wire(){
   app.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{ S.routineOpen=null; render(); });
   const wm=document.getElementById('waveModal'); if(wm){ document.getElementById('waveClose').onclick=()=>{S.wave=null;render();}; wm.onclick=(e)=>{ if(e.target===wm){S.wave=null;render();} }; wireWave(); }
   app.querySelectorAll('[data-itab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-itab'); nav(()=>{S.insTab=k;},'#itab-'+k); });
+  app.querySelectorAll('[data-stab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-stab'); nav(()=>{S.savTab=k;},'#stab-'+k); });
   document.getElementById('coachRoot').querySelectorAll('[data-coach="next"]').forEach(b=>b.onclick=()=>coachNext());
   wireSignal(); wireInsCharts();
   reportHeight();
