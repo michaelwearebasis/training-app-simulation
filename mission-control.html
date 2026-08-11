@@ -396,10 +396,15 @@ table.hu.sites th:nth-child(2),table.hu.sites td:nth-child(2){width:34%}
 .locked{position:relative}
 .locked::after{content:"";position:absolute;inset:0;z-index:15}
 .pointing{position:relative;z-index:22}
+#restartBtn{position:fixed;left:20px;bottom:24px;z-index:61;display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line2);color:var(--d600);border-radius:999px;padding:9px 15px 9px 13px;font-weight:600;font-size:13px;box-shadow:0 6px 20px rgba(33,38,41,.13);cursor:pointer;font-family:inherit}
+#restartBtn svg{width:15px;height:15px}
+#restartBtn:hover{border-color:var(--lime);color:var(--fg);box-shadow:0 6px 22px rgba(152,255,171,.4)}
+@media(max-width:640px){#restartBtn{left:12px;bottom:auto;top:64px;padding:7px 12px;font-size:12px}}
 </style></head>
 <body>
 <div class="app" id="app"></div>
 <div id="coachRoot"></div>
+<button id="restartBtn" title="Restart the walkthrough"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> Restart</button>
 
 <script>
 /* ============================ REAL DATA — 1 B Northumberland Avenue ============================ */
@@ -459,15 +464,15 @@ const OTHER_SITES=[
 /* Faults (app-domain — representative, consistent with this panel; last 90 days) */
 const FAULTS=[
  {day:"3 days ago · Fri 8 Aug", items:[
-   {id:"f1",time:"19:12:47",sev:"critical",source:"AFDD trip",cn:1,cl:"Lights",summary:"Series arc detected — circuit isolated",err:"AFD_SERIES_ARC",wave:true},
+   {id:"f1",time:"19:12:47",sev:"critical",source:"RCD trip",cn:5,cl:"Power",summary:"Residual current 24 mA — over the 10 mA threshold, circuit isolated",err:"RCD_TRIP",kind:"rcd",wave:true},
  ]},
  {day:"12 days ago · Wed 30 Jul", items:[
-   {id:"f2",time:"07:41:02",sev:"error",source:"RCD trip",cn:5,cl:"Power",summary:"Residual current 12 mA — over the 10 mA threshold",err:"RCD_TRIP",wave:true},
+   {id:"f2",time:"07:41:02",sev:"error",source:"AFDD trip",cn:1,cl:"Lights",summary:"Series arc detected — circuit isolated",err:"AFD_SERIES_ARC",kind:"afdd",wave:true},
    {id:"f3",time:"18:05:33",sev:"warning",source:"Overtemperature",cn:15,cl:"Hot water",summary:"Module temperature 68 °C — elevated, no trip",err:"OT_WARN",wave:false},
  ]},
  {day:"34 days ago · Tue 8 Jul", items:[
    {id:"f4",time:"12:20:09",sev:"error",source:"MCB trip",cn:16,cl:"Hob",summary:"Overcurrent — 24 A on a 20 A B‑curve breaker",err:"MCB_OVERCURRENT",wave:false},
-   {id:"f5",time:"21:58:14",sev:"warning",source:"AFDD informative",cn:2,cl:"Lights",summary:"Arc signature observed, below trip threshold",err:"AFD_INFO",wave:true},
+   {id:"f5",time:"21:58:14",sev:"warning",source:"AFDD informative",cn:2,cl:"Lights",summary:"Arc signature observed, below trip threshold",err:"AFD_INFO",kind:"afdd",wave:true},
  ]},
 ];
 const FAULT_ALL=FAULTS.flatMap(g=>g.items);
@@ -482,12 +487,12 @@ const ROUTINES=[
      {sched:"9 Aug, 7:00 am",exec:"9 Aug, 7:00 am (+3s)",action:"Set standby",status:"COMPLETED"},
      {sched:"8 Aug, 7:00 am",exec:"8 Aug, 7:00 am (+2s)",action:"Set standby",status:"COMPLETED"},
    ]},
- {id:"r2",cn:8,cl:"Underfloor heating",schedule:"Weekday mornings · 5:00 am – 8:00 am",status:"Active",action:"Resume",lastRun:{when:"Today, 5:00 am",outcome:"FAILED"},nextRun:"Tomorrow, 5:00 am",
+ {id:"r2",cn:8,cl:"Underfloor heating",schedule:"Weekday mornings · 5:00 am – 8:00 am",status:"Active",action:"Resume",lastRun:{when:"Today, 5:00 am",outcome:"COMPLETED"},nextRun:"Tomorrow, 5:00 am",
    scheduleId:"7c14e0a9-91b2-4de1-a5b7-2f6631aa1c3d",circuitState:"STANDBY",circuitW:"0 W",comingNext:"Resume tomorrow, 5:00 AM",activePeriod:"Not currently active",nextWindow:"Wed, 12 Aug, 5:00 AM → 8:00 AM",windows:[{d:"Weekdays",t:"5:00 AM – 8:00 AM",h:"3h"}],
    history:[
-     {sched:"11 Aug, 5:00 am",exec:"11 Aug, 5:00 am",action:"Resume circuit",status:"FAILED",error:"CMD_TIMEOUT · module 8204…0046"},
+     {sched:"11 Aug, 5:00 am",exec:"11 Aug, 5:00 am (+2s)",action:"Resume circuit",status:"COMPLETED"},
      {sched:"10 Aug, 5:00 am",exec:"10 Aug, 5:00 am (+2s)",action:"Resume circuit",status:"COMPLETED"},
-     {sched:"9 Aug, 5:00 am",exec:"—",action:"Resume circuit",status:"MISSED"},
+     {sched:"9 Aug, 5:00 am",exec:"9 Aug, 5:00 am (+1s)",action:"Resume circuit",status:"COMPLETED"},
      {sched:"8 Aug, 5:00 am",exec:"8 Aug, 5:00 am (+1s)",action:"Resume circuit",status:"COMPLETED"},
      {sched:"7 Aug, 5:00 am",exec:"7 Aug, 5:00 am (+2s)",action:"Resume circuit",status:"COMPLETED"},
    ]},
@@ -535,16 +540,20 @@ function logoColor(s){const c=["#0EA5E9","#22C55E","#F59E0B","#8B5CF6","#EC4899"
 const _waveCache={};
 function genWave(id){
   if(_waveCache[id]) return _waveCache[id];
+  const f=FAULT_ALL.find(x=>x.id===id)||{};
   const N=500, windowMs=200, t=i=>i/(N-1)*windowMs;
   const arr=fn=>{const a=new Array(N);for(let i=0;i<N;i++)a[i]=fn(t(i),i);return a;};
   const V=arr(ms=>230*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000));
   let ch;
-  if(id==="f2"){ // RCD trip — residual current rises then trips
-    const I=arr(ms=>{const base=6*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000);const leak=ms>70?Math.min(1,(ms-70)/40)*0.02*Math.sin(2*Math.PI*50*ms/1000+0.6):0;return base+base*leak*30;});
-    const RES=arr((ms)=>{const g=ms>70?Math.min(12,(ms-70)/50*12):0.4; return g*Math.abs(Math.sin(2*Math.PI*50*ms/1000))+ (Math.random()-0.5)*0.4;});
-    ch=[cV(V),cI(I,"Primary Current"),{key:"res",label:"Residual current",unit:"mA",color:"#F59E0B",samples:RES,range:null},cModel(arr(ms=>ms>70?Math.min(1.4,(ms-70)/60):0.15+ Math.random()*0.03))];
+  if(f.kind==="rcd"){ // RCD trip — residual current climbs past the threshold, breaker isolates
+    const tripAt=94;
+    const I=arr(ms=>{const base=6*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000); return ms>tripAt?base*Math.max(0,1-(ms-tripAt)/6):base;});
+    const RES=arr(ms=>{const g=ms>34?Math.min(11,(ms-34)/52*11):0.4; const v=ms>tripAt?0:g; return v*Math.abs(Math.sin(2*Math.PI*50*ms/1000))+(Math.random()-0.5)*0.3;});
+    const ROG=arr(()=>Math.random()*1.7);
+    const Vc=arr(ms=>ms>tripAt?(Math.random()-0.5)*6:230*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000));
+    ch=[cI(I,"Primary Current"),{key:"res",label:"Residual Current",unit:"mA",color:"#F59E0B",samples:RES,range:{min:0,max:14},trip:10},{key:"crog",label:"AFDD Rogowski",unit:null,range:{min:0,max:25},color:"#16A34A",samples:ROG},cV(Vc)];
   } else { // AFDD trip / informative — arcing current + Rogowski HF + model state
-    const trip = id==="f1";
+    const trip = f.err==="AFD_SERIES_ARC";
     const I=arr((ms)=>{let s=9*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000);
       if(ms>60){const arcs=(Math.random()<0.35?1:0)*(Math.random()*6-3)*(ms>100?1.6:1);const flat=Math.sign(s)*Math.min(Math.abs(s),9);s=flat+arcs;}return s;});
     const CROG=arr((ms)=>{const burst=ms>60?(Math.random()<0.5?Math.random()* (ms>100?22:12):Math.random()*4):Math.random()*2;return Math.min(25,burst);});
@@ -574,29 +583,26 @@ const I={
 };
 
 /* ============================ STATE ============================ */
-let S={ screen:"sites", tab:"panel", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null, routineOpen:null, insTab:"peak", savTab:"retail" };
+let S={ screen:"sites", tab:"overview", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null, routineOpen:null, insTab:"peak", savTab:"retail" };
 // debug/deep-link: #screen=site&tab=panel&panelTab=connectivity&coach=6
 (function(){const h=location.hash.slice(1); if(!h)return; h.split("&").forEach(kv=>{const[k,v]=kv.split("=");if(k in S)S[k]=(k==="coach"?+v:v);});})();
 const app=document.getElementById('app');
 const money=n=>"$"+n.toLocaleString();
 
 /* ---- coach steps ---- */
-const GROUPS=[1,2,2,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7,7]; // which of the 7 demo steps each coach micro-step belongs to
+const GROUPS=[1,2,2,3,3,3,4,4,4,4,5,5,5,5,5,5,6,6]; // which of the 6 demo steps each coach micro-step belongs to
 const STEPS=[
  {screen:"sites",   msg:'This is <b>Sites</b> — every property where you’ve installed a Basis panel. We’ll open <b>1 B Northumberland Avenue</b>. Click its row.', target:"#row-nrthmbld", advanceOn:"click"},
- {screen:"site", tab:"property", msg:'You’re on the site. Open the <b>Property</b> tab, then choose <b>Users</b> to see the sparkies and customers connected to this panel.', target:"#subtab-users", advanceOn:"click"},
+ {screen:"site", tab:"property", msg:'You’re on the site. Open the <b>Property</b> tab — it lists the <b>users</b> connected to this panel: the sparkies and the customers.', target:"#tab-property", advanceOn:"click"},
  {screen:"site", tab:"property", propertyTab:"users", msg:'These are the accounts linked to the panel — the <b>homeowner</b> (Home) and the <b>electrician</b> (Trade, with approval status). Next we’ll check the panel itself.', advanceOn:"next"},
  {screen:"site", tab:"panel", panelTab:"configuration", msg:'Open the <b>Panel</b> tab — <b>Configuration</b> shows every circuit’s MCB, RCD and AFDD, exactly as commissioned.', target:"#tab-panel", advanceOn:"click"},
  {screen:"site", tab:"panel", panelTab:"connectivity", msg:'Now <b>Connectivity</b> — is the panel on <b>wired or Wi‑Fi</b>, what’s the signal, and have there been any internet drops?', target:"#subtab-connectivity", advanceOn:"click"},
  {screen:"site", tab:"panel", panelTab:"connectivity", msg:'It’s on <b>Wi‑Fi</b> at <b>−59 dBm</b> (channel 6). The drops in the history were <b>brief keep‑alive timeouts that self‑recovered</b> — 99.94% uptime, so not a real problem for this home.', advanceOn:"next"},
  {screen:"site", tab:"faults", msg:'Open the <b>Faults</b> tab — it defaults to the <b>last 90 days</b>. Every trip and warning the panel has logged.', target:"#tab-faults", advanceOn:"click"},
- {screen:"site", tab:"faults", msg:'Click the <b>top fault</b> — an <b>AFDD trip on C1 Lights</b> — to expand its details.', target:"#fault-f1", advanceOn:"click"},
+ {screen:"site", tab:"faults", msg:'Click the <b>top fault</b> — an <b>RCD trip on C5 Power</b> — to expand its details.', target:"#fault-f1", advanceOn:"click"},
  {screen:"site", tab:"faults", msg:'Now open <b>Waveforms</b> to see exactly what the panel captured the instant it tripped.', target:'[data-wave="f1"]', advanceOn:"click"},
- {screen:"site", tab:"faults", msg:'These are the capture channels — <b>voltage, current, the AFDD Rogowski HF signal and the model state</b>. <b>Hover across</b> any chart to read the exact value at that moment. Close it when you’re done.', advanceOn:"next"},
- {screen:"site", tab:"routines", msg:'Open <b>Routines</b> — the automations set up on this panel (like heating hot water off‑peak).', target:"#tab-routines", advanceOn:"click"},
- {screen:"site", tab:"routines", msg:'Click <b>View</b> on the <b>Underfloor heating</b> routine to see its run history.', target:'[data-view="r2"]', advanceOn:"click"},
- {screen:"site", tab:"routines", msg:'Every run is logged. Notice the <b>Failed</b> run on 11 Aug — the module didn’t acknowledge the resume in time (<span style="color:#DC2626">CMD_TIMEOUT</span>). It recovered next schedule — that’s what you’d investigate.', advanceOn:"next"},
- {screen:"site", tab:"insights", msg:'Open <b>Insights</b> — it lands on <b>Peak load</b>: the biggest demand this house has ever drawn.', target:"#tab-insights", advanceOn:"click"},
+ {screen:"site", tab:"faults", msg:'These are the capture channels — <b>primary current, the residual current that climbed past the 10 mA trip threshold, the AFDD Rogowski line and the phase voltage</b>. <b>Hover across</b> any chart to read the exact value at that moment. Close it when you’re done.', advanceOn:"next"},
+ {screen:"site", tab:"insights", msg:'Open <b>Insights</b> — it lands on <b>Peak load</b>: the biggest demand this house has drawn in the <b>last 30 days</b>.', target:"#tab-insights", advanceOn:"click"},
  {screen:"site", tab:"insights", msg:'This home peaked at <b>13.3 kW</b> — evening cooking overlapping hot‑water heating — well under the 63 A supply. <b>Hover</b> the curve to read any point.', advanceOn:"next"},
  {screen:"site", tab:"insights", msg:'Open <b>Power quality</b> to check whether the grid itself is misbehaving.', target:"#itab-pq", advanceOn:"click"},
  {screen:"site", tab:"insights", msg:'Voltage touched <b>253.5 V</b> (over the 253 V limit) and frequency dipped to <b>48.1 Hz</b>. A wandering grid can be the real cause of a “panel problem”.', advanceOn:"next"},
@@ -616,10 +622,6 @@ function render(){
 function topbar(){
   return `<div class="topbar">
     <div class="brand"><span class="dot">B</span> Basis <span class="mc">Mission Control</span></div>
-    <nav class="topnav">
-      <a class="${S.screen==='sites'?'on':''}">Sites</a>
-      <a>Fleet</a><a>Firmware</a><a>Users</a>
-    </nav>
     <div class="topsearch">${I.search}<span>Search sites, ICP, serial…</span></div>
     <div class="topuser">MB</div>
   </div>`;
@@ -679,6 +681,29 @@ function siteScreen(){
     ${tabContent()}
   </div>`;
 }
+function overviewTab(){
+  const sevN={critical:0,error:0,warning:0}; FAULT_ALL.forEach(f=>sevN[f.sev]++);
+  const live=CIRCUITS.filter(c=>c.state==="LIVE").length;
+  return `<div class="grid2" style="align-items:start">
+    <div class="card"><div class="chd"><span class="t">Site</span></div><div class="cbd">
+      <div class="drow"><span class="dk">Address</span><span class="dv">${SITE.address}, ${SITE.suburb}</span></div>
+      <div class="drow"><span class="dk">Panel serial</span><span class="dv mono" style="font-size:12px">${SITE.panelSerial}</span></div>
+      <div class="drow"><span class="dk">System Manager</span><span class="dv mono" style="font-size:12px">${SITE.smSerial}</span></div>
+      <div class="drow"><span class="dk">SM firmware</span><span class="dv">${SITE.smVersion}</span></div>
+      <div class="drow"><span class="dk">ICP</span><span class="dv mono" style="font-size:12px">${SITE.icp}</span></div>
+      <div class="drow"><span class="dk">Status</span><span class="dv"><span class="dotstat on"><i></i>Panel online</span></span></div>
+    </div></div>
+    <div class="card"><div class="chd"><span class="t">At a glance</span></div><div class="cbd">
+      <div class="kpis" style="grid-template-columns:1fr 1fr">
+        <div class="kpi"><div class="k">Circuits</div><div class="v">${SITE.circuits}</div><div class="s">${live} live</div></div>
+        <div class="kpi"><div class="k">Faults · 90d</div><div class="v">${FAULT_COUNT}</div><div class="s">${sevN.critical} critical · ${sevN.error} error</div></div>
+        <div class="kpi"><div class="k">Routines</div><div class="v">${ROUTINES.length}</div><div class="s">active</div></div>
+        <div class="kpi"><div class="k">Users</div><div class="v">${USERS.length}</div><div class="s">linked to panel</div></div>
+      </div>
+      <p class="sub" style="font-size:12.5px;margin-top:14px">Everything Basis knows about this home is on the tabs above — <b style="color:var(--fg)">Property</b>, the <b style="color:var(--fg)">Panel</b> itself, <b style="color:var(--fg)">Faults</b>, <b style="color:var(--fg)">Routines</b>, <b style="color:var(--fg)">Insights</b> and <b style="color:var(--fg)">Savings</b>.</p>
+    </div></div>
+  </div>`;
+}
 function tabContent(){
   switch(S.tab){
     case "property": return propertyTab();
@@ -687,7 +712,7 @@ function tabContent(){
     case "routines": return routinesTab();
     case "insights": return insightsTab();
     case "savings": return savingsTab();
-    case "overview": return `<div class="card"><div class="cbd sub">Overview — site summary.</div></div>`;
+    case "overview": return overviewTab();
     default: return `<div class="card"><div class="cbd" style="padding:40px;text-align:center;color:var(--d500)">Building the <b style="color:var(--fg)">${cap(S.tab)}</b> section next…</div></div>`;
   }
 }
@@ -851,26 +876,13 @@ function faultTimeline(){
 }
 function faultsTab(){
   const sevN={critical:0,error:0,warning:0}; FAULT_ALL.forEach(f=>sevN[f.sev]++);
-  const typeCounts={}; FAULT_ALL.forEach(f=>typeCounts[f.source]=(typeCounts[f.source]||0)+1);
-  const typeList=Object.entries(typeCounts).map(([t,n])=>`<label class="fopt"><input type="checkbox" disabled><span class="fdot type"></span><span class="foptn">${t}</span><span class="foptc">${n}</span></label>`).join("");
-  const circCounts={}; FAULT_ALL.forEach(f=>{const k=f.cn+" — "+f.cl.toLowerCase(); circCounts[k]=(circCounts[k]||0)+1;});
-  const circList=Object.entries(circCounts).map(([c,n])=>`<label class="fopt"><input type="checkbox" disabled><span class="foptn" style="margin-left:17px">${c}</span><span class="foptc">${n}</span></label>`).join("");
-  const sevRow=(label,col,n)=>`<label class="fopt"><input type="checkbox" disabled><span class="fdot" style="background:${col}"></span><span class="foptn">${label}</span><span class="foptc">${n}</span></label>`;
-  const filters=`<div class="card ffilters"><div class="cbd">
-     <div class="ffhd"><span class="ffttl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg> Filters</span><a class="mlink">Clear all</a></div>
-     <div class="fsec"><div class="fseclbl">Time range</div><div class="fdrop">Last 90 days ${I.chevd}</div></div>
-     <div class="fsec"><div class="fseclbl">Severity</div>${sevRow('Critical','#DE0F00',sevN.critical)}${sevRow('Error','#F97316',sevN.error)}${sevRow('Warning','#EAB308',sevN.warning)}</div>
-     <div class="fsec"><div class="fseclbl">Fault type</div><div class="fsearch">${_mag}<span>Find type…</span></div>${typeList}</div>
-     <div class="fsec"><div class="fseclbl">Circuit</div><div class="fsearch">${_mag}<span>Find circuit…</span></div>${circList}</div>
-   </div></div>`;
   const groups=FAULTS.map(g=>`<div class="daygroup">${g.day}</div>${g.items.map(faultRow).join("")}`).join("");
-  const main=`<div class="fmain">
+  return `<div class="fmain">
      <div class="fmhd"><div class="fmttl">FAULTS · 90 DAYS <span class="fsevcount"><span><i style="background:#DE0F00"></i>${sevN.critical} critical</span><span><i style="background:#F97316"></i>${sevN.error} error</span><span><i style="background:#EAB308"></i>${sevN.warning} warning</span></span></div>
        <div class="frange"><span>24h</span><span>7d</span><span>30d</span><span class="on">90d</span><span>All</span></div></div>
      ${faultTimeline()}
      <div class="sub" style="font-size:12.5px;margin:2px 0 8px">Showing <b style="color:var(--fg)">${FAULT_COUNT}</b> of ${FAULT_COUNT} events</div>
      <div class="card pad0"><div class="cbd">${groups}</div></div></div>`;
-  return `<div class="faultlayout">${filters}${main}</div>`;
 }
 function faultRow(f){
   const open=S.faultOpen[f.id];
@@ -933,7 +945,7 @@ function waveChart(c,idx,w,reserve){
   const Y=v=>padT+(1-(v-sc.lo)/yr)*innerH;
   const path=c.samples.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" ");
   const grid=sc.ticks.map(v=>`<line x1="${padL}" x2="${W-padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="rgba(28,25,23,.13)"/><text x="${padL-6}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--d400)">${fmtTick(c,v)}</text>`).join("");
-  const trip=c.trip!=null?`<line x1="${padL}" x2="${W-padR}" y1="${Y(c.trip).toFixed(1)}" y2="${Y(c.trip).toFixed(1)}" stroke="#DE0F00" stroke-width="1" stroke-dasharray="4 3"/><text x="${W-padR-4}" y="${(Y(c.trip)-4).toFixed(1)}" text-anchor="end" font-size="10" fill="#DC2626">trip 1.0</text>`:'';
+  const trip=c.trip!=null?`<line x1="${padL}" x2="${W-padR}" y1="${Y(c.trip).toFixed(1)}" y2="${Y(c.trip).toFixed(1)}" stroke="#DE0F00" stroke-width="1" stroke-dasharray="4 3"/><text x="${W-padR-4}" y="${(Y(c.trip)-4).toFixed(1)}" text-anchor="end" font-size="10" fill="#DC2626">trip ${c.key==="model"?c.trip.toFixed(1):c.trip+" "+c.unit}</text>`:'';
   const rTicks=c.trip!=null?sc.ticks.map(v=>`<text x="${W-padR+6}" y="${(Y(v)+3).toFixed(1)}" font-size="11" fill="var(--d400)">${v.toFixed(1)}</text>`).join(""):'';
   const axisTitle=c.unit?`${c.label} (${c.unit})`:c.key==='crog'?`${c.label} (0–25)`:c.label;
   return `<div class="wchart" data-ch="${idx}" data-padl="${padL}" data-innerw="${innerW}" data-w="${W}" data-window="${w.windowMs}" data-n="${c.samples.length}">
@@ -1026,23 +1038,24 @@ let _ins=null;
 function genInsights(){
   if(_ins) return _ins;
   const H=48, hr=i=>i/2, rnd=(a,b)=>a+Math.random()*(b-a);
-  const peak=[],volt=[],freq=[],temp=[];
+  const volt=[],freq=[],temp=[];
   for(let i=0;i<H;i++){ const h=hr(i);
-    let p; if(h>=5&&h<8.5) p=2.2+2.4*Math.sin((h-5)/3.5*Math.PI)+rnd(0,.4);
-      else if(h>=17&&h<20) p=3.5+4.5*Math.sin((h-17)/3*Math.PI)+rnd(0,.5);
-      else if(h>=9&&h<17) p=0.9+rnd(0,.9); else p=0.32+rnd(0,.22);
-    peak.push({t:h,v:+p.toFixed(2)});
     volt.push({t:h,v:+(235+6*Math.sin(i/5)+rnd(-3,3)).toFixed(1)});
     freq.push({t:h,v:+(50+rnd(-0.12,0.12)).toFixed(2)});
     temp.push({t:h,v:+(38+4*Math.sin((h-15)/6)+rnd(-1,1)).toFixed(1)});
   }
-  peak[38]={t:19,v:13.35}; peak[37]={t:18.5,v:9.4}; peak[39]={t:19.5,v:8.1};
   volt[25]={t:12.5,v:253.5}; freq[13]={t:6.5,v:48.14};
   temp[36]={t:18,v:71.8}; temp[35]={t:17.5,v:52}; temp[37]={t:18.5,v:49};
-  _ins={peak,volt,freq,temp,peakI:38,voltI:25,freqI:13,tempI:36};
+  // Peak load — daily peak demand across the last 30 days
+  const peak=[], pdays=[];
+  for(let d=13;d<=31;d++) pdays.push("Jul "+d);
+  for(let d=1;d<=11;d++) pdays.push("Aug "+d);
+  for(let i=0;i<30;i++){ let v=2.6+rnd(0,3.4); if(i%6===4) v=6.4+rnd(0,1.6); peak.push({t:i,v:+v.toFixed(2),x:pdays[i]}); }
+  peak[26]={t:26,v:13.32,x:pdays[26]}; peak[19]={t:19,v:8.6,x:pdays[19]};
+  _ins={peak,volt,freq,temp,peakI:26,voltI:25,freqI:13,tempI:36};
   return _ins;
 }
-const INS_CFG={peakchart:{key:"peak",fmt:v=>v.toFixed(2)+" kW"},voltchart:{key:"volt",fmt:v=>v.toFixed(1)+" V"},freqchart:{key:"freq",fmt:v=>v.toFixed(2)+" Hz"},tempchart:{key:"temp",fmt:v=>v.toFixed(1)+" °C"}};
+const INS_CFG={peakchart:{key:"peak",fmt:v=>v.toFixed(1)+" kW"},voltchart:{key:"volt",fmt:v=>v.toFixed(1)+" V"},freqchart:{key:"freq",fmt:v=>v.toFixed(2)+" Hz"},tempchart:{key:"temp",fmt:v=>v.toFixed(1)+" °C"}};
 function bandChart(o){
   const W=900,padL=46,padR=14,padT=12,padB=26,H=o.height||230;
   const iW=W-padL-padR,iH=H-padT-padB, s=o.series;
@@ -1054,7 +1067,8 @@ function bandChart(o){
   const area=o.area?`<path d="${line} L${X(s.length-1).toFixed(1)} ${Y(o.ymin).toFixed(1)} L${padL} ${Y(o.ymin).toFixed(1)} Z" fill="${o.color}" opacity=".13"/>`:'';
   const mk=o.marker!=null?`<circle cx="${X(o.marker.i).toFixed(1)}" cy="${Y(s[o.marker.i].v).toFixed(1)}" r="4" fill="${o.marker.color||o.color}"/><text x="${X(o.marker.i).toFixed(1)}" y="${(Y(s[o.marker.i].v)-9).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="600" fill="${o.marker.color||o.color}">${o.marker.label}</text>`:'';
   const dots=o.id?s.map((p,i)=>`<circle class="pt" data-i="${i}" cx="${X(i).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="6" fill="transparent"/>`).join(""):'';
-  const xl=["00:00","06:00","12:00","18:00","24:00"].map((l,k)=>`<text x="${(padL+k/4*iW).toFixed(1)}" y="${H-8}" text-anchor="${k===0?'start':k===4?'end':'middle'}" font-size="10" fill="var(--d400)">${l}</text>`).join("");
+  const xlabs=o.xlabels||["00:00","06:00","12:00","18:00","24:00"];
+  const xl=xlabs.map((l,k)=>`<text x="${(padL+k/(xlabs.length-1)*iW).toFixed(1)}" y="${H-8}" text-anchor="${k===0?'start':k===xlabs.length-1?'end':'middle'}" font-size="10" fill="var(--d400)">${l}</text>`).join("");
   return `<div class="chartwrap" ${o.id?`id="${o.id}"`:''}>
     <svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:${H}px">
       ${bands}${yt}${nom}${area}
@@ -1138,13 +1152,13 @@ function rcdView(){
 function peakLoadView(){
   const d=genInsights();
   return `<div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
-     <div class="kpi"><div class="k">Peak demand</div><div class="v">13.3 kW</div><div class="s">whole house · evening</div></div>
-     <div class="kpi"><div class="k">99.9th percentile</div><div class="v">6.0 kW</div><div class="s">rarely above this</div></div>
+     <div class="kpi"><div class="k">Peak demand</div><div class="v">13.3 kW</div><div class="s">whole house · last 30 days</div></div>
+     <div class="kpi"><div class="k">Typical daily peak</div><div class="v">6.0 kW</div><div class="s">most evenings</div></div>
      <div class="kpi"><div class="k">Supply</div><div class="v">63 A</div><div class="s">≈ 14.5 kW single‑phase</div></div>
    </div>
-   <div class="card"><div class="chd"><span class="t">Whole‑house demand</span><span class="sub" style="font-size:12px">Typical day · hover to read</span></div>
-     <div class="cbd">${bandChart({id:"peakchart",series:d.peak,ymin:0,ymax:14,color:"#16A34A",area:true,height:250,marker:{i:d.peakI,label:"13.3 kW",color:"#16A34A"},yfmt:v=>v.toFixed(0)})}
-     <p class="sub" style="font-size:12.5px;margin-top:8px">The biggest simultaneous demand this house has drawn is <b style="color:var(--fg)">13.3 kW</b> — evening cooking (oven + hob) overlapping with hot‑water heating — comfortably under the 63 A (~14.5 kW) supply.</p></div></div>`;
+   <div class="card"><div class="chd"><span class="t">Daily peak demand</span><span class="sub" style="font-size:12px">Last 30 days · hover to read</span></div>
+     <div class="cbd">${bandChart({id:"peakchart",series:d.peak,ymin:0,ymax:14,color:"#16A34A",area:true,height:250,marker:{i:d.peakI,label:"13.3 kW",color:"#16A34A"},xlabels:["Jul 13","Jul 20","Jul 27","Aug 3","Aug 11"],yfmt:v=>v.toFixed(0)})}
+     <p class="sub" style="font-size:12.5px;margin-top:8px">Over the last 30 days the biggest simultaneous demand this house drew was <b style="color:var(--fg)">13.3 kW</b> on <b style="color:var(--fg)">8 Aug</b> — evening cooking (oven + hob) overlapping with hot‑water heating — comfortably under the 63 A (~14.5 kW) supply.</p></div></div>`;
 }
 function powerQualityView(){
   const d=genInsights();
@@ -1315,7 +1329,7 @@ function renderCoach(){
   root.innerHTML=`<div class="coach ${st.target?'':'hint'}">
     <div class="num">${S.coach+1}</div>
     <div class="body">
-      <div class="step">Step ${GROUPS[S.coach]} of 7</div>
+      <div class="step">Step ${GROUPS[S.coach]} of 6</div>
       <div class="msg">${st.msg}</div>
       <div class="actions">
         ${st.advanceOn==="next"?'<button class="btn" data-coach="next">Got it</button>':'<span class="sub" style="font-size:12.5px;color:var(--d400)">← follow the highlight</span>'}
@@ -1335,8 +1349,10 @@ function spotlight(sel){
   el.classList.add('pointing');
 }
 function coachStepMatches(sel){ const st=STEPS[S.coach]; return !!st && st.advanceOn==="click" && st.target===sel; }
-function coachDoAdvance(){ S.coach++; const nx=STEPS[S.coach]; if(nx){ if(nx.tab)S.tab=nx.tab; if(nx.propertyTab)S.propertyTab=nx.propertyTab; if(nx.panelTab)S.panelTab=nx.panelTab; if(nx.screen==="site"&&S.screen!=="site")S.screen="site"; } }
-function coachNext(){ coachDoAdvance(); render(); }
+// Advance the coach WITHOUT navigating — the page only moves when the user
+// actually clicks the highlighted tab/control, not the moment a step begins.
+function coachDoAdvance(){ S.coach++; }
+function coachNext(){ S.wave=null; coachDoAdvance(); render(); }
 function nav(action,sel){ if(action)action(); if(coachStepMatches(sel))coachDoAdvance(); render(); }
 
 /* ============================ WIRING ============================ */
@@ -1369,8 +1385,8 @@ function wireInsCharts(){
       const r=svg.getBoundingClientRect(), px=cx/900*r.width, py=cy/vh*r.height;
       ch.setAttribute('x1',cx);ch.setAttribute('x2',cx);ch.style.opacity=.5;
       mk.setAttribute('cx',cx);mk.setAttribute('cy',cy);mk.style.opacity=1;
-      const h=series[i].t, hh=String(Math.floor(h)).padStart(2,'0'), mm=(h%1)?'30':'00';
-      tip.innerHTML=`<div class="tt">${hh}:${mm}</div><b>${cfg.fmt(series[i].v)}</b>`;
+      let xlbl; if(series[i].x!=null){ xlbl=series[i].x; } else { const h=series[i].t, hh=String(Math.floor(h)).padStart(2,'0'), mm=(h%1)?'30':'00'; xlbl=hh+':'+mm; }
+      tip.innerHTML=`<div class="tt">${xlbl}</div><b>${cfg.fmt(series[i].v)}</b>`;
       tip.style.left=px+'px';tip.style.top=py+'px';tip.style.opacity=1;
     }));
     wrap.addEventListener('mouseleave',()=>{tip.style.opacity=0;ch.style.opacity=0;mk.style.opacity=0;});
@@ -1419,6 +1435,14 @@ function wireSignal(){
 function reportHeight(){try{parent.postMessage({basisEmbed:'height',height:Math.ceil(document.documentElement.scrollHeight)},'*');}catch(e){}}
 if(window.ResizeObserver){new ResizeObserver(reportHeight).observe(document.body);}
 addEventListener('load',reportHeight);
+
+function restartTour(){
+  S.screen="sites"; S.tab="overview"; S.propertyTab="users"; S.panelTab="configuration";
+  S.signalRange="1h"; S.coach=0; S.faultOpen={}; S.wave=null; S.routineOpen=null;
+  S.insTab="peak"; S.savTab="retail";
+  window.scrollTo(0,0); render();
+}
+document.getElementById('restartBtn').onclick=restartTour;
 
 render();
 </script>
