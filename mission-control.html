@@ -84,8 +84,9 @@ table.hu tbody tr.dim{opacity:.5}
 .usercell .de{font-size:12px;color:var(--d500)}
 
 /* sub-nav tabs (underlined) */
-.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line2);margin-bottom:20px;overflow-x:auto}
-.tabs button{position:relative;padding:11px 14px;color:var(--d500);font-weight:500;font-size:14px;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line2);margin-bottom:20px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none;height:0}
+.tabs button{flex:0 0 auto;position:relative;padding:11px 14px;color:var(--d500);font-weight:500;font-size:14px;white-space:nowrap;display:flex;align-items:center;gap:7px}
 .tabs button:hover{color:var(--fg)}
 .tabs button.on{color:var(--fg)}
 .tabs button.on::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;background:var(--primary);border-radius:2px}
@@ -299,6 +300,7 @@ table.hu.sites th:nth-child(2),table.hu.sites td:nth-child(2){width:34%}
 .wpill.on{color:var(--fg);background:var(--card2)}
 .wpill i{width:8px;height:8px;border-radius:50%}
 .wpill.more{color:var(--primary)}
+.wcause{margin:0 20px;padding:10px 14px;background:rgba(222,15,0,.06);border:1px solid rgba(222,15,0,.18);border-radius:10px;font-size:12.5px;color:var(--d600);line-height:1.55}
 
 /* savings — retail comparison */
 .sgrid{align-items:stretch}
@@ -391,8 +393,25 @@ table.hu.sites th:nth-child(2),table.hu.sites td:nth-child(2){width:34%}
 .coach .prog{margin-left:auto;font-size:12px;color:var(--d400)}
 .coach.hint .msg b{color:#A16207}
 /* spotlight — lime "hot" ring, matching the Trade/Home demos */
-.spot{position:absolute;border-radius:12px;box-shadow:0 0 0 2.5px var(--lime),0 0 18px rgba(152,255,171,.6);pointer-events:none;z-index:20;transition:all .2s ease;animation:coachpulse 1.7s ease-in-out infinite}
-@keyframes coachpulse{0%,100%{box-shadow:0 0 0 2.5px var(--lime),0 0 12px rgba(152,255,171,.45)}50%{box-shadow:0 0 0 4px var(--lime),0 0 22px rgba(152,255,171,.8)}}
+.spot{position:absolute;border-radius:12px;pointer-events:none;z-index:45;transition:all .2s ease;animation:coachpulse 1.7s ease-in-out infinite}
+@keyframes coachpulse{0%,100%{box-shadow:0 0 0 2.5px var(--lime),0 0 12px rgba(152,255,171,.45),0 0 0 9999px rgba(17,17,19,.5)}50%{box-shadow:0 0 0 4px var(--lime),0 0 22px rgba(152,255,171,.85),0 0 0 9999px rgba(17,17,19,.5)}}
+/* storyline popups */
+.storywrap{z-index:66}
+.storysheet{background:var(--card);border:1px solid var(--line2);border-radius:20px;max-width:520px;width:calc(100% - 40px);padding:30px 32px;box-shadow:0 30px 80px rgba(0,0,0,.4);text-align:left;animation:storypop .35s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes storypop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+.storyeyebrow{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--bubfg);background:var(--lime);padding:5px 11px;border-radius:999px;margin-bottom:16px}
+.storytitle{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:12px}
+.storybody{font-size:14.5px;line-height:1.6;color:var(--d600)}
+.storybody b{color:var(--fg);font-weight:600}
+.storyactions{margin-top:24px}
+.storybtn{background:var(--lime);color:var(--bubfg);border-radius:999px;padding:11px 22px;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;border:none}
+.storybtn:hover{filter:brightness(.96)}
+/* floating annotation pills */
+.floatpill{position:absolute;z-index:47;transform:translate(-50%,-100%);background:var(--lime);color:var(--bubfg);border-radius:13px;padding:8px 14px;box-shadow:0 10px 28px rgba(152,255,171,.55);text-align:center;white-space:nowrap;animation:pillfade .3s ease}
+@keyframes pillfade{from{opacity:0}to{opacity:1}}
+.floatpill .fpt{font-weight:800;font-size:12.5px;letter-spacing:-.01em}
+.floatpill .fpd{font-size:11px;opacity:.82;margin-top:1px}
+.floatpill .fparrow{position:absolute;left:50%;bottom:-5px;transform:translateX(-50%) rotate(45deg);width:11px;height:11px;background:var(--lime);border-radius:2px}
 .locked{position:relative}
 .locked::after{content:"";position:absolute;inset:0;z-index:15}
 .pointing{position:relative;z-index:22}
@@ -430,7 +449,7 @@ const CIRCUITS=[
  {n:11,label:"alarm",mcbC:"B",mcbA:2,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
  {n:12,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
  {n:13,label:"oven",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"STANDBY"},
- {n:14,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
+ {n:14,label:"power",mcbC:"C",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:["garage","workshop"],state:"LIVE"},
  {n:15,label:"hwc",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"LIVE"},
  {n:16,label:"hob",mcbC:"B",mcbA:20,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:[],state:"STANDBY"},
  {n:17,label:"power",mcbC:"B",mcbA:16,rcd:"A",ma:30,afd:false,standbyLocked:false,lcLocked:true,loc:["bedroom1","bedroom2","bedroom3"],state:"LIVE"},
@@ -464,7 +483,7 @@ const OTHER_SITES=[
 /* Faults (app-domain — representative, consistent with this panel; last 90 days) */
 const FAULTS=[
  {day:"3 days ago · Fri 8 Aug", items:[
-   {id:"f1",time:"19:12:47",sev:"critical",source:"RCD trip",cn:5,cl:"Power",summary:"Residual current 24 mA — over the 10 mA threshold, circuit isolated",err:"RCD_TRIP",kind:"rcd",wave:true},
+   {id:"f1",time:"07:40:33",sev:"critical",source:"MCB trip",cn:14,cl:"Power",date:"8 Aug 2026",summary:"Overcurrent — 24 A rms on a 16 A C‑curve breaker, circuit isolated",err:"MCB_OVERCURRENT",kind:"mcb",wave:true},
  ]},
  {day:"12 days ago · Wed 30 Jul", items:[
    {id:"f2",time:"07:41:02",sev:"error",source:"AFDD trip",cn:1,cl:"Lights",summary:"Series arc detected — circuit isolated",err:"AFD_SERIES_ARC",kind:"afdd",wave:true},
@@ -544,8 +563,20 @@ function genWave(id){
   const N=500, windowMs=200, t=i=>i/(N-1)*windowMs;
   const arr=fn=>{const a=new Array(N);for(let i=0;i<N;i++)a[i]=fn(t(i),i);return a;};
   const V=arr(ms=>230*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000));
-  let ch;
-  if(f.kind==="rcd"){ // RCD trip — residual current climbs past the threshold, breaker isolates
+  let ch, vtrip=null;
+  if(f.kind==="mcb"){ // MCB trip — sustained overcurrent on the primary, breaker isolates
+    const tripAt=92; vtrip=Math.round(tripAt/windowMs*(N-1));
+    const Ipk=34; // ~24 A rms
+    const I=arr(ms=>{const s=Ipk*Math.sin(2*Math.PI*50*ms/1000); return ms>tripAt?s*Math.max(0,1-(ms-tripAt)/5):s;});
+    const RES=arr(ms=>{let n=(Math.random()-0.5)*1.4; if(Math.abs(ms-tripAt)<3 && Math.random()<0.5) n+=1.2; return n;});
+    const Vpk=325; // ~230 V rms
+    const Vc=arr(ms=>ms>tripAt?(Math.random()-0.5)*6:Vpk*Math.sin(2*Math.PI*50*ms/1000));
+    ch=[
+      {...cI(I,"Primary Current"), ann:"24 A rms → tripped C16"},
+      {key:"res",label:"Residual Current",unit:"mA",color:"#DC2626",samples:RES,range:{min:-1.5,max:1.5}, ann:"0.4 mA · normal"},
+      {...cV(Vc), ann:"231 V · nominal"},
+    ];
+  } else if(f.kind==="rcd"){ // RCD trip — residual current climbs past the threshold, breaker isolates
     const tripAt=94;
     const I=arr(ms=>{const base=6*Math.SQRT2*Math.sin(2*Math.PI*50*ms/1000); return ms>tripAt?base*Math.max(0,1-(ms-tripAt)/6):base;});
     const RES=arr(ms=>{const g=ms>34?Math.min(11,(ms-34)/52*11):0.4; const v=ms>tripAt?0:g; return v*Math.abs(Math.sin(2*Math.PI*50*ms/1000))+(Math.random()-0.5)*0.3;});
@@ -560,7 +591,7 @@ function genWave(id){
     const MOD=arr((ms)=>{const base= ms<60?0.1+Math.random()*0.05 : Math.min(trip?1.35:0.92,(ms-60)/(trip?70:110))+Math.random()*0.04; return Math.max(0,base);});
     ch=[cV(V),cI(I,"Primary Current"),{key:"crog",label:"AFDD Rogowski",unit:null,range:{min:0,max:25},color:"#16A34A",samples:CROG},cModel(MOD)];
   }
-  const res={windowMs,N,channels:ch.map(c=>({...c,rms:rmsOf(c)}))};
+  const res={windowMs,N,vtrip,channels:ch.map(c=>({...c,rms:rmsOf(c)}))};
   _waveCache[id]=res; return res;
 }
 function cV(V){return {key:"v",label:"Phase Voltage",unit:"V",color:"#7C3AED",samples:V,range:null};}
@@ -583,33 +614,46 @@ const I={
 };
 
 /* ============================ STATE ============================ */
-let S={ screen:"sites", tab:"overview", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, faultOpen:{}, wave:null, routineOpen:null, insTab:"peak", savTab:"retail" };
+let S={ screen:"sites", tab:"overview", propertyTab:"users", panelTab:"configuration", signalRange:"1h", coach:0, intro:"start", faultOpen:{}, wave:null, routineOpen:null, insTab:"peak", savTab:"retail" };
 // debug/deep-link: #screen=site&tab=panel&panelTab=connectivity&coach=6
 (function(){const h=location.hash.slice(1); if(!h)return; h.split("&").forEach(kv=>{const[k,v]=kv.split("=");if(k in S)S[k]=(k==="coach"?+v:v);});})();
 const app=document.getElementById('app');
 const money=n=>"$"+n.toLocaleString();
 
 /* ---- coach steps ---- */
-const GROUPS=[1,2,2,3,3,3,4,4,4,4,5,5,5,5,5,5,6,6]; // which of the 6 demo steps each coach micro-step belongs to
+const SECTION_NAMES=["Site overview","Insights","Savings"];
+// Darkened story pop-ups that break the walkthrough into three parts.
+const STORY={
+  start:{eyebrow:"Guided walkthrough · 3 parts", title:"Basis Mission Control", body:"This is where you support every home you’ve fitted with a Basis panel. We’ll walk one real install — <b>1 B Northumberland Avenue</b> — in three parts:<br><br><b>1 · Site overview</b> — the property, its users, the panel and its connection.<br><b>2 · Insights</b> — faults, peak load, power quality and temperature.<br><b>3 · Savings</b> — how this home’s usage compares to every retail plan.", btn:"Get started"},
+  insights:{eyebrow:"Part 2 of 3", title:"Insights", body:"Now the diagnostics. This is where you work out what’s actually going on inside the home — every <b>fault</b> the panel has logged, plus <b>peak load</b>, <b>power quality</b> and <b>temperature</b>.", btn:"Continue"},
+  savings:{eyebrow:"Part 3 of 3", title:"Savings", body:"Finally, the money. Basis models this home’s <b>actual usage</b> against every retail plan — so you can tell the customer, with evidence, whether they’re on the best deal.", btn:"See the savings"},
+  done:{eyebrow:"That’s a wrap", title:"Nice work — that’s the walkthrough", body:"You’ve seen the whole picture for one home: its <b>site</b>, its <b>insights</b> and its <b>savings</b>. Click any tab to keep exploring, or run the tour again.", btn:"Restart walkthrough"},
+};
 const STEPS=[
- {screen:"sites",   msg:'This is <b>Sites</b> — every property where you’ve installed a Basis panel. We’ll open <b>1 B Northumberland Avenue</b>. Click its row.', target:"#row-nrthmbld", advanceOn:"click"},
- {screen:"site", tab:"property", msg:'You’re on the site. Open the <b>Property</b> tab — it lists the <b>users</b> connected to this panel: the sparkies and the customers.', target:"#tab-property", advanceOn:"click"},
- {screen:"site", tab:"property", propertyTab:"users", msg:'These are the accounts linked to the panel — the <b>homeowner</b> (Home) and the <b>electrician</b> (Trade, with approval status). Next we’ll check the panel itself.', advanceOn:"next"},
- {screen:"site", tab:"panel", panelTab:"configuration", msg:'Open the <b>Panel</b> tab — <b>Configuration</b> shows every circuit’s MCB, RCD and AFDD, exactly as commissioned.', target:"#tab-panel", advanceOn:"click"},
- {screen:"site", tab:"panel", panelTab:"connectivity", msg:'Now <b>Connectivity</b> — is the panel on <b>wired or Wi‑Fi</b>, what’s the signal, and have there been any internet drops?', target:"#subtab-connectivity", advanceOn:"click"},
- {screen:"site", tab:"panel", panelTab:"connectivity", msg:'It’s on <b>Wi‑Fi</b> at <b>−59 dBm</b> (channel 6). The drops in the history were <b>brief keep‑alive timeouts that self‑recovered</b> — 99.94% uptime, so not a real problem for this home.', advanceOn:"next"},
- {screen:"site", tab:"faults", msg:'Open the <b>Faults</b> tab — it defaults to the <b>last 90 days</b>. Every trip and warning the panel has logged.', target:"#tab-faults", advanceOn:"click"},
- {screen:"site", tab:"faults", msg:'Click the <b>top fault</b> — an <b>RCD trip on C5 Power</b> — to expand its details.', target:"#fault-f1", advanceOn:"click"},
- {screen:"site", tab:"faults", msg:'Now open <b>Waveforms</b> to see exactly what the panel captured the instant it tripped.', target:'[data-wave="f1"]', advanceOn:"click"},
- {screen:"site", tab:"faults", msg:'These are the capture channels — <b>primary current, the residual current that climbed past the 10 mA trip threshold, the AFDD Rogowski line and the phase voltage</b>. <b>Hover across</b> any chart to read the exact value at that moment. Close it when you’re done.', advanceOn:"next"},
- {screen:"site", tab:"insights", msg:'Open <b>Insights</b> — it lands on <b>Peak load</b>: the biggest demand this house has drawn in the <b>last 30 days</b>.', target:"#tab-insights", advanceOn:"click"},
- {screen:"site", tab:"insights", msg:'This home peaked at <b>13.3 kW</b> — evening cooking overlapping hot‑water heating — well under the 63 A supply. <b>Hover</b> the curve to read any point.', advanceOn:"next"},
- {screen:"site", tab:"insights", msg:'Open <b>Power quality</b> to check whether the grid itself is misbehaving.', target:"#itab-pq", advanceOn:"click"},
- {screen:"site", tab:"insights", msg:'Voltage touched <b>253.5 V</b> (over the 253 V limit) and frequency dipped to <b>48.1 Hz</b>. A wandering grid can be the real cause of a “panel problem”.', advanceOn:"next"},
- {screen:"site", tab:"insights", msg:'Now open <b>Temperature</b>.', target:"#itab-temp", advanceOn:"click"},
- {screen:"site", tab:"insights", msg:'One module spiked to <b>71.8 °C</b> — over the 65 °C alert line — during heavy evening load. A one‑off is fine; a repeat points to a loose termination worth re‑checking.', advanceOn:"next"},
- {screen:"site", tab:"savings", msg:'Last one — open <b>Savings</b> for the <b>retail plan comparison</b>.', target:"#tab-savings", advanceOn:"click"},
- {screen:"site", tab:"savings", msg:'Basis models <b>every retail plan</b> against this home’s real usage. Here it confirms they’re <b>already on the cheapest</b> — <b>Mercury Open Term</b> — and ranks every alternative. That’s how you tell a client whether they’re on the best plan for them. <b>That’s the full walkthrough — nice work!</b>', advanceOn:"next"},
+ // ---- Part 1 · Site overview ----
+ {section:1, screen:"sites", msg:'These are your <b>Sites</b> — every property where you’ve installed a Basis panel. Click <b>1 B Northumberland Avenue</b> to open it.', target:"#row-nrthmbld", advanceOn:"click"},
+ {section:1, screen:"site", tab:"overview", msg:'Every site opens on its <b>Overview</b>. Two things tell you who and what you’re looking at — the <b>site information</b> and the <b>panel at a glance</b>.', advanceOn:"next",
+   pills:[{sel:"#ov-site",text:"Site information",desc:"address · serial · firmware"},{sel:"#ov-glance",text:"Panel at a glance",desc:"circuits · faults · users"}]},
+ {section:1, screen:"site", tab:"property", msg:'Open the <b>Property</b> tab — it lists the <b>users</b> connected to this panel: the sparkies and the customers.', target:"#tab-property", advanceOn:"click"},
+ {section:1, screen:"site", tab:"property", propertyTab:"users", msg:'The <b>homeowner</b> and partner on Home; the <b>electrician</b> and apprentice on Trade (with approval status).', advanceOn:"next"},
+ {section:1, screen:"site", tab:"panel", panelTab:"configuration", msg:'Open the <b>Panel</b> tab — <b>Configuration</b> lists every circuit’s MCB, RCD and AFDD, exactly as commissioned.', target:"#tab-panel", advanceOn:"click"},
+ {section:1, screen:"site", tab:"panel", panelTab:"configuration", msg:'Twenty sub‑circuits — each row shows its <b>breaker curve</b>, <b>RCD rating</b> and whether it’s live or on standby.', advanceOn:"next"},
+ {section:1, screen:"site", tab:"panel", panelTab:"connectivity", msg:'Now <b>Connectivity</b> — is the panel on <b>wired or Wi‑Fi</b>, what’s the signal, and any internet drops?', target:"#subtab-connectivity", advanceOn:"click"},
+ {section:1, screen:"site", tab:"panel", panelTab:"connectivity", msg:'On <b>Wi‑Fi</b> at <b>−59 dBm</b>. The drops were <b>brief keep‑alive timeouts that self‑recovered</b> — 99.94% uptime, no real problem here.', advanceOn:"next"},
+ // ---- Part 2 · Insights ----
+ {section:2, screen:"site", tab:"faults", msg:'Open the <b>Faults</b> tab — every trip and warning the panel has logged in the last 90 days.', target:"#tab-faults", advanceOn:"click"},
+ {section:2, screen:"site", tab:"faults", msg:'Click the <b>top fault</b> — a critical <b>MCB trip on C14 Power</b> — to expand it.', target:"#fault-f1", advanceOn:"click"},
+ {section:2, screen:"site", tab:"faults", msg:'Open <b>Waveforms</b> to see exactly what the panel captured the instant it tripped.', target:'[data-wave="f1"]', advanceOn:"click"},
+ {section:2, screen:"site", tab:"faults", msg:'The <b>primary current</b> hit <b>24 A rms</b> on a 16 A breaker — that’s what tripped <b>C16</b>. Residual current and voltage stayed normal, so it’s a <b>load fault, not a leak or an arc</b>. The dashed line marks the trip. <b>Hover</b> any chart, then close it.', advanceOn:"next"},
+ {section:2, screen:"site", tab:"insights", msg:'Open <b>Insights</b> — it lands on <b>Peak load</b>: the biggest demand in the <b>last 30 days</b>.', target:"#tab-insights", advanceOn:"click"},
+ {section:2, screen:"site", tab:"insights", msg:'Peaked at <b>13.3 kW</b> on 8 Aug — evening cooking overlapping hot‑water heating — well under the 63 A supply. <b>Hover</b> the line for any day.', advanceOn:"next"},
+ {section:2, screen:"site", tab:"insights", msg:'Open <b>Power quality</b> to check whether the grid itself is misbehaving.', target:"#itab-pq", advanceOn:"click"},
+ {section:2, screen:"site", tab:"insights", msg:'Voltage touched <b>253.5 V</b> and frequency dipped to <b>48.1 Hz</b>. A wandering grid can be the real cause of a “panel problem”.', advanceOn:"next"},
+ {section:2, screen:"site", tab:"insights", msg:'Now open <b>Temperature</b>.', target:"#itab-temp", advanceOn:"click"},
+ {section:2, screen:"site", tab:"insights", msg:'One module spiked to <b>71.8 °C</b> during heavy load. A one‑off is fine; a repeat points to a <b>loose termination</b> worth re‑checking.', advanceOn:"next"},
+ // ---- Part 3 · Savings ----
+ {section:3, screen:"site", tab:"savings", msg:'Last part — open <b>Savings</b>.', target:"#tab-savings", advanceOn:"click"},
+ {section:3, screen:"site", tab:"savings", msg:'Basis models <b>every retail plan</b> against this home’s real usage. Here it confirms they’re <b>already on the cheapest</b> — Mercury Open Term — and ranks every alternative.', advanceOn:"next"},
 ];
 
 /* ============================ RENDER ============================ */
@@ -685,7 +729,7 @@ function overviewTab(){
   const sevN={critical:0,error:0,warning:0}; FAULT_ALL.forEach(f=>sevN[f.sev]++);
   const live=CIRCUITS.filter(c=>c.state==="LIVE").length;
   return `<div class="grid2" style="align-items:start">
-    <div class="card"><div class="chd"><span class="t">Site</span></div><div class="cbd">
+    <div class="card" id="ov-site"><div class="chd"><span class="t">Site</span></div><div class="cbd">
       <div class="drow"><span class="dk">Address</span><span class="dv">${SITE.address}, ${SITE.suburb}</span></div>
       <div class="drow"><span class="dk">Panel serial</span><span class="dv mono" style="font-size:12px">${SITE.panelSerial}</span></div>
       <div class="drow"><span class="dk">System Manager</span><span class="dv mono" style="font-size:12px">${SITE.smSerial}</span></div>
@@ -693,7 +737,7 @@ function overviewTab(){
       <div class="drow"><span class="dk">ICP</span><span class="dv mono" style="font-size:12px">${SITE.icp}</span></div>
       <div class="drow"><span class="dk">Status</span><span class="dv"><span class="dotstat on"><i></i>Panel online</span></span></div>
     </div></div>
-    <div class="card"><div class="chd"><span class="t">At a glance</span></div><div class="cbd">
+    <div class="card" id="ov-glance"><div class="chd"><span class="t">At a glance</span></div><div class="cbd">
       <div class="kpis" style="grid-template-columns:1fr 1fr">
         <div class="kpi"><div class="k">Circuits</div><div class="v">${SITE.circuits}</div><div class="s">${live} live</div></div>
         <div class="kpi"><div class="k">Faults · 90d</div><div class="v">${FAULT_COUNT}</div><div class="s">${sevN.critical} critical · ${sevN.error} error</div></div>
@@ -923,16 +967,19 @@ function waveModalHTML(){
   const w=genWave(f.id); const reserve=w.channels.some(c=>c.trip);
   const charts=w.channels.map((c,i)=>waveChart(c,i,w,reserve)).join("");
   const c0=CIRCUITS.find(x=>x.n===f.cn)||{};
-  const prot=c0.rcd?`RCD: ${c0.ma}mA Type ${c0.rcd}`:(c0.mcbC?`MCB ${c0.mcbC}${c0.mcbA}`:'');
+  const prot = f.kind==="mcb" ? `MCB: ${c0.mcbA}A Type ${c0.mcbC}`
+    : f.kind==="rcd" ? `RCD: ${c0.ma}mA Type ${c0.rcd}`
+    : (c0.mcbC?`MCB: ${c0.mcbA}A Type ${c0.mcbC}`:'');
   const title=f.source.replace(/\b\w/g,m=>m.toUpperCase());
   const pills=w.channels.map(c=>`<span class="wpill on"><i style="background:${c.color}"></i>${c.label}</span>`).join("")
     +`<span class="wpill">MCB Model</span><span class="wpill">RCD Model</span><span class="wpill more">More (12)</span>`;
   return `<div class="modal" id="waveModal"><div class="sheet">
     <div class="mhd"><div style="min-width:0">
         <div class="t" style="display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" fill="#DE0F00" width="15" height="15"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> Event Waveform — ${title}</div>
-        <div class="sub" style="font-size:12px;margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="scpill"><b class="tnum">${f.cn}</b>${f.cl}</span> <span>${prot} · ${f.time}</span> <span style="color:var(--d400)">· No tags</span></div>
+        <div class="sub" style="font-size:12px;margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="scpill"><b class="tnum">${f.cn}</b>${f.cl}</span> <span>${prot} · ${f.date?f.date+', ':''}${f.time}</span> <span style="color:var(--d400)">· No tags</span></div>
         <div class="wpills">${pills}</div></div>
       <button class="x" id="waveClose">✕</button></div>
+    ${f.kind==="mcb"?`<div class="wcause"><b>Cause — overcurrent.</b> The <b style="color:#2563EB">primary current</b> reached <b>24 A rms</b> on a <b>16 A</b> breaker, tripping <b>C16</b>. <b style="color:#DC2626">Residual current</b> (0.4 mA) and <b style="color:#7C3AED">voltage</b> (231 V) were both normal — this was a load fault, not a leakage or arc fault. The dashed red line marks the trip in every channel.</div>`:''}
     <div class="mbd" id="waveBody">${charts}</div></div></div>`;
 }
 function waveChart(c,idx,w,reserve){
@@ -948,6 +995,7 @@ function waveChart(c,idx,w,reserve){
   const trip=c.trip!=null?`<line x1="${padL}" x2="${W-padR}" y1="${Y(c.trip).toFixed(1)}" y2="${Y(c.trip).toFixed(1)}" stroke="#DE0F00" stroke-width="1" stroke-dasharray="4 3"/><text x="${W-padR-4}" y="${(Y(c.trip)-4).toFixed(1)}" text-anchor="end" font-size="10" fill="#DC2626">trip ${c.key==="model"?c.trip.toFixed(1):c.trip+" "+c.unit}</text>`:'';
   const rTicks=c.trip!=null?sc.ticks.map(v=>`<text x="${W-padR+6}" y="${(Y(v)+3).toFixed(1)}" font-size="11" fill="var(--d400)">${v.toFixed(1)}</text>`).join(""):'';
   const axisTitle=c.unit?`${c.label} (${c.unit})`:c.key==='crog'?`${c.label} (0–25)`:c.label;
+  const vt=(w.vtrip!=null)?(()=>{const vx=X(w.vtrip);return `<line x1="${vx.toFixed(1)}" x2="${vx.toFixed(1)}" y1="${padT}" y2="${padT+innerH}" stroke="#DE0F00" stroke-width="1.3" stroke-dasharray="5 3"/><text x="${vx.toFixed(1)}" y="${(padT+innerH-4).toFixed(1)}" text-anchor="middle" font-size="9.5" fill="#DC2626">Trip</text>${c.ann?`<text x="${(vx+8).toFixed(1)}" y="${(padT+14).toFixed(1)}" font-size="11.5" font-weight="700" fill="${c.color}">${c.ann}</text>`:''}`;})():'';
   return `<div class="wchart" data-ch="${idx}" data-padl="${padL}" data-innerw="${innerW}" data-w="${W}" data-window="${w.windowMs}" data-n="${c.samples.length}">
     <div class="whd">
       <div class="wlab"><span class="wsw" style="background:${c.color}"></span>${c.label}</div>
@@ -957,7 +1005,7 @@ function waveChart(c,idx,w,reserve){
       ${grid}${trip}${rTicks}
       <line x1="${padL}" x2="${padL}" y1="${padT}" y2="${padT+innerH}" stroke="rgba(28,25,23,.13)"/>
       <line x1="${W-padR}" x2="${W-padR}" y1="${padT}" y2="${padT+innerH}" stroke="rgba(28,25,23,.13)"/>
-      <path d="${path}" fill="none" stroke="${c.color}" stroke-width="1.4"/>
+      <path d="${path}" fill="none" stroke="${c.color}" stroke-width="1.4"/>${vt}
       <line class="wcursor" x1="0" x2="0" y1="${padT}" y2="${padT+innerH}" stroke="var(--fg)" stroke-opacity=".5" style="opacity:0"/>
       <text transform="rotate(-90 12 ${H/2})" x="12" y="${H/2}" text-anchor="middle" font-size="12" font-weight="600" fill="${c.color}">${axisTitle}</text>
       <text x="${padL}" y="${H-6}" font-size="10" fill="var(--d400)">0 ms</text>
@@ -1323,13 +1371,14 @@ function projectionsView(){
 /* ============================ COACH ============================ */
 function renderCoach(){
   const root=document.getElementById('coachRoot');
-  document.querySelectorAll('.spot').forEach(e=>e.remove());
+  document.querySelectorAll('.spot,.floatpill').forEach(e=>e.remove());
+  if(S.intro && STORY[S.intro]){ root.innerHTML=storyModalHTML(S.intro); return; }
   if(S.coach>=STEPS.length){ root.innerHTML=""; return; }
-  const st=STEPS[S.coach];
+  const st=STEPS[S.coach], sec=st.section||1;
   root.innerHTML=`<div class="coach ${st.target?'':'hint'}">
-    <div class="num">${S.coach+1}</div>
+    <div class="num">${sec}</div>
     <div class="body">
-      <div class="step">Step ${GROUPS[S.coach]} of 6</div>
+      <div class="step">Part ${sec} · ${SECTION_NAMES[sec-1]}</div>
       <div class="msg">${st.msg}</div>
       <div class="actions">
         ${st.advanceOn==="next"?'<button class="btn" data-coach="next">Got it</button>':'<span class="sub" style="font-size:12.5px;color:var(--d400)">← follow the highlight</span>'}
@@ -1338,6 +1387,16 @@ function renderCoach(){
     </div>
   </div>`;
   if(st.target){ requestAnimationFrame(()=>spotlight(st.target)); }
+  if(st.pills){ requestAnimationFrame(()=>renderPills(st.pills)); }
+}
+function storyModalHTML(key){
+  const s=STORY[key];
+  return `<div class="modal storywrap" id="storyModal"><div class="storysheet">
+    ${s.eyebrow?`<div class="storyeyebrow">${s.eyebrow}</div>`:''}
+    <div class="storytitle">${s.title}</div>
+    <div class="storybody">${s.body}</div>
+    <div class="storyactions"><button class="btn storybtn" data-story="${key}">${s.btn} →</button></div>
+  </div></div>`;
 }
 function spotlight(sel){
   const el=document.querySelector(sel); if(!el) return;
@@ -1348,11 +1407,31 @@ function spotlight(sel){
   document.getElementById('coachRoot').appendChild(s);
   el.classList.add('pointing');
 }
-function coachStepMatches(sel){ const st=STEPS[S.coach]; return !!st && st.advanceOn==="click" && st.target===sel; }
+function renderPills(pills){
+  const root=document.getElementById('coachRoot');
+  pills.forEach(p=>{
+    const el=document.querySelector(p.sel); if(!el) return;
+    const r=el.getBoundingClientRect();
+    const pill=document.createElement('div'); pill.className='floatpill';
+    pill.innerHTML=`<div class="fpt">${p.text}</div><div class="fpd">${p.desc}</div><span class="fparrow"></span>`;
+    pill.style.left=(r.left+r.width/2)+'px';
+    pill.style.top=(r.top+window.scrollY-10)+'px';
+    root.appendChild(pill);
+  });
+}
+function coachStepMatches(sel){ const st=STEPS[S.coach]; return !S.intro && !!st && st.advanceOn==="click" && st.target===sel; }
 // Advance the coach WITHOUT navigating — the page only moves when the user
-// actually clicks the highlighted tab/control, not the moment a step begins.
-function coachDoAdvance(){ S.coach++; }
+// actually clicks the highlighted tab/control. Crossing a section boundary
+// raises the darkened story pop-up for the next part.
+function coachDoAdvance(){
+  const prevSec=STEPS[S.coach]?STEPS[S.coach].section:null;
+  S.coach++;
+  const nx=STEPS[S.coach];
+  if(!nx){ S.intro="done"; return; }
+  if(nx.section!==prevSec){ S.intro = nx.section===2?"insights":nx.section===3?"savings":null; }
+}
 function coachNext(){ S.wave=null; coachDoAdvance(); render(); }
+function onStory(key){ if(key==="done"){ restartTour(); return; } S.intro=null; render(); }
 function nav(action,sel){ if(action)action(); if(coachStepMatches(sel))coachDoAdvance(); render(); }
 
 /* ============================ WIRING ============================ */
@@ -1370,6 +1449,7 @@ function wire(){
   app.querySelectorAll('[data-itab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-itab'); nav(()=>{S.insTab=k;},'#itab-'+k); });
   app.querySelectorAll('[data-stab]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-stab'); nav(()=>{S.savTab=k;},'#stab-'+k); });
   document.getElementById('coachRoot').querySelectorAll('[data-coach="next"]').forEach(b=>b.onclick=()=>coachNext());
+  document.getElementById('coachRoot').querySelectorAll('[data-story]').forEach(b=>b.onclick=()=>onStory(b.getAttribute('data-story')));
   wireSignal(); wireInsCharts();
   reportHeight();
 }
@@ -1438,7 +1518,7 @@ addEventListener('load',reportHeight);
 
 function restartTour(){
   S.screen="sites"; S.tab="overview"; S.propertyTab="users"; S.panelTab="configuration";
-  S.signalRange="1h"; S.coach=0; S.faultOpen={}; S.wave=null; S.routineOpen=null;
+  S.signalRange="1h"; S.coach=0; S.intro="start"; S.faultOpen={}; S.wave=null; S.routineOpen=null;
   S.insTab="peak"; S.savTab="retail";
   window.scrollTo(0,0); render();
 }
