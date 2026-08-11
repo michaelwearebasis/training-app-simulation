@@ -139,7 +139,7 @@ const makeBoard=s=>({size:s,price:BOARD_PRESETS[s],sundries:sundriesFor(s)});
 const DEFAULTS=()=>({installedCost:3999,boards:[makeBoard(16)],rebate:400,labourHours:4.2,labourRate:55,travel:50,inspectionEnabled:false,inspection:120});
 const KEY='basis-margin-calculator:v7';
 let state=DEFAULTS(), costsOpen=true, tradeOpen=true;
-try{const raw=localStorage.getItem(KEY);if(raw){const m={...DEFAULTS(),...JSON.parse(raw)};if(!Array.isArray(m.boards)||!m.boards.length)m.boards=DEFAULTS().boards;state=m;}}catch{}
+try{const raw=localStorage.getItem(KEY);if(raw){const m={...DEFAULTS(),...JSON.parse(raw)};if(!Array.isArray(m.boards)||!m.boards.length)m.boards=DEFAULTS().boards;m.installedCost=DEFAULTS().installedCost;state=m;}}catch{}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));}catch{}};
 
 function calc(){
