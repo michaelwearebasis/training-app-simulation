@@ -84,7 +84,7 @@ table.hu tbody tr.dim{opacity:.5}
 .usercell .de{font-size:12px;color:var(--d500)}
 
 /* sub-nav tabs (underlined) */
-.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line2);margin-bottom:20px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line2);margin-bottom:20px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;position:sticky;top:56px;z-index:29;background:var(--bg)}
 .tabs::-webkit-scrollbar{display:none;height:0}
 .tabs button{flex:0 0 auto;position:relative;padding:11px 14px;color:var(--d500);font-weight:500;font-size:14px;white-space:nowrap;display:flex;align-items:center;gap:7px}
 .tabs button:hover{color:var(--fg)}
@@ -592,10 +592,10 @@ function genWave(id){
   if(f.kind==="mcb"){ // MCB trip — sustained overcurrent on the primary, breaker isolates
     const tripAt=92; vtrip=Math.round(tripAt/windowMs*(N-1));
     const Ipk=34; // ~24 A rms
-    const I=arr(ms=>{const s=Ipk*Math.sin(2*Math.PI*50*ms/1000); return ms>tripAt?s*Math.max(0,1-(ms-tripAt)/5):s;});
-    const RES=arr(ms=>{let n=(Math.random()-0.5)*1.4; if(Math.abs(ms-tripAt)<3 && Math.random()<0.5) n+=1.2; return n;});
+    const I=arr(ms=>ms>=tripAt?0:Ipk*Math.sin(2*Math.PI*50*ms/1000)); // breaker opens at the trip → no current flows after it
+    const RES=arr(ms=>{let n=(Math.random()-0.5)*1.4; if(Math.abs(ms-tripAt)<3 && Math.random()<0.5) n+=1.2; return ms>=tripAt?n*0.5:n;});
     const Vpk=325; // ~230 V rms
-    const Vc=arr(ms=>ms>tripAt?(Math.random()-0.5)*6:Vpk*Math.sin(2*Math.PI*50*ms/1000));
+    const Vc=arr(ms=>ms>=tripAt?(Math.random()-0.5)*6:Vpk*Math.sin(2*Math.PI*50*ms/1000));
     ch=[
       {...cI(I,"Primary Current"), ann:"24 A rms → tripped C16"},
       {key:"res",label:"Residual Current",unit:"mA",color:"#DC2626",samples:RES,range:{min:-1.5,max:1.5}, ann:"0.4 mA · normal"},
@@ -1467,6 +1467,7 @@ function renderCoach(){
   const root=document.getElementById('coachRoot');
   document.querySelectorAll('.spot,.coachpill').forEach(e=>e.remove());
   document.querySelectorAll('.pointing').forEach(e=>e.classList.remove('pointing'));
+  _coach={};
   if(S.intro && STORY[S.intro]){ root.innerHTML=storyModalHTML(S.intro); return; }
   root.innerHTML="";
   if(S.coach>=STEPS.length) return;
@@ -1483,19 +1484,18 @@ function storyModalHTML(key){
 }
 // The guided steps are small floating pills that point at the thing to focus on —
 // no bottom card, no full-screen dimming (only the section pop-ups darken).
+// Ring + pill are positioned in VIEWPORT coords (position:fixed) and re-tracked
+// on scroll, so they stay glued to their target whether it scrolls, sticks under
+// the banner, or lives in a fixed modal.
+let _coach={}, _coachRAF=0;
 function placeCoachPill(st){
   const root=document.getElementById('coachRoot');
-  const anchorSel=st.anchor||st.target;
+  _coach={};
   if(st.target){
     const t=document.querySelector(st.target);
-    if(t){ const rr=t.getBoundingClientRect();
-      const fx=!!(t.closest&&t.closest('.modal')); // target lives in a fixed modal → track the viewport, not the document
-      const s=document.createElement('div'); s.className='spot';
-      s.style.left=(rr.left-6)+'px'; s.style.top=(rr.top-6+(fx?0:window.scrollY))+'px';
-      s.style.width=(rr.width+12)+'px'; s.style.height=(rr.height+12)+'px';
-      if(fx){ s.style.position='fixed'; s.style.zIndex='95'; }
-      root.appendChild(s); t.classList.add('pointing'); }
+    if(t){ const s=document.createElement('div'); s.className='spot'; root.appendChild(s); t.classList.add('pointing'); _coach.spot=s; _coach.targetSel=st.target; }
   }
+  const anchorSel=st.anchor||st.target;
   const el=anchorSel?document.querySelector(anchorSel):null;
   const pill=document.createElement('div');
   pill.className='coachpill'+(st.overlay?' cp-overlay':'');
@@ -1504,23 +1504,35 @@ function placeCoachPill(st){
   pill.innerHTML=`${lab?`<div class="cplabel">${lab}</div>`:''}<div class="cpmsg">${st.msg}</div>${btn}<span class="cparrow"></span>`;
   root.appendChild(pill);
   const b=pill.querySelector('[data-coach="next"]'); if(b) b.onclick=coachNext;
-  if(st.overlay){ pill.classList.add('cp-fixed','cp-down'); return; }
-  if(!el){ pill.classList.add('cp-fixed'); return; }
-  positionPill(pill, el.getBoundingClientRect(), st.place||'bottom', !!(el.closest&&el.closest('.modal')));
+  if(st.overlay){ pill.classList.add('cp-fixed','cp-down'); repositionCoach(); return; }
+  if(!el){ pill.classList.add('cp-fixed'); repositionCoach(); return; }
+  _coach.pill=pill; _coach.anchorSel=anchorSel; _coach.place=st.place||'bottom';
+  repositionCoach();
 }
-function positionPill(pill,r,place,fixed){
-  const pw=pill.offsetWidth, ph=pill.offsetHeight, gap=14, vw=document.documentElement.clientWidth;
-  const cx=r.left+r.width/2, cy=r.top+r.height/2, sy=fixed?0:window.scrollY; let left, top, ax=null;
-  if(place==='bottom'){ top=r.bottom+gap+sy; left=cx-pw/2; }
-  else if(place==='top'){ top=r.top-gap-ph+sy; left=cx-pw/2; }
-  else if(place==='right'){ left=r.right+gap; top=cy-ph/2+sy; }
-  else { left=r.left-gap-pw; top=cy-ph/2+sy; }
+function repositionCoach(){
+  if(_coach.spot){ const t=_coach.targetSel&&document.querySelector(_coach.targetSel);
+    if(t){ const r=t.getBoundingClientRect();
+      _coach.spot.style.position='fixed';
+      _coach.spot.style.left=(r.left-6)+'px'; _coach.spot.style.top=(r.top-6)+'px';
+      _coach.spot.style.width=(r.width+12)+'px'; _coach.spot.style.height=(r.height+12)+'px'; } }
+  const el=_coach.anchorSel&&document.querySelector(_coach.anchorSel);
+  if(!el||!_coach.pill) return;
+  const pill=_coach.pill, place=_coach.place, r=el.getBoundingClientRect();
+  const pw=pill.offsetWidth, ph=pill.offsetHeight, gap=14, vw=document.documentElement.clientWidth, vh=document.documentElement.clientHeight;
+  const cx=r.left+r.width/2, cy=r.top+r.height/2; let left, top;
+  if(place==='bottom'){ top=r.bottom+gap; left=cx-pw/2; }
+  else if(place==='top'){ top=r.top-gap-ph; left=cx-pw/2; }
+  else if(place==='right'){ left=r.right+gap; top=cy-ph/2; }
+  else { left=r.left-gap-pw; top=cy-ph/2; }
   const cl=Math.max(10,Math.min(left,vw-pw-10));
-  if(place==='bottom'||place==='top'){ ax=Math.max(16,Math.min(cx-cl,pw-16)); pill.style.setProperty('--ax',ax+'px'); }
-  if(fixed){ pill.style.position='fixed'; pill.style.zIndex='94'; }
-  pill.style.left=cl+'px'; pill.style.top=Math.max(6+sy,top)+'px';
-  pill.classList.add('pl-'+place);
+  if(place==='bottom'||place==='top') pill.style.setProperty('--ax',Math.max(16,Math.min(cx-cl,pw-16))+'px');
+  pill.style.position='fixed';
+  pill.style.left=cl+'px'; pill.style.top=Math.max(62,Math.min(top,vh-ph-6))+'px';
+  pill.classList.remove('pl-bottom','pl-top','pl-left','pl-right'); pill.classList.add('pl-'+place);
 }
+function onCoachScroll(){ if(_coachRAF)return; _coachRAF=requestAnimationFrame(()=>{_coachRAF=0; repositionCoach();}); }
+addEventListener('scroll', onCoachScroll, {passive:true, capture:true});
+addEventListener('resize', onCoachScroll);
 function coachStepMatches(sel){ const st=STEPS[S.coach]; return !S.intro && !!st && st.advanceOn==="click" && st.target===sel; }
 // Advance the coach WITHOUT navigating — the page only moves when the user
 // actually clicks the highlighted tab/control. Crossing a section boundary
