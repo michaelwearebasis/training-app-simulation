@@ -4,14 +4,26 @@ Interactive, single-file simulations of the Basis apps, built for embedding in t
 content (Easygenerator or any LMS that accepts an iframe). One repo hosts them all —
 every `.html` file in the repo root gets its own GitHub Pages URL:
 
-| Page | URL | What it teaches |
+All URLs below are under `https://michaelwearebasis.github.io/training-app-simulation/`.
+
+| Page | Path | What it teaches |
 |---|---|---|
-| `index.html` | https://michaelwearebasis.github.io/training-app-simulation/ | **Trade app** — commissioning a Smart Panel end to end (app + interactive switchboard) |
-| `leds.html` | https://michaelwearebasis.github.io/training-app-simulation/leds.html | **LED guide** — animated legend of every Sub-Circuit and System Manager light and what it means (real firmware colours + timings) |
-| `home.html` | https://michaelwearebasis.github.io/training-app-simulation/home.html | **Home app** — four-phone showcase of what the customer gets (live power, routine, insights, plans) |
+| `index.html` | `/` | **Trade app** — commissioning a Smart Panel end to end (app + interactive switchboard) |
+| `leds.html` | `/leds.html` | **LED guide** — animated legend of every Sub-Circuit and System Manager light and what it means (real firmware colours + timings) |
+| `home.html` | `/home.html` | **Home app** — four-phone showcase of what the customer gets (live power, routine, insights, plans) |
+| `mission-control.html` | `/mission-control.html` | **Mission Control** — guided 3-part walkthrough of the fleet dashboard sparkies use to support a home (site → insights → savings), on real datalake data |
+| `margin-calculator.html` | `/margin-calculator.html` | **Margin calculator** — interactive tool: a sparky's net margin on a Basis Board install (board size, rebate tier, labour, fully installed cost) |
+| `supported-devices.html` | `/supported-devices.html` | **Supported devices** — which solar inverters and EV chargers integrate with Basis, with real brand logos and integration status |
+| `case-studies.html` | `/case-studies.html` | **Case studies** — auto-scrolling wall of electrician testimonials/quote tiles |
+| `consult.html` | `/consult.html` | **Pre-quote conversation** — the questions to ask a customer before quoting a Basis Panel |
 
 To add another demo, drop `whatever.html` in the repo root and push — it's live at
 `/whatever.html` in about a minute. No extra repos or config needed.
+
+**Cache-busting embeds.** Easygenerator (and most LMSs) cache the iframe `src`. When you ship
+an update, bump a `?v=N` query on the embed URL (`…/mission-control.html?v=8`) so learners get
+the new build. The number is arbitrary — just change it. GitHub Pages itself serves the latest
+within ~1 minute of a push.
 
 ---
 
@@ -266,3 +278,105 @@ Single self-contained file, ~60 KB, no network requests.
 
 Earlier formats (guided walkthrough, query-param mini-sims, simplified wall) are in git
 history if ever wanted.
+
+---
+
+# Mission Control — guided fleet-dashboard walkthrough (`mission-control.html`)
+
+A guided tour of **Mission Control**, the internal fleet dashboard sparkies use to support
+every home they've installed a Basis panel in. One self-contained `mission-control.html`,
+light Basis/stone theme, Oracle font — visually matched to the Trade and Home sims so the
+three sit together in one course.
+
+**Live page:** https://michaelwearebasis.github.io/training-app-simulation/mission-control.html
+
+```html
+<iframe src="https://michaelwearebasis.github.io/training-app-simulation/mission-control.html?v=8"
+        width="100%" height="860" style="border:0" allowfullscreen
+        title="Basis Mission Control — guided walkthrough"></iframe>
+```
+
+## The storyline
+
+A `Get started` intro pop-up, then **three darkened-backdrop section pop-ups** break the tour
+into parts. Within a part, the guidance is **small floating pills that point at the thing to
+focus on** (no docked card, no full-screen dimming). A floating **Restart** button re-runs it.
+
+1. **Site overview** — the **Sites** list (search + Address / Panels / ICP) → open **1 B
+   Northumberland Avenue** → its **Overview** (site-info + at-a-glance pills) → **Property**
+   (Trade Users / Home Users, Energy-retailer plan) → **Panel** (20-circuit configuration;
+   Connectivity with realistic Wi-Fi telemetry in plain language).
+2. **Insights** — **Faults** (open the critical **MCB trip on C14 Power** → **waveform capture**:
+   primary current cuts to 0 at the trip line, residual current, phase voltage, with a trip
+   line + cause annotations) → **Peak load** in **current (A)** — 57 A vs the 63 A supply,
+   `7d / 30d / 12m` ranges, and a "what drew the peak" circuit breakdown → **Power quality**
+   (voltage touched 253.5 V) → **Temperature**.
+3. **Savings** — **Retail comparison** with real NZ retailer logos (Mercury is both current
+   and cheapest), a plan "lollipop" list, plus **Savings** overview and **Projections** sub-views.
+
+## How it's built
+
+- **Real data.** Site config, connectivity, peak load, power quality and temperature were
+  pulled from the AWS Athena datalake (`datalake_silver_prd`) for panel serial
+  `FALUBX3KR9RSQCNQ0G5E` (ICP `1002057214UN96F`). User names are generic; waveforms and a few
+  app-domain figures (faults, retail plans) are synthetic but consistent with the panel.
+- **App shape** mirrors `wearebasis/platform-web` → `apps/mission-control` (the retailer /
+  savings / routines components in particular). The left sidebar is intentionally dropped —
+  the tour is about the middle content.
+- **Vanilla-JS SPA**: a `S` state object + `render()` (innerHTML) + `wire()`. Guidance lives in
+  `STEPS[]` (each: `section`, `target`/`anchor`, `place`, `msg`, `advanceOn`) and `STORY{}` (the
+  section pop-ups). Coach pills/rings are positioned in **viewport coords (`position:fixed`) and
+  re-tracked on scroll**, and the **tab bar is sticky under the banner**, so a highlighted tab is
+  never hidden and the ring never drifts. The waveform modal locks page scroll behind it.
+- **Deep-link hash** for debugging: `#screen=site&tab=insights&insTab=peak&coach=17&intro=none`
+  (`intro=none` suppresses the section pop-up; `coach=99` hides the coach; `wave=f1` opens a
+  waveform). Keys map straight onto `S`.
+
+Headless verification uses Chrome (`--headless=old … --screenshot`) since the built-in browser
+pane renders external files as static snapshots (no JS).
+
+---
+
+# Margin calculator (`margin-calculator.html`)
+
+An interactive tool showing a sparky the **net margin on a Basis Board install** — board size
+(12 / 16 / 20 circuit), quarterly **rebate tier** (0–2 / 3–9 / 10–15 / 16+ panels → $0–$400),
+labour hours + rate, travel, sundries, optional inspection, and a **Fully installed cost**
+slider (starts at the ideal **$3,999**). It shows the Basis Board trade price (with rebate),
+input costs, and the net margin **per job and per hour** live. Inputs persist in `localStorage`
+(except the fully installed cost, which resets to $3,999 each load); the page hugs its content
+and posts its height to the parent for auto-resize.
+
+```html
+<iframe src="https://michaelwearebasis.github.io/training-app-simulation/margin-calculator.html?v=N"
+        width="100%" height="980" style="border:0" title="Basis margin calculator"></iframe>
+```
+
+---
+
+# Supported devices (`supported-devices.html`)
+
+Which **solar inverters** (Tesla, Sigenergy supported; Fronius, SolaX, Sungrow, GoodWe coming)
+and **EV chargers** integrate with Basis, each with its real brand logo and integration status,
+plus a short line on what "integrates with Basis" actually gets the customer. Two-column cards,
+full-width intro. Logo assets live in `logos/`. Built from `wearebasis/SolarDigitalGuideline`.
+
+# Case studies (`case-studies.html`)
+
+An auto-scrolling (slow ping-pong, pauses on hover) wall of electrician **testimonials and quote
+tiles**, with Basis-green pills matching the brand cue.
+
+# Pre-quote conversation (`consult.html`)
+
+The **questions to ask a customer before quoting** a Basis Panel — a text/reference page for the
+consultation step of the sales process.
+
+---
+
+## Retailer logos (`logos/retailers/`)
+
+Mission Control's savings comparison shows real NZ energy-retailer marks (Mercury, Meridian,
+Genesis, Octopus, Contact, Powershop, Electric Kiwi). They're the retailers' own favicons,
+fetched at 128 px and committed as `fav_<name>.png`; the HTML references them by relative path
+(`logos/retailers/fav_mercury.png`) so they resolve on GitHub Pages. To refresh one, re-fetch
+its favicon and overwrite the file.
